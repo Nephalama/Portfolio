@@ -1,2 +1,10 @@
-# Portfolio
-Hello! I’m Thendo, an IT enthusiast with a love for coding, web design, and problem-solving. I build responsive websites, automate workflows, and design intuitive interfaces. My goal is to turn ideas into practical digital solutions while continuously learning and growing in tech.
+# Thendo Johannah Nephalama Portfolio
+
+This repository contains my personal portfolio website showcasing my skills in:
+
+- Web Development: HTML, CSS, JavaScript, Python, Flask
+- Automation & Security: Python scripting, PDF watermarking
+- UI/UX Design: Figma, responsive design
+- Cloud & Network Projects: AWS, Huawei Cloud, NETCONF automation
+
+📫 Contact: nephalamathendo14@gmail.com

@@ -1,10 +1,42 @@
-# Thendo Johannah Nephalama Portfolio
+# Thendo Johannah Nephalama – Front-End Developer Portfolio
 
-This repository contains my personal portfolio website showcasing my skills in:
+Welcome to my interactive web development portfolio.
 
-- Web Development: HTML, CSS, JavaScript, Python, Flask
-- Automation & Security: Python scripting, PDF watermarking
-- UI/UX Design: Figma, responsive design
-- Cloud & Network Projects: AWS, Huawei Cloud, NETCONF automation
+This repository showcases modern, responsive web applications and UI projects built using core web technologies.
 
-📫 Contact: thendojohannah07@gmail.com
+## 🚀 Live Demo
+(Add your GitHub Pages link here after deployment)
+
+## 💻 Projects Included
+
+- 3D Game Demo
+- AI Chat Interface
+- AI Image Generator UI
+- Crypto Dashboard
+- DeFi Interface
+- Interactive Whiteboard
+- Login & Register UI
+- Task Manager Interface
+- Text-to-Speech UI
+
+## 🛠 Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- Font Awesome
+- Google Fonts
+
+## 🎯 Purpose
+
+This portfolio demonstrates:
+
+- Responsive web design
+- Interactive JavaScript functionality
+- Modern UI/UX design
+- Clean project structure
+
+---
+
+📍 Johannesburg, South Africa  
+📧 nephalamathendo14@gmail.com

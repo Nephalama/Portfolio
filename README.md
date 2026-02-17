@@ -5,7 +5,7 @@ Welcome to my interactive web development portfolio.
 This repository showcases modern, responsive web applications and UI projects built using core web technologies.
 
 ## 🚀 Live Demo
-(Add your GitHub Pages link here after deployment)
+https://nephalama.github.io/Portfolio/
 
 ## 💻 Projects Included
 

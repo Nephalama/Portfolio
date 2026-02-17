@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Dev Portfolio | Interactive Demos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --primary-dark: #7C3AED;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --dark: #0F172A;
+            --darker: #020617;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary), #6366F1);
+            --gradient-dark: linear-gradient(135deg, var(--darker), #1E293B);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--gradient-dark);
+            color: var(--light);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 1rem;
+        }
+
+        .glitch {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Stats */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.3rem;
+        }
+
+        /* Filters */
+        .filters-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .filter-section {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 2px solid var(--card-border);
+            color: var(--light);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--card-border);
+            border-radius: 50px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        /* Project Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            transition: var(--transition);
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .project-header {
+            padding: 1.5rem 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .project-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-expert {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--primary);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .badge-advanced {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .project-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .project-title i {
+            color: var(--primary);
+        }
+
+        .project-description {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Project Footer */
+        .project-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--card-border);
+            min-height: 80px;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .project-link:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .project-link.live {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--secondary);
+        }
+
+        .project-link.live:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .dev-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--darker);
+            border-radius: var(--radius-lg);
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--gradient-dark);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .close-modal {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: var(--danger);
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .demo-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .demo-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-content {
+            min-height: 300px;
+            background: var(--dark);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+        }
+
+        /* Demo Styles */
+        .simple-chat {
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+        }
+
+        .message {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            margin-bottom: 0.5rem;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: var(--dark);
+            margin-left: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            color: var(--light);
+        }
+
+        .chat-input button {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+
+        .game-demo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+        }
+
+        .car-3d {
+            width: 150px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCar 15s infinite linear;
+        }
+
+        @keyframes rotateCar {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .car-side {
+            position: absolute;
+            width: 150px;
+            height: 80px;
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .car-front {
+            transform: translateZ(75px);
+            background: linear-gradient(135deg, #1D4ED8, #1E40AF);
+        }
+
+        .car-back {
+            transform: translateZ(-75px) rotateY(180deg);
+        }
+
+        .car-top {
+            width: 150px;
+            height: 60px;
+            transform: translateY(-40px) rotateX(90deg);
+            background: linear-gradient(135deg, #2563EB, #1E40AF);
+        }
+
+        .whiteboard-demo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+        }
+
+        .whiteboard-canvas {
+            width: 100%;
+            height: 200px;
+            background: var(--dark);
+            border: 2px dashed var(--card-border);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .whiteboard-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .defi-demo {
+            padding: 1rem;
+        }
+
+        .defi-grid {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .defi-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--card-border);
+        }
+
+        .price-change {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .price-change.negative {
+            color: var(--danger);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--card-border);
+            margin-top: 3rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glitch {
+                font-size: 2.5rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                gap: 1rem;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+        }
+
+        .project-link.disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.03);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="glitch">DEV PORTFOLIO</h1>
+            <p class="subtitle">Interactive portfolio with real-time demos showcasing advanced web applications</p>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="totalProjects">6</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalTech">28</div>
+                    <div class="stat-label">Technologies</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalUsers">2.5K</div>
+                    <div class="stat-label">Demo Users</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="filters-container">
+            <div class="filter-section">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-layer-group"></i> All
+                </button>
+                <button class="filter-btn" data-filter="ai">
+                    <i class="fas fa-brain"></i> AI/ML
+                </button>
+                <button class="filter-btn" data-filter="blockchain">
+                    <i class="fas fa-link"></i> Blockchain
+                </button>
+                <button class="filter-btn" data-filter="real-time">
+                    <i class="fas fa-bolt"></i> Real-time
+                </button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search projects...">
+            </div>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will load here -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#" class="footer-link"><i class="fab fa-github"></i> GitHub</a>
+            <a href="#" class="footer-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            <a href="#" class="footer-link"><i class="fab fa-twitter"></i> Twitter</a>
+        </div>
+        <p style="color: var(--gray); font-size: 0.9rem;">
+            © 2024 Portfolio • All demos are interactive
+        </p>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">
+                    <i class="fas fa-project-diagram"></i>
+                    <span id="modalTitleText">Project Title</span>
+                    <span class="project-badge badge-expert" id="modalBadge">EXPERT</span>
+                </h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="demo-container">
+                    <h3 class="demo-title"><i class="fas fa-play-circle"></i> Interactive Demo</h3>
+                    <div class="demo-content" id="demoContent">
+                        Loading demo...
+                    </div>
+                </div>
+                <div class="info-container">
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                        <h3 style="color: var(--primary); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-info-circle"></i> About This Project
+                        </h3>
+                        <p id="modalDescription" style="color: var(--gray); line-height: 1.6;">
+                            Project description...
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                        <h3 style="color: var(--primary); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-star"></i> Key Features
+                        </h3>
+                        <ul id="modalFeatures" style="list-style: none; color: var(--gray);">
+                            <li>• Feature 1</li>
+                            <li>• Feature 2</li>
+                        </ul>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <a href="#" class="project-link live" id="modalLiveLink">
+                            <i class="fas fa-play-circle"></i> Open Demo
+                        </a>
+                        <a href="#" class="project-link" id="modalCodeLink">
+                            <i class="fab fa-github"></i> Source Code
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // Project Data - Updated with correct demo paths
+    const projects = [
+        {
+            id: 1,
+            title: "AI Chat Assistant",
+            description: "Advanced conversational AI with real-time responses and sentiment analysis.",
+            features: [
+                "Real-time WebSocket communication",
+                "Sentiment analysis",
+                "Multi-language support",
+                "Custom personas"
+            ],
+            technologies: ["Python", "TensorFlow", "React", "Node.js"],
+            level: "expert",
+            category: ["ai", "real-time"],
+            demo: "aiChatDemo",
+            codeLink: null,
+            liveLink: "../demos/ai-chat/index.html",
+            devTime: "3 months",
+            icon: "fas fa-robot"
+        },
+        {
+            id: 2,
+            title: "Crypto Dashboard",
+            description: "Real-time cryptocurrency tracking with portfolio management.",
+            features: [
+                "Live price tracking",
+                "Portfolio analytics",
+                "Price predictions",
+                "Multi-wallet support"
+            ],
+            technologies: ["Solidity", "Web3.js", "Chart.js", "Node.js"],
+            level: "advanced",
+            category: ["blockchain", "real-time"],
+            demo: "cryptoDemo",
+            codeLink: null,
+            liveLink: "../demos/crypto-dashboard/index.html",
+            devTime: "2.5 months",
+            icon: "fas fa-chart-line"
+        },
+        {
+            id: 3,
+            title: "3D Game Engine",
+            description: "Browser-based 3D game engine with physics and multiplayer.",
+            features: [
+                "WebGL 2.0 rendering",
+                "Physics engine",
+                "Particle systems",
+                "Multiplayer support"
+            ],
+            technologies: ["WebGL", "Three.js", "WebSocket", "TypeScript"],
+            level: "expert",
+            category: ["real-time"],
+            demo: "gameDemo",
+            codeLink: null,
+            liveLink: "../demos/3d-game/index.html",
+            devTime: "4 months",
+            icon: "fas fa-gamepad"
+        },
+        {
+            id: 4,
+            title: "AI Image Generator",
+            description: "Advanced image generation with style transfer and editing.",
+            features: [
+                "Text-to-image generation",
+                "Style transfer",
+                "Batch processing",
+                "API support"
+            ],
+            technologies: ["Python", "PyTorch", "React", "AWS"],
+            level: "advanced",
+            category: ["ai"],
+            demo: "imageDemo",
+            codeLink: null,
+            liveLink: "../demos/ai-image-generator/index.html",
+            devTime: "3 months",
+            icon: "fas fa-palette"
+        },
+        {
+            id: 5,
+            title: "Collaboration Whiteboard",
+            description: "Multi-user whiteboard with real-time synchronization.",
+            features: [
+                "Real-time collaboration",
+                "Video conferencing",
+                "Infinite canvas",
+                "Export to multiple formats"
+            ],
+            technologies: ["WebSocket", "Canvas", "WebRTC", "React"],
+            level: "advanced",
+            category: ["real-time"],
+            demo: "whiteboardDemo",
+            codeLink: null,
+            liveLink: "../demos/whiteboard/index.html",
+            devTime: "2 months",
+            icon: "fas fa-chalkboard"
+        },
+        {
+            id: 6,
+            title: "DeFi Optimizer",
+            description: "Advanced DeFi dashboard for yield farming optimization.",
+            features: [
+                "APY/APR calculations",
+                "Multi-protocol analysis",
+                "Risk assessment",
+                "Strategy suggestions"
+            ],
+            technologies: ["Solidity", "Web3.js", "React", "PostgreSQL"],
+            level: "expert",
+            category: ["blockchain"],
+            demo: "defiDemo",
+            codeLink: null,
+            liveLink: "../demos/defi/index.html",
+            devTime: "3.5 months",
+            icon: "fas fa-seedling"
+        }
+    ];
+
+    // Demo Functions for modal previews
+    const demos = {
+        aiChatDemo: (container) => {
+            container.innerHTML = `
+                <div class="simple-chat">
+                    <div class="chat-messages">
+                        <div class="message">Hello! I'm your AI assistant. Ask me anything!</div>
+                        <div class="message user">Explain quantum computing</div>
+                        <div class="message">Quantum computing uses qubits that can exist in multiple states simultaneously, enabling parallel computation.</div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type your message...">
+                        <button id="sendMessage">Send</button>
+                    </div>
+                </div>
+            `;
+
+            const sendBtn = container.querySelector('#sendMessage');
+            const chatInput = container.querySelector('#chatInput');
+            const chatMessages = container.querySelector('.chat-messages');
+
+            if (sendBtn && chatInput && chatMessages) {
+                sendBtn.addEventListener('click', () => {
+                    const message = chatInput.value.trim();
+                    if (message) {
+                        const userMsg = document.createElement('div');
+                        userMsg.className = 'message user';
+                        userMsg.textContent = message;
+                        chatMessages.appendChild(userMsg);
+
+                        chatInput.value = '';
+
+                        setTimeout(() => {
+                            const responses = [
+                                "Interesting question! Let me think about that...",
+                                "Based on my knowledge...",
+                                "Great question! Here's what I know...",
+                                "That's a fascinating topic! Let me explain...",
+                                "I've analyzed your query and here's my response..."
+                            ];
+                            const aiMsg = document.createElement('div');
+                            aiMsg.className = 'message';
+                            aiMsg.textContent = responses[Math.floor(Math.random() * responses.length)];
+                            chatMessages.appendChild(aiMsg);
+                        }, 1000);
+                    }
+                });
+            }
+        },
+
+        cryptoDemo: (container) => {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 1rem;">
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;">Live Crypto Prices</h4>
+                    <div style="display: grid; gap: 0.8rem;">
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: var(--radius-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fab fa-bitcoin" style="color: var(--accent);"></i>
+                                    <span>Bitcoin (BTC)</span>
+                                </div>
+                                <div>
+                                    <div style="font-weight: bold;">$42,156.78</div>
+                                    <div style="color: var(--secondary); font-size: 0.9rem;">+2.4%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: var(--radius-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fab fa-ethereum" style="color: var(--primary);"></i>
+                                    <span>Ethereum (ETH)</span>
+                                </div>
+                                <div>
+                                    <div style="font-weight: bold;">$2,345.67</div>
+                                    <div style="color: var(--secondary); font-size: 0.9rem;">+1.8%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: var(--radius-md);">
+                        <div style="font-size: 0.9rem; color: var(--gray);">Portfolio Value</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;">$48,921.45</div>
+                        <div style="color: var(--secondary); font-size: 0.9rem;">+5.2% today</div>
+                    </div>
+                </div>
+            `;
+        },
+
+        gameDemo: (container) => {
+            container.innerHTML = `
+                <div class="game-demo">
+                    <div class="car-3d">
+                        <div class="car-side" style="transform: translateZ(75px);"></div>
+                        <div class="car-side" style="transform: translateZ(-75px) rotateY(180deg);"></div>
+                        <div class="car-side" style="transform: translateX(75px) rotateY(90deg);"></div>
+                        <div class="car-side" style="transform: translateX(-75px) rotateY(-90deg);"></div>
+                        <div class="car-top"></div>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button onclick="rotateCar('left')" style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                            ← Rotate
+                        </button>
+                        <button onclick="changeCarColor()" style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                            Change Color
+                        </button>
+                    </div>
+                </div>
+            `;
+        },
+
+        imageDemo: (container) => {
+            container.innerHTML = `
+                <div style="text-align: center;">
+                    <input type="text" id="aiPrompt" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: var(--radius-md); color: var(--light);"
+                           value="A futuristic cityscape at sunset" placeholder="Describe an image...">
+                    <div id="aiImage" style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--radius-md); margin-bottom: 1rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-image" style="font-size: 3rem; opacity: 0.5;"></i>
+                    </div>
+                    <button id="generateBtn" style="padding: 0.8rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; margin: 0 auto;">
+                        <i class="fas fa-magic"></i> Generate Image
+                    </button>
+                </div>
+            `;
+
+            const generateBtn = container.querySelector('#generateBtn');
+            const aiImage = container.querySelector('#aiImage');
+            const aiPrompt = container.querySelector('#aiPrompt');
+
+            if (generateBtn && aiImage && aiPrompt) {
+                const images = [
+                    'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=250&fit=crop',
+                    'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=250&fit=crop',
+                    'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop',
+                    'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=250&fit=crop',
+                    'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=250&fit=crop'
+                ];
+
+                generateBtn.addEventListener('click', () => {
+                    const originalText = generateBtn.innerHTML;
+                    generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                    generateBtn.disabled = true;
+
+                    setTimeout(() => {
+                        const randomImage = images[Math.floor(Math.random() * images.length)];
+                        aiImage.innerHTML = `<img src="${randomImage}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);">`;
+                        generateBtn.innerHTML = '<i class="fas fa-check"></i> Generated!';
+
+                        setTimeout(() => {
+                            generateBtn.innerHTML = originalText;
+                            generateBtn.disabled = false;
+                        }, 1500);
+                    }, 2000);
+                });
+            }
+        },
+
+        whiteboardDemo: (container) => {
+            container.innerHTML = `
+                <div class="whiteboard-demo">
+                    <div class="whiteboard-canvas">
+                        <i class="fas fa-pencil-alt" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                    <div class="whiteboard-controls">
+                        <button style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                            <i class="fas fa-pen"></i> Draw
+                        </button>
+                        <button style="padding: 0.5rem 1rem; background: var(--secondary); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                            <i class="fas fa-eraser"></i> Erase
+                        </button>
+                        <button style="padding: 0.5rem 1rem; background: var(--accent); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                            <i class="fas fa-users"></i> Invite
+                        </button>
+                    </div>
+                    <div style="margin-top: 1rem; color: var(--gray); font-size: 0.9rem;">
+                        <i class="fas fa-user-friends"></i> 3 users connected
+                    </div>
+                </div>
+            `;
+        },
+
+        defiDemo: (container) => {
+            container.innerHTML = `
+                <div class="defi-demo">
+                    <h4 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Yield Farming Opportunities</h4>
+                    <div class="defi-grid">
+                        <div class="defi-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <div style="font-weight: bold;">Uniswap V3</div>
+                                <div class="price-change">18.5% APY</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--gray);">
+                                TVL: $1.2B • Risk: Medium
+                            </div>
+                        </div>
+                        <div class="defi-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <div style="font-weight: bold;">Aave Protocol</div>
+                                <div class="price-change">12.3% APY</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--gray);">
+                                TVL: $850M • Risk: Low
+                            </div>
+                        </div>
+                        <div class="defi-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <div style="font-weight: bold;">Compound</div>
+                                <div class="price-change">9.8% APY</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--gray);">
+                                TVL: $720M • Risk: Low
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); border: 1px solid var(--secondary);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-lightbulb" style="color: var(--secondary);"></i>
+                            <div>
+                                <div style="font-weight: bold; color: var(--secondary);">Recommended</div>
+                                <div style="font-size: 0.9rem;">Uniswap V3 - ETH/USDC pair</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    };
+
+    // Global functions for game demo
+    window.rotateCar = function(direction) {
+        const car = document.querySelector('.car-3d');
+        if (car) {
+            const currentRot = car.style.transform.match(/rotateY\(([^)]+)\)/);
+            let currentAngle = currentRot ? parseInt(currentRot[1]) : 0;
+            currentAngle += direction === 'left' ? -45 : 45;
+            car.style.animation = 'none';
+            car.style.transform = `rotateY(${currentAngle}deg)`;
+        }
+    };
+
+    window.changeCarColor = function() {
+        const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const sides = document.querySelectorAll('.car-side, .car-top');
+        sides.forEach(side => {
+            side.style.background = `linear-gradient(135deg, ${color}, ${color}88)`;
+        });
+    };
+
+    // DOM Elements
+    const projectsGrid = document.getElementById('projectsGrid');
+    const modal = document.getElementById('projectModal');
+    const modalTitle = document.getElementById('modalTitleText');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalFeatures = document.getElementById('modalFeatures');
+    const modalBadge = document.getElementById('modalBadge');
+    const demoContent = document.getElementById('demoContent');
+    const modalLiveLink = document.getElementById('modalLiveLink');
+    const modalCodeLink = document.getElementById('modalCodeLink');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    // Render Projects
+    function renderProjects(filter = 'all') {
+        projectsGrid.innerHTML = '';
+
+        const filteredProjects = filter === 'all'
+            ? projects
+            : projects.filter(p => p.category.includes(filter));
+
+        filteredProjects.forEach(project => {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            const badgeClass = project.level === 'expert' ? 'badge-expert' : 'badge-advanced';
+            const badgeText = project.level === 'expert' ? 'EXPERT' : 'ADVANCED';
+
+            card.innerHTML = `
+                <div class="project-header">
+                    <span class="project-badge ${badgeClass}">${badgeText}</span>
+                    <div class="project-icon">
+                        <i class="${project.icon}"></i>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">
+                        <i class="${project.icon}"></i> ${project.title}
+                    </h3>
+                    <p class="project-description">${project.description}</p>
+                    <div class="project-tech">
+                        ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-links">
+                        <a href="#" class="project-link live" onclick="openModal(${project.id}); return false;">
+                            <i class="fas fa-eye"></i> Preview Demo
+                        </a>
+                        <span class="project-link disabled">
+                            <i class="fab fa-github"></i> Private Repo
+                        </span>
+                    </div>
+                    <div class="dev-time">
+                        <i class="fas fa-clock"></i> ${project.devTime}
+                    </div>
+                </div>
+            `;
+
+            projectsGrid.appendChild(card);
+        });
+    }
+
+    // Open Modal
+    window.openModal = function(projectId) {
+        const project = projects.find(p => p.id === projectId);
+        if (!project) return;
+
+        modalTitle.textContent = project.title;
+        modalDescription.textContent = project.description;
+
+        // Update badge
+        if (modalBadge) {
+            modalBadge.textContent = project.level.toUpperCase();
+            modalBadge.className = `project-badge ${project.level === 'expert' ? 'badge-expert' : 'badge-advanced'}`;
+        }
+
+        // Update features
+        if (modalFeatures) {
+            modalFeatures.innerHTML = project.features.map(f => `<li>• ${f}</li>`).join('');
+        }
+
+        // Update live link
+        if (modalLiveLink) {
+            if (project.liveLink) {
+                modalLiveLink.href = project.liveLink;
+                modalLiveLink.target = "_blank";
+                modalLiveLink.innerHTML = '<i class="fas fa-play-circle"></i> Open Full Demo';
+                modalLiveLink.classList.remove('disabled');
+            } else {
+                modalLiveLink.href = "#";
+                modalLiveLink.onclick = () => { return false; };
+                modalLiveLink.innerHTML = '<i class="fas fa-eye"></i> Preview Only';
+                modalLiveLink.classList.add('disabled');
+            }
+        }
+
+        // Update code link
+        if (modalCodeLink) {
+            if (project.codeLink) {
+                modalCodeLink.href = project.codeLink;
+                modalCodeLink.target = "_blank";
+                modalCodeLink.classList.remove('disabled');
+            } else {
+                modalCodeLink.href = "#";
+                modalCodeLink.onclick = () => { return false; };
+                modalCodeLink.innerHTML = '<i class="fab fa-github"></i> Private Repository';
+                modalCodeLink.classList.add('disabled');
+            }
+        }
+
+        // Load demo preview
+        if (demoContent) {
+            demoContent.innerHTML = "Loading demo...";
+            if (project.demo && demos[project.demo]) {
+                setTimeout(() => {
+                    demos[project.demo](demoContent);
+                }, 300);
+            } else {
+                demoContent.innerHTML = "Demo preview not available.";
+            }
+        }
+
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    };
+
+    // Close Modal
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+
+    // Filter Buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProjects(btn.dataset.filter);
+        });
+    });
+
+    // Search
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.project-card');
+
+            cards.forEach(card => {
+                const title = card.querySelector('.project-title').textContent.toLowerCase();
+                const desc = card.querySelector('.project-description').textContent.toLowerCase();
+                const tech = Array.from(card.querySelectorAll('.tech-tag'))
+                    .map(tag => tag.textContent.toLowerCase())
+                    .join(' ');
+
+                if (title.includes(search) || desc.includes(search) || tech.includes(search)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Initialize
+    function init() {
+        renderProjects();
+
+        // Animate stats
+        const stats = {
+            projects: 6,
+            tech: 28,
+            users: 2500
+        };
+
+        Object.keys(stats).forEach((key) => {
+            const el = document.getElementById(`total${key.charAt(0).toUpperCase() + key.slice(1)}`);
+            if (el) {
+                let count = 0;
+                const target = stats[key];
+                const increment = target / 20;
+                const timer = setInterval(() => {
+                    count += increment;
+                    if (count >= target) {
+                        count = target;
+                        clearInterval(timer);
+                    }
+                    el.textContent = Math.floor(count);
+                }, 50);
+            }
+        });
+    }
+
+    // Start when page loads
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

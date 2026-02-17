@@ -732,8 +732,8 @@
                             <i class="fas fa-play-circle"></i> Open Demo
                         </a>
                         <a href="#" class="project-link" id="modalCodeLink">
-                            <i class="fab fa-github"></i> Source Code
-                        </a>
+    <i class="fab fa-github"></i> GitHub Profile
+</a>
                     </div>
                 </div>
             </div>
@@ -1135,36 +1135,36 @@
             const badgeClass = project.level === 'expert' ? 'badge-expert' : 'badge-advanced';
             const badgeText = project.level === 'expert' ? 'EXPERT' : 'ADVANCED';
 
-            card.innerHTML = `
-                <div class="project-header">
-                    <span class="project-badge ${badgeClass}">${badgeText}</span>
-                    <div class="project-icon">
-                        <i class="${project.icon}"></i>
-                    </div>
-                </div>
-                <div class="project-content">
-                    <h3 class="project-title">
-                        <i class="${project.icon}"></i> ${project.title}
-                    </h3>
-                    <p class="project-description">${project.description}</p>
-                    <div class="project-tech">
-                        ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                    </div>
-                </div>
-                <div class="project-footer">
-                    <div class="project-links">
-                        <a href="#" class="project-link live" onclick="openModal(${project.id}); return false;">
-                            <i class="fas fa-eye"></i> Preview Demo
-                        </a>
-                        <span class="project-link disabled">
-                            <i class="fab fa-github"></i> Private Repo
-                        </span>
-                    </div>
-                    <div class="dev-time">
-                        <i class="fas fa-clock"></i> ${project.devTime}
-                    </div>
-                </div>
-            `;
+card.innerHTML = `
+    <div class="project-header">
+        <span class="project-badge ${badgeClass}">${badgeText}</span>
+        <div class="project-icon">
+            <i class="${project.icon}"></i>
+        </div>
+    </div>
+    <div class="project-content">
+        <h3 class="project-title">
+            <i class="${project.icon}"></i> ${project.title}
+        </h3>
+        <p class="project-description">${project.description}</p>
+        <div class="project-tech">
+            ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+        </div>
+    </div>
+    <div class="project-footer">
+        <div class="project-links">
+            <a href="#" class="project-link live" onclick="openModal(${project.id}); return false;">
+                <i class="fas fa-eye"></i> Preview Demo
+            </a>
+            <a href="https://github.com/Nephalama" target="_blank" class="project-link">
+                <i class="fab fa-github"></i> GitHub Profile
+            </a>
+        </div>
+        <div class="dev-time">
+            <i class="fas fa-clock"></i> ${project.devTime}
+        </div>
+    </div>
+`;
 
             projectsGrid.appendChild(card);
         });
@@ -1206,16 +1206,11 @@
 
         // Update code link
         if (modalCodeLink) {
-            if (project.codeLink) {
-                modalCodeLink.href = project.codeLink;
-                modalCodeLink.target = "_blank";
-                modalCodeLink.classList.remove('disabled');
-            } else {
-                modalCodeLink.href = "#";
-                modalCodeLink.onclick = () => { return false; };
-                modalCodeLink.innerHTML = '<i class="fab fa-github"></i> Private Repository';
-                modalCodeLink.classList.add('disabled');
-            }
+    modalCodeLink.href = "https://github.com/Nephalama";
+    modalCodeLink.target = "_blank";
+    modalCodeLink.innerHTML = '<i class="fab fa-github"></i> View GitHub Profile';
+    modalCodeLink.classList.remove('disabled');
+        }
         }
 
         // Load demo preview
@@ -1318,3 +1313,4 @@
 </body>
 
 </html>
+

@@ -84,77 +84,63 @@
       z-index: 1000;
       color: white;
       font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle.animate {
+      animation: glow 0.6s ease;
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: none; }
+      50% { box-shadow: 0 0 12px var(--primary-color); }
     }
 
     .container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      position: relative;
+      width: 80%;
+      max-width: 900px;
+      height: 600px;
       background: #fff;
-      margin: 0;
-      border-radius: 0;
-      box-shadow: none;
+      display: flex;
       overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: background 0.3s ease;
     }
 
     [data-theme="dark"] .container {
       background: var(--surface-color);
     }
 
-    .container h1 {
-      font-size: 36px;
-      margin: -10px 0;
-      color: var(--text-color);
-    }
-
-    .container p {
-      font-size: 14.5px;
-      margin: 15px 0;
-      color: var(--text-color);
-    }
-
-    form {
-      width: 100%;
-    }
-
     .form-box {
-      position: absolute;
-      right: 0;
       width: 50%;
-      height: 100%;
-      background: #fff;
+      padding: 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
+      transition: all 0.6s ease-in-out;
+    }
+
+    .form-box.hidden {
+      display: none;
+    }
+
+    .form-box h1 {
+      font-size: 36px;
       color: var(--text-color);
-      text-align: center;
-      padding: 40px;
-      z-index: 1;
-      transition: .6s ease-in-out 1.2s, visibility 0s 1s;
+      margin-bottom: 10px;
     }
 
-    [data-theme="dark"] .form-box {
-      background: var(--surface-color);
-    }
-
-    .container.active .form-box {
-      right: 50%;
-    }
-
-    .form-box.register {
-      visibility: hidden;
-    }
-
-    .container.active .form-box.register {
-      visibility: visible;
+    .form-box p {
+      font-size: 14.5px;
+      color: var(--text-color);
+      margin-bottom: 20px;
     }
 
     .input-box {
       position: relative;
-      margin: 30px 0;
+      margin: 20px 0;
       width: 100%;
     }
 
@@ -195,7 +181,7 @@
     }
 
     .forgot-link {
-      margin: -15px 0 15px;
+      margin: -10px 0 15px;
     }
 
     .forgot-link a {
@@ -213,25 +199,25 @@
       height: 48px;
       background: var(--primary-color);
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, .1);
       border: none;
       cursor: pointer;
       font-size: 16px;
       color: #fff;
       font-weight: 600;
-      transition: all 0.3s ease;
+      transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+      margin-top: 10px;
     }
 
     .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
     }
 
     .social-icons {
       display: flex;
       justify-content: center;
-      width: 100%;
       gap: 10px;
+      margin-top: 10px;
     }
 
     .social-icons a {
@@ -250,182 +236,39 @@
       transform: scale(1.1);
     }
 
+    /* Toggle panel for switching forms */
     .toggle-box {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-    }
-
-    .toggle-box::before {
-      content: '';
-      position: absolute;
-      left: -250%;
-      width: 300%;
-      height: 100%;
-      background: var(--primary-color);
-      border-radius: 150px;
-      z-index: 2;
-      transition: 1.8s ease-in-out;
-    }
-
-    .container.active .toggle-box::before {
-      left: 50%;
-    }
-
-    .toggle-panel {
-      position: absolute;
+      position: relative;
       width: 50%;
-      height: 100%;
-      color: #fff;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 2;
-      transition: .6s ease-in-out;
+      background: var(--primary-color);
+      color: #fff;
+      padding: 40px;
+      text-align: center;
     }
 
-    .toggle-panel.toggle-left {
-      left: 0;
-      transition-delay: 1.2s;
+    .toggle-box h1 {
+      margin-bottom: 15px;
     }
 
-    .container.active .toggle-panel.toggle-left {
-      left: -50%;
-      transition-delay: .6s;
-    }
-
-    .toggle-panel.toggle-right {
-      right: -50%;
-      transition-delay: .6s;
-    }
-
-    .container.active .toggle-panel.toggle-right {
-      right: 0;
-      transition-delay: 1.2s;
-    }
-
-    .toggle-panel p {
+    .toggle-box p {
       margin-bottom: 20px;
     }
 
-    .toggle-panel .btn {
-      width: 160px;
-      height: 46px;
+    .toggle-box .btn {
       background: transparent;
       border: 2px solid #fff;
       box-shadow: none;
     }
 
-    .input-box input:hover {
-  transform: scale(1.02);
-  transition: transform 0.3s ease;
-}
-
-.btn {
-  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
-}
-
-.btn:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-}
-
-
-    .toggle-panel .btn:hover {
-      background: rgba(255, 255, 255, 0.1);
+    .toggle-box .btn:hover {
+      background: rgba(255,255,255,0.1);
     }
 
-    /* Enhanced Project Flash Message */
-.messages {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 400px;
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  animation: slideDown 0.5s ease;
-}
-
-.message {
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
-  border-left: 5px solid var(--primary-color);
-  padding: 20px 25px;
-  border-radius: 12px;
-  font-weight: 500;
-  text-align: left;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: fixed; /* changed from relative to fixed for dragging */
-  line-height: 1.5;
-  max-height: 400px;
-  overflow-y: auto;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  cursor: move; /* draggable */
-}
-
-
-.message strong {
-  color: var(--primary-color);
-}
-
-.message .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: #888;
-  transition: color 0.3s ease;
-}
-
-.message .close-btn:hover {
-  color: var(--error-color);
-}
-
-
-.message.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-.message.hide {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .message.error {
-      background: var(--error-color);
-    }
-    .message.success {
-      background: var(--success-color);
-    }
-    .message.info {
-      background: #3498db;
-    }
-    .message.warning {
-      background: #f39c12;
-      color: #333;
-    }
-
-    /* Password strength indicator */
+    /* Password strength */
     .password-strength {
       margin-top: 5px;
       height: 4px;
@@ -435,119 +278,86 @@
     }
 
     .strength-bar {
-  height: 100%;
-  width: 0%;
-  transition: width 0.5s ease, background 0.5s ease;
-}
-
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease, background 0.5s ease;
+    }
 
     .strength-weak { background: var(--error-color); width: 33%; }
     .strength-medium { background: #f39c12; width: 66%; }
     .strength-strong { background: var(--success-color); width: 100%; }
 
-    @media screen and (max-width: 650px) {
+    /* Flash message */
+    .messages {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+    }
+
+    .message {
+      background: rgba(255,255,255,0.95);
+      color: #333;
+      border-left: 5px solid var(--primary-color);
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-weight: 500;
+      min-width: 250px;
+      max-width: 400px;
+      position: relative;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .message.success { background: var(--success-color); color: #fff; }
+    .message.error { background: var(--error-color); color: #fff; }
+    .message.info { background: #3498db; color: #fff; }
+    .message.warning { background: #f39c12; color: #333; }
+
+    .message .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 700px) {
       .container {
-        height: calc(100vh - 40px);
+        flex-direction: column;
+        height: auto;
       }
-
-      .form-box {
-        bottom: 0;
+      .form-box, .toggle-box {
         width: 100%;
-        height: 70%;
-        padding-top: 50px;
       }
-
-      .container.active .form-box {
-        right: 0;
-        bottom: 30%;
-      }
-
-      .toggle-box::before {
-        left: 0;
-        top: -270%;
-        width: 100%;
-        height: 300%;
-        border-radius: 20vw;
-      }
-
-      .container.active .toggle-box::before {
-        left: 0;
-        top: 70%;
-      }
-
-      .container.active .toggle-panel.toggle-left {
-        left: 0;
-        top: -30%;
-      }
-
-      .toggle-panel {
-        width: 100%;
-        height: 30%;
-      }
-
-      .toggle-panel.toggle-left {
-        top: 0;
-      }
-
-      .toggle-panel.toggle-right {
-        right: 0;
-        bottom: -30%;
-      }
-
-      .container.active .toggle-panel.toggle-right {
-        bottom: 0;
-      }
-
-      .project-info {
-        position: relative;
-        top: 0;
-        left: 0;
-        margin: 20px;
-        max-width: none;
-      }
+      .toggle-box { order: -1; }
     }
-
-    @media screen and (max-width: 400px) {
-      .form-box {
-        padding: 20px;
-      }
-
-      .toggle-panel h1 {
-        font-size: 30px;
-      }
-    }
-
-    @keyframes glow {
-  0%, 100% { box-shadow: none; }
-  50% { box-shadow: 0 0 12px var(--primary-color); }
-}
-
-.theme-toggle.animate {
-  animation: glow 0.6s ease;
-}
-
   </style>
 </head>
 <body>
-   <div class="project-info">
-  <h2>Secure Authentication Interface</h2>
-  <p>This project overview is displayed as a flash notification.</p>
-</div>
+  <div class="project-info">
+    <h2>Secure Authentication Interface</h2>
+    <p>This project overview is displayed as a flash notification.</p>
+  </div>
 
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
 
-  <button class="theme-toggle" id="themeToggle">🌙</button>
-
-  <div class="container active" id="authContainer">
+  <div class="container" id="authContainer">
+    <!-- Login Form -->
     <div class="form-box login">
       <form id="loginForm">
         <h1>Login</h1>
-        <p>Welcome back Chommi! Please sign in to your account.</p>
+        <p>Welcome back! Please sign in to your account.</p>
         <div class="input-box">
-          <input type="text" id="loginUsername" placeholder="Username" required>
+          <input type="text" id="loginUsername" placeholder="Username" required autocomplete="username">
           <i class='bx bxs-user'></i>
         </div>
         <div class="input-box">
-          <input type="password" id="loginPassword" placeholder="Password" required>
+          <input type="password" id="loginPassword" placeholder="Password" required autocomplete="current-password">
           <i class='bx bxs-lock-alt'></i>
         </div>
         <div class="forgot-link">
@@ -556,303 +366,178 @@
         <button type="submit" class="btn">Login</button>
         <p>or continue with</p>
         <div class="social-icons">
-          <a href="#" class="social-btn" title="Login with Google"><i class='bx bxl-google'></i></a>
-          <a href="#" class="social-btn" title="Login with Facebook"><i class='bx bxl-facebook'></i></a>
-          <a href="#" class="social-btn" title="Login with GitHub"><i class='bx bxl-github'></i></a>
-          <a href="#" class="social-btn" title="Login with LinkedIn"><i class='bx bxl-linkedin'></i></a>
+          <a href="#" title="Login with Google"><i class='bx bxl-google'></i></a>
+          <a href="#" title="Login with Facebook"><i class='bx bxl-facebook'></i></a>
+          <a href="#" title="Login with GitHub"><i class='bx bxl-github'></i></a>
+          <a href="#" title="Login with LinkedIn"><i class='bx bxl-linkedin'></i></a>
         </div>
       </form>
     </div>
 
-    <div class="form-box register">
+    <!-- Register Form -->
+    <div class="form-box register hidden">
       <form id="registerForm">
         <h1>Registration</h1>
         <p>Create your account to get started.</p>
         <div class="input-box">
-          <input type="text" id="regUsername" placeholder="Username" required>
+          <input type="text" id="regUsername" placeholder="Username" required autocomplete="username">
           <i class='bx bxs-user'></i>
         </div>
         <div class="input-box">
-          <input type="email" id="regEmail" placeholder="Email" required>
+          <input type="email" id="regEmail" placeholder="Email" required autocomplete="email">
           <i class='bx bxs-envelope'></i>
         </div>
         <div class="input-box">
-          <input type="password" id="regPassword" placeholder="Password" required>
+          <input type="password" id="regPassword" placeholder="Password" required autocomplete="new-password">
           <i class='bx bxs-lock-alt'></i>
           <div class="password-strength">
             <div class="strength-bar" id="passwordStrength"></div>
           </div>
         </div>
         <div class="input-box">
-          <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+          <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required autocomplete="new-password">
           <i class='bx bxs-lock-alt'></i>
         </div>
         <button type="submit" class="btn">Register</button>
         <p>or sign up with</p>
         <div class="social-icons">
-          <a href="#" class="social-btn" title="Register with Google"><i class='bx bxl-google'></i></a>
-          <a href="#" class="social-btn" title="Register with Facebook"><i class='bx bxl-facebook'></i></a>
-          <a href="#" class="social-btn" title="Register with GitHub"><i class='bx bxl-github'></i></a>
-          <a href="#" class="social-btn" title="Register with LinkedIn"><i class='bx bxl-linkedin'></i></a>
+          <a href="#" title="Register with Google"><i class='bx bxl-google'></i></a>
+          <a href="#" title="Register with Facebook"><i class='bx bxl-facebook'></i></a>
+          <a href="#" title="Register with GitHub"><i class='bx bxl-github'></i></a>
+          <a href="#" title="Register with LinkedIn"><i class='bx bxl-linkedin'></i></a>
         </div>
       </form>
     </div>
 
+    <!-- Toggle Panel -->
     <div class="toggle-box">
-      <div class="toggle-panel toggle-left">
-        <h1>Hello, Chommi!</h1>
-        <p>Don't have an account? Join us today!</p>
-        <button class="btn register-btn">Register</button>
-      </div>
-      <div class="toggle-panel toggle-right">
-        <h1>Welcome Back Chommi!</h1>
-        <p>Already have an account?</p>
-        <button class="btn login-btn">Login</button>
-      </div>
+      <h1 id="toggleTitle">Hello!</h1>
+      <p id="toggleDesc">Don't have an account? Join us today!</p>
+      <button class="btn" id="toggleBtn">Register</button>
     </div>
   </div>
 
-<script>
-class AuthSystem {
-  constructor() {
-    this.init();
-  }
+  <script>
+    class AuthSystem {
+      constructor() {
+        this.loginForm = document.getElementById('loginForm');
+        this.registerForm = document.getElementById('registerForm');
+        this.loginBox = document.querySelector('.form-box.login');
+        this.registerBox = document.querySelector('.form-box.register');
+        this.toggleBtn = document.getElementById('toggleBtn');
+        this.toggleTitle = document.getElementById('toggleTitle');
+        this.toggleDesc = document.getElementById('toggleDesc');
+        this.themeToggle = document.getElementById('themeToggle');
+        this.init();
+      }
 
-  init() {
-    this.setupEventListeners();
-    this.loadTheme();
-    this.setupFormValidation();
-    this.showProjectFlash(); // Show project info as flash message on load
-  }
+      init() {
+        this.loadTheme();
+        this.setupEventListeners();
+        this.showProjectFlash();
+      }
 
-  setupEventListeners() {
-    const container = document.querySelector('.container');
-    const registerBtn = document.querySelector('.register-btn');
-    const loginBtn = document.querySelector('.login-btn');
-    const themeToggle = document.getElementById('themeToggle');
+      setupEventListeners() {
+        this.toggleBtn.addEventListener('click', () => this.toggleForms());
+        this.loginForm.addEventListener('submit', e => this.handleLogin(e));
+        this.registerForm.addEventListener('submit', e => this.handleRegister(e));
+        document.getElementById('regPassword').addEventListener('input', e => this.checkPasswordStrength(e.target.value));
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
+      }
 
-    registerBtn.addEventListener('click', () => {
-      container.classList.add('active');
-      this.showMessage('Create your account to get started!', 'info');
-    });
+      toggleForms() {
+        this.loginBox.classList.toggle('hidden');
+        this.registerBox.classList.toggle('hidden');
 
-    loginBtn.addEventListener('click', () => {
-      container.classList.remove('active');
-      this.showMessage('Welcome back! Please sign in.', 'info');
-    });
+        if (!this.registerBox.classList.contains('hidden')) {
+          this.toggleTitle.textContent = 'Welcome!';
+          this.toggleDesc.textContent = 'Already have an account?';
+          this.toggleBtn.textContent = 'Login';
+          this.showMessage('Create your account to get started!', 'info');
+        } else {
+          this.toggleTitle.textContent = 'Hello!';
+          this.toggleDesc.textContent = "Don't have an account? Join us today!";
+          this.toggleBtn.textContent = 'Register';
+          this.showMessage('Welcome back! Please sign in.', 'info');
+        }
+      }
 
-    themeToggle.addEventListener('click', () => {
-      this.toggleTheme();
-    });
+      checkPasswordStrength(password) {
+        const bar = document.getElementById('passwordStrength');
+        let strength = 0;
+        if (password.length >= 6) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z\d]/.test(password)) strength++;
 
-    // Form submissions
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.handleLogin();
-    });
+        bar.className = 'strength-bar';
+        if (password.length === 0) bar.style.width = '0%';
+        else if (strength < 2) bar.classList.add('strength-weak');
+        else if (strength < 4) bar.classList.add('strength-medium');
+        else bar.classList.add('strength-strong');
+      }
 
-    document.getElementById('registerForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.handleRegister();
-    });
+      handleLogin(e) {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
 
-    // Password strength indicator
-    document.getElementById('regPassword').addEventListener('input', (e) => {
-      this.checkPasswordStrength(e.target.value);
-    });
-  }
+        this.showMessage('Signing you in...', 'info');
 
-  setupFormValidation() {
-    const inputs = document.querySelectorAll('input[required]');
-    inputs.forEach(input => {
-      input.addEventListener('blur', () => {
-        this.validateField(input);
-      });
-    });
-  }
+        setTimeout(() => {
+          if (username && password) this.showMessage('Login successful! Redirecting...', 'success');
+          else this.showMessage('Please check your credentials', 'error');
+        }, 1500);
+      }
 
-  validateField(field) {
-    const value = field.value.trim();
-    let isValid = true;
-    let message = '';
+      handleRegister(e) {
+        e.preventDefault();
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirmPassword').value;
 
-    switch(field.type) {
-      case 'email':
-        isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-        message = isValid ? '' : 'Please enter a valid email address';
-        break;
-      case 'password':
-        isValid = value.length >= 6;
-        message = isValid ? '' : 'Password must be at least 6 characters';
-        break;
-      default:
-        isValid = value.length > 0;
-        message = isValid ? '' : 'This field is required';
-    }
+        if (password !== confirm) {
+          this.showMessage('Passwords do not match!', 'error');
+          return;
+        }
 
-    if (!isValid && value) {
-      this.showMessage(message, 'error');
-    }
+        this.showMessage('Creating your account...', 'info');
 
-    return isValid;
-  }
+        setTimeout(() => this.showMessage('Account created successfully!', 'success'), 2000);
+      }
 
-  checkPasswordStrength(password) {
-    const strengthBar = document.getElementById('passwordStrength');
-    let strength = 0;
+      showMessage(text, type='info') {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'messages';
+        msgDiv.innerHTML = `<div class="message ${type}"><span>${text}</span><button class="close-btn">&times;</button></div>`;
+        document.body.appendChild(msgDiv);
 
-    if (password.length >= 6) strength++;
-    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-    if (password.match(/\d/)) strength++;
-    if (password.match(/[^a-zA-Z\d]/)) strength++;
+        msgDiv.querySelector('.close-btn').addEventListener('click', () => msgDiv.remove());
 
-    strengthBar.className = 'strength-bar';
-    if (password.length === 0) {
-      strengthBar.style.width = '0%';
-    } else if (strength < 2) {
-      strengthBar.classList.add('strength-weak');
-    } else if (strength < 4) {
-      strengthBar.classList.add('strength-medium');
-    } else {
-      strengthBar.classList.add('strength-strong');
-    }
-  }
+        setTimeout(() => { if (msgDiv.parentNode) msgDiv.remove(); }, 5000);
+      }
 
-  async handleLogin() {
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
+      showProjectFlash() {
+        this.showMessage('Secure Authentication Interface\nA modern authentication system with login/register flows, password strength validation, dark mode, and responsive design.', 'info');
+      }
 
-    this.showMessage('Signing you in...', 'info');
+      toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        this.themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        this.themeToggle.classList.add('animate');
+        setTimeout(() => this.themeToggle.classList.remove('animate'), 600);
+      }
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    if (username && password) {
-      this.showMessage('Login successful! Redirecting...', 'success');
-    } else {
-      this.showMessage('Please check your credentials', 'error');
-    }
-  }
-
-  async handleRegister() {
-    const username = document.getElementById('regUsername').value;
-    const email = document.getElementById('regEmail').value;
-    const password = document.getElementById('regPassword').value;
-    const confirmPassword = document.getElementById('regConfirmPassword').value;
-
-    if (password !== confirmPassword) {
-      this.showMessage('Passwords do not match!', 'error');
-      return;
-    }
-
-    this.showMessage('Creating your account...', 'info');
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    this.showMessage('Account created successfully!', 'success');
-  }
-
-  showMessage(text, type) {
-    const existingMessages = document.querySelector('.messages');
-    if (existingMessages) existingMessages.remove();
-
-    const icons = { info: 'ℹ️', success: '✅', error: '❌', warning: '⚠️' };
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'messages';
-    messageDiv.innerHTML = `
-      <div class="message ${type}">
-        ${icons[type] ? `<span style="margin-right:8px;">${icons[type]}</span>` : ''} ${text}
-      </div>
-    `;
-    document.body.appendChild(messageDiv);
-
-    // Auto-remove after 5s
-    setTimeout(() => {
-      if (messageDiv.parentNode) messageDiv.remove();
-    }, 5000);
-  }
-
-  showProjectFlash() {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = 'messages';
-    msgDiv.innerHTML = `
-      <div class="message info">
-        <span class="close-btn">&times;</span>
-        <span id="typing"></span>
-      </div>
-    `;
-    document.body.appendChild(msgDiv);
-
-    const msgBox = msgDiv.querySelector('.message');
-    const closeBtn = msgBox.querySelector('.close-btn');
-    const typingSpan = document.getElementById('typing');
-
-    // Close button
-    closeBtn.addEventListener('click', () => msgDiv.remove());
-
-    // Typing effect
-    const text = `Secure Authentication Interface\nA modern authentication system featuring login and registration flows, client-side validation, theme persistence, and interactive UI transitions.\nKey Features: Dark mode, password strength validation, animated auth transitions, responsive design\nDesigned for: Flask / REST API`;
-    let index = 0;
-    function type() {
-      if (index < text.length) {
-        typingSpan.innerHTML += text.charAt(index) === '\n' ? '<br>' : text.charAt(index);
-        index++;
-        setTimeout(type, 15);
+      loadTheme() {
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        this.themeToggle.textContent = saved === 'dark' ? '☀️' : '🌙';
       }
     }
-    type();
 
-    // Drag functionality
-    let isDragging = false, offsetX, offsetY;
-
-    msgBox.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      const rect = msgBox.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      msgBox.style.transition = 'none';
-      msgBox.style.position = 'absolute';
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (isDragging) {
-        msgBox.style.left = `${e.clientX - offsetX}px`;
-        msgBox.style.top = `${e.clientY - offsetY}px`;
-      }
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (isDragging) {
-        isDragging = false;
-        msgBox.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-      }
-    });
-  }
-
-  toggleTheme() {
-    const themeToggle = document.getElementById('themeToggle');
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-    themeToggle.classList.add('animate');
-    setTimeout(() => themeToggle.classList.remove('animate'), 600);
-  }
-
-  loadTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-  }
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-  new AuthSystem();
-});
-</script>
-
-
+    window.addEventListener('DOMContentLoaded', () => new AuthSystem());
+  </script>
 </body>
 </html>

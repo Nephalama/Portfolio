@@ -1171,63 +1171,62 @@ card.innerHTML = `
     }
 
     // Open Modal
-    window.openModal = function(projectId) {
-        const project = projects.find(p => p.id === projectId);
-        if (!project) return;
+window.openModal = function(projectId) {
+    const project = projects.find(p => p.id === projectId);
+    if (!project) return;
 
-        modalTitle.textContent = project.title;
-        modalDescription.textContent = project.description;
+    modalTitle.textContent = project.title;
+    modalDescription.textContent = project.description;
 
-        // Update badge
-        if (modalBadge) {
-            modalBadge.textContent = project.level.toUpperCase();
-            modalBadge.className = `project-badge ${project.level === 'expert' ? 'badge-expert' : 'badge-advanced'}`;
+    // Update badge
+    if (modalBadge) {
+        modalBadge.textContent = project.level.toUpperCase();
+        modalBadge.className = `project-badge ${project.level === 'expert' ? 'badge-expert' : 'badge-advanced'}`;
+    }
+
+    // Update features
+    if (modalFeatures) {
+        modalFeatures.innerHTML = project.features.map(f => `<li>• ${f}</li>`).join('');
+    }
+
+    // Update live link
+    if (modalLiveLink) {
+        if (project.liveLink) {
+            modalLiveLink.href = project.liveLink;
+            modalLiveLink.target = "_blank";
+            modalLiveLink.innerHTML = '<i class="fas fa-play-circle"></i> Open Full Demo';
+            modalLiveLink.classList.remove('disabled');
+        } else {
+            modalLiveLink.href = "#";
+            modalLiveLink.onclick = () => { return false; };
+            modalLiveLink.innerHTML = '<i class="fas fa-eye"></i> Preview Only';
+            modalLiveLink.classList.add('disabled');
         }
+    }
 
-        // Update features
-        if (modalFeatures) {
-            modalFeatures.innerHTML = project.features.map(f => `<li>• ${f}</li>`).join('');
+    // Update code link
+    if (modalCodeLink) {
+        modalCodeLink.href = "https://github.com/Nephalama";
+        modalCodeLink.target = "_blank";
+        modalCodeLink.innerHTML = '<i class="fab fa-github"></i> View GitHub Profile';
+        modalCodeLink.classList.remove('disabled');
+    }
+
+    // Load demo preview
+    if (demoContent) {
+        demoContent.innerHTML = "Loading demo...";
+        if (project.demo && demos[project.demo]) {
+            setTimeout(() => {
+                demos[project.demo](demoContent);
+            }, 300);
+        } else {
+            demoContent.innerHTML = "Demo preview not available.";
         }
+    }
 
-        // Update live link
-        if (modalLiveLink) {
-            if (project.liveLink) {
-                modalLiveLink.href = project.liveLink;
-                modalLiveLink.target = "_blank";
-                modalLiveLink.innerHTML = '<i class="fas fa-play-circle"></i> Open Full Demo';
-                modalLiveLink.classList.remove('disabled');
-            } else {
-                modalLiveLink.href = "#";
-                modalLiveLink.onclick = () => { return false; };
-                modalLiveLink.innerHTML = '<i class="fas fa-eye"></i> Preview Only';
-                modalLiveLink.classList.add('disabled');
-            }
-        
-
-        // Update code link
-        if (modalCodeLink) {
-    modalCodeLink.href = "https://github.com/Nephalama";
-    modalCodeLink.target = "_blank";
-    modalCodeLink.innerHTML = '<i class="fab fa-github"></i> View GitHub Profile';
-    modalCodeLink.classList.remove('disabled');
-        }
-        }
-
-        // Load demo preview
-        if (demoContent) {
-            demoContent.innerHTML = "Loading demo...";
-            if (project.demo && demos[project.demo]) {
-                setTimeout(() => {
-                    demos[project.demo](demoContent);
-                }, 300);
-            } else {
-                demoContent.innerHTML = "Demo preview not available.";
-            }
-        }
-
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    };
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+};
 
     // Close Modal
     if (closeModalBtn) {
@@ -1313,5 +1312,6 @@ card.innerHTML = `
 </body>
 
 </html>
+
 
 

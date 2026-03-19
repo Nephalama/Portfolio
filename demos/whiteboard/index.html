@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaboration Whiteboard | Professional Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #020617, #0F172A);
+            color: #F8FAFC;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8B5CF6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tool-btn {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+
+        .tool-btn:hover, .tool-btn.active {
+            background: #8B5CF6;
+            border-color: #8B5CF6;
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            width: 1px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 0.5rem;
+        }
+
+        .color-picker {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        #whiteboardCanvas {
+            width: 100%;
+            height: 400px;
+            background: #0F172A;
+            cursor: crosshair;
+            display: block;
+        }
+
+        .cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+
+        .cursor-label {
+            position: absolute;
+            top: -25px;
+            left: 10px;
+            background: inherit;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .users-panel {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+        }
+
+        .user-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B981;
+        }
+
+        .activity-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #64748B;
+            font-size: 0.9rem;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-user {
+            font-weight: 600;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #F8FAFC;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+        }
+
+        .chat-input button {
+            padding: 0.75rem 1.5rem;
+            background: #8B5CF6;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5);
+        }
+
+        .zoom-controls {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .zoom-btn {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-btn:hover {
+            background: #8B5CF6;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>
+            <i class="fas fa-chalkboard"></i>
+            Collaboration Whiteboard
+            <span class="badge">Real-time</span>
+        </h1>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="tool-btn active" title="Select"><i class="fas fa-mouse-pointer"></i></button>
+            <button class="tool-btn" title="Pencil"><i class="fas fa-pencil-alt"></i></button>
+            <button class="tool-btn" title="Eraser"><i class="fas fa-eraser"></i></button>
+            <button class="tool-btn" title="Line"><i class="fas fa-grip-lines"></i></button>
+            <button class="tool-btn" title="Rectangle"><i class="fas fa-square"></i></button>
+            <button class="tool-btn" title="Circle"><i class="far fa-circle"></i></button>
+            <button class="tool-btn" title="Text"><i class="fas fa-font"></i></button>
+
+            <div class="divider"></div>
+
+            <input type="color" id="colorPicker" value="#8B5CF6" class="color-picker">
+
+            <div class="divider"></div>
+
+            <button class="tool-btn" title="Undo"><i class="fas fa-undo"></i></button>
+            <button class="tool-btn" title="Redo"><i class="fas fa-redo"></i></button>
+            <button class="tool-btn" title="Clear All"><i class="fas fa-trash"></i></button>
+
+            <div style="flex: 1;"></div>
+
+            <span style="color: #64748B;">
+                <i class="fas fa-users"></i> 3 online
+            </span>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="canvas-container" id="canvasContainer">
+            <canvas id="whiteboardCanvas" width="900" height="400"></canvas>
+
+            <!-- Remote Cursors -->
+            <div class="cursor" style="left: 150px; top: 100px; border-color: #10B981;">
+                <span class="cursor-label" style="background: #10B981;">John</span>
+            </div>
+            <div class="cursor" style="left: 300px; top: 200px; border-color: #F59E0B;">
+                <span class="cursor-label" style="background: #F59E0B;">Mike</span>
+            </div>
+            <div class="cursor" style="left: 450px; top: 150px; border-color: #EF4444;">
+                <span class="cursor-label" style="background: #EF4444;">Alice</span>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="zoom-btn"><i class="fas fa-search-plus"></i></button>
+                <button class="zoom-btn"><i class="fas fa-search-minus"></i></button>
+                <button class="zoom-btn"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+
+        <!-- Users Panel -->
+        <div class="users-panel">
+            <div class="user-info">
+                <div class="user-avatar" style="background: #8B5CF6;">YD</div>
+                <div>
+                    <div style="font-weight: 600;">You</div>
+                    <div style="color: #64748B; font-size: 0.8rem;">Drawing</div>
+                </div>
+                <div class="user-status"></div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar" style="background: #10B981;">JD</div>
+                <div>
+                    <div style="font-weight: 600;">John Doe</div>
+                    <div style="color: #64748B; font-size: 0.8rem;">Selecting</div>
+                </div>
+                <div class="user-status"></div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar" style="background: #F59E0B;">MK</div>
+                <div>
+                    <div style="font-weight: 600;">Mike Chen</div>
+                    <div style="color: #64748B; font-size: 0.8rem;">Drawing</div>
+                </div>
+                <div class="user-status"></div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar" style="background: #EF4444;">AL</div>
+                <div>
+                    <div style="font-weight: 600;">Alice Lee</div>
+                    <div style="color: #64748B; font-size: 0.8rem;">Idle</div>
+                </div>
+                <div class="user-status"></div>
+            </div>
+        </div>
+
+        <!-- Activity Panel -->
+        <div class="activity-panel">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <i class="fas fa-comment-alt" style="color: #8B5CF6;"></i>
+                <span style="font-weight: 600;">Live Activity</span>
+            </div>
+
+            <div class="activity-item">
+                <span class="activity-user" style="color: #10B981;">John</span>
+                <span>added a rectangle</span>
+                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">just now</span>
+            </div>
+
+            <div class="activity-item">
+                <span class="activity-user" style="color: #F59E0B;">Mike</span>
+                <span>drew a line</span>
+                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">1m ago</span>
+            </div>
+
+            <div class="activity-item">
+                <span class="activity-user" style="color: #EF4444;">Alice</span>
+                <span>changed color to red</span>
+                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">2m ago</span>
+            </div>
+
+            <div class="activity-item">
+                <span class="activity-user" style="color: #8B5CF6;">You</span>
+                <span>joined the session</span>
+                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">5m ago</span>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input">
+                <input type="text" placeholder="Type a message...">
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('whiteboardCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        canvas.width = 900;
+        canvas.height = 400;
+
+        // Draw initial content
+        function drawInitialContent() {
+            // Rectangle
+            ctx.strokeStyle = '#8B5CF6';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(50, 50, 100, 80);
+
+            // Circle
+            ctx.fillStyle = '#10B981';
+            ctx.beginPath();
+            ctx.arc(250, 100, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Line
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(350, 50);
+            ctx.lineTo(450, 150);
+            ctx.stroke();
+
+            // Text
+            ctx.font = 'bold 16px Inter';
+            ctx.fillStyle = '#8B5CF6';
+            ctx.fillText('Collaborative Whiteboard', 100, 250);
+
+            // Arrow
+            ctx.strokeStyle = '#EF4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(500, 300);
+            ctx.lineTo(550, 250);
+            ctx.stroke();
+
+            // Arrow head
+            ctx.fillStyle = '#EF4444';
+            ctx.beginPath();
+            ctx.moveTo(550, 250);
+            ctx.lineTo(540, 260);
+            ctx.lineTo(550, 250);
+            ctx.lineTo(545, 245);
+            ctx.fill();
+        }
+
+        drawInitialContent();
+
+        // Tool buttons
+        document.querySelectorAll('.tool-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Color picker
+        document.getElementById('colorPicker').addEventListener('input', (e) => {
+            ctx.strokeStyle = e.target.value;
+        });
+
+        // Simple drawing functionality
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+        });
+
+        // Zoom controls (demo)
+        document.querySelectorAll('.zoom-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('Zoom functionality demo!');
+            });
+        });
+
+        // Chat input
+        const chatInput = document.querySelector('.chat-input input');
+        const chatButton = document.querySelector('.chat-input button');
+
+        chatButton.addEventListener('click', () => {
+            if (chatInput.value.trim()) {
+                alert(`Message sent: ${chatInput.value}`);
+                chatInput.value = '';
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && chatInput.value.trim()) {
+                alert(`Message sent: ${chatInput.value}`);
+                chatInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

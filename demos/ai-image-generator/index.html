@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Image Generator · Dark theme demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #020617, #0F172A);
+      color: #F8FAFC;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .demo-container {
+      max-width: 1200px;
+      width: 100%;
+      background: rgba(30,41,59,0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #8B5CF6, #10B981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: rgba(139,92,246,0.2);
+      border: 1px solid #8B5CF6;
+      border-radius: 100px;
+      padding: 0.3rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      -webkit-text-fill-color: #8B5CF6;
+      color: #8B5CF6;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .panel { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.05); }
+    .panel-title { color: #8B5CF6; font-size: 1.2rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .prompt-input { width:100%; padding:1rem; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#F8FAFC; font-family:'Inter',sans-serif; font-size:1rem; resize:none; margin-bottom:1rem; }
+    .prompt-input:focus { outline:none; border-color:#8B5CF6; }
+    .settings-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .setting-item { background: rgba(255,255,255,0.03); padding:1rem; border-radius:12px; }
+    .select-wrapper { position: relative; }
+    .select-wrapper select {
+      width: 100%; padding:0.5rem 1rem; background: rgba(255,255,255,0.05); color:#F8FAFC; border:1px solid rgba(255,255,255,0.1); border-radius:8px; font-family:'Inter',sans-serif; font-size:1rem; appearance:none; cursor:pointer; transition: all 0.3s ease;
+    }
+    .select-wrapper::after {
+      content:"\25BC"; position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); color:#8B5CF6; pointer-events:none;
+    }
+    select option { background:#1E293B; color:#F8FAFC; }
+    .select-wrapper select:hover { border-color:#8B5CF6; }
+    .select-wrapper select:focus { outline:none; border-color:#10B981; }
+    .setting-label { color:#64748B; font-size:0.8rem; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:1px; }
+
+    /* advanced sliders area (restored missing elements) */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+      background: rgba(255,255,255,0.02);
+      padding: 0.8rem;
+      border-radius: 12px;
+    }
+    .slider-label {
+      min-width: 70px;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+    input[type="range"] {
+      flex: 1;
+      height: 6px;
+      background: #334155;
+      border-radius: 10px;
+      -webkit-appearance: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #8B5CF6;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #f1f5f9;
+    }
+    .slider-value {
+      min-width: 35px;
+      color: #10B981;
+      font-weight: 600;
+    }
+    .suggestion-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0 0.5rem;
+    }
+    .suggestion-chip {
+      background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 30px;
+      padding: 0.4rem 1rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #cbd5e1;
+    }
+    .suggestion-chip:hover {
+      background: #8B5CF6;
+      color: white;
+      border-color: #8B5CF6;
+    }
+    .image-preview { width:100%; aspect-ratio:1; background:linear-gradient(135deg, #1E293B, #0F172A); border-radius:16px; border:2px solid rgba(255,255,255,0.1); overflow:hidden; position:relative; box-shadow:0 20px 40px -15px rgba(0,0,0,0.5); }
+    .placeholder { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(45deg, rgba(139,92,246,0.1), rgba(16,185,129,0.1)); }
+    .placeholder i { font-size:4rem; color:#8B5CF6; opacity:0.5; margin-bottom:1rem; }
+    .generated-image { width:100%; height:100%; object-fit:cover; display:none; }
+    .loading-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:10; }
+    .spinner { width:50px; height:50px; border:3px solid transparent; border-top-color:#8B5CF6; border-radius:50%; animation:spin 1s linear infinite; }
+    @keyframes spin { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
+    .btn { padding:1rem 2rem; background:linear-gradient(135deg,#8B5CF6,#6366F1); color:white; border:none; border-radius:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:all 0.3s ease; width:100%; }
+    .btn:hover { transform:translateY(-2px); box-shadow:0 10px 25px -5px rgba(139,92,246,0.5); }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+    .btn-secondary { background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); }
+    .action-buttons { display: flex; gap: 1rem; margin-top:1rem; }
+    .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:1rem; }
+    .stat-box { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; text-align:center; }
+    .stat-value { font-weight:700; color:#F8FAFC; }
+    .stat-label { font-size:0.8rem; color:#64748B; }
+    .recent-grid { display:flex; gap:0.5rem; margin-top:0.5rem; flex-wrap: wrap; }
+    .recent-item { width:50px; height:50px; border-radius:8px; background:#374151; background-size:cover; background-position:center; cursor:pointer; border:1px solid rgba(255,255,255,0.1); transition: all 0.2s;}
+    .recent-item:hover { transform: scale(1.1); border-color:#8B5CF6; }
+  </style>
+</head>
+<body>
+<div class="demo-container">
+  <h1><i class="fas fa-palette"></i>AI Image Generator<span class="badge">Stable Diffusion XL</span></h1>
+
+  <div class="grid-2">
+    <!-- Left panel -->
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-sliders-h"></i>Generation Settings</div>
+      <textarea class="prompt-input" id="promptInput" rows="3">A serene landscape with mountains reflecting in a crystal clear lake at sunset, digital art style, highly detailed, 8k quality</textarea>
+
+      <!-- style/size/quality grid -->
+      <div class="settings-grid">
+        <div class="setting-item select-wrapper">
+          <div class="setting-label">Style</div>
+          <select id="styleSelect">
+            <option value="photorealistic">Photorealistic</option>
+            <option value="digital-art" selected>Digital Art</option>
+            <option value="oil-painting">Oil Painting</option>
+            <option value="watercolor">Watercolor</option>
+            <option value="anime">Anime</option>
+            <option value="sketch">Sketch</option>
+          </select>
+        </div>
+        <div class="setting-item select-wrapper">
+          <div class="setting-label">Size</div>
+          <select id="sizeSelect">
+            <option value="512x512">512x512</option>
+            <option value="1024x1024" selected>1024x1024</option>
+            <option value="1792x1024">1792x1024</option>
+          </select>
+        </div>
+        <div class="setting-item select-wrapper">
+          <div class="setting-label">Quality</div>
+          <select id="qualitySelect">
+            <option value="standard">Standard</option>
+            <option value="hd" selected>HD</option>
+            <option value="ultra-hd">Ultra HD</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Guidance scale & steps (sliders) – originally missing from DOM, now added with proper IDs -->
+      <div class="slider-row">
+        <span class="slider-label"><i class="fa-solid fa-ruler"></i> Guidance</span>
+        <input type="range" id="guidanceScale" min="1" max="20" value="7.5" step="0.5">
+        <span class="slider-value" id="guidanceValue">7.5</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label"><i class="fa-solid fa-hourglass"></i> Steps</span>
+        <input type="range" id="stepsRange" min="10" max="50" value="30" step="1">
+        <span class="slider-value" id="stepsValue">30</span>
+      </div>
+
+      <!-- suggestion chips -->
+      <div class="suggestion-row">
+        <span class="suggestion-chip" data-prompt="Cyberpunk city neon rain, detailed, 8k">🌃 Cyberpunk</span>
+        <span class="suggestion-chip" data-prompt="Cat astronaut floating in space, vibrant colors">🐱 Astronaut</span>
+        <span class="suggestion-chip" data-prompt="Steampunk airship in the clouds, intricate">🚁 Steampunk</span>
+        <span class="suggestion-chip" data-prompt="Futuristic sci-fi corridor, glowing lights">🚀 Corridor</span>
+      </div>
+
+      <!-- Generate button -->
+      <button class="btn" id="generateBtn"><i class="fas fa-magic"></i> Generate Image</button>
+    </div>
+
+    <!-- Right panel: preview + stats + recent -->
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-image"></i>Generated Image</div>
+      <div class="image-preview">
+        <div class="placeholder" id="placeholder"><i class="fas fa-cloud-upload-alt"></i><p style="color:#64748B;">Your image will appear here</p></div>
+        <img class="generated-image" id="generatedImage" alt="Generated image">
+        <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><p style="color:#F8FAFC;margin-top:1rem;">AI is generating your masterpiece...</p></div>
+      </div>
+
+      <!-- stats grid (hidden initially) -->
+      <div class="stats-grid" id="statsGrid" style="display:none;">
+        <div class="stat-box"><div class="stat-value" id="modelName">SDXL 1.0</div><div class="stat-label">Model</div></div>
+        <div class="stat-box"><div class="stat-value" id="genTime">0s</div><div class="stat-label">Time</div></div>
+        <div class="stat-box"><div class="stat-value" id="genCredits">0</div><div class="stat-label">Credits</div></div>
+      </div>
+
+      <!-- download & share -->
+      <div class="action-buttons">
+        <button class="btn btn-secondary" id="downloadBtn" disabled><i class="fas fa-download"></i> Download</button>
+        <button class="btn btn-secondary" id="shareBtn" disabled><i class="fas fa-share-alt"></i> Share</button>
+      </div>
+
+      <!-- Recent generations -->
+      <div style="margin-top:1.5rem;">
+        <div style="color:#8B5CF6;margin-bottom:0.5rem;"><i class="fas fa-history"></i> Recent Generations</div>
+        <div class="recent-grid" id="recentGrid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Sample images for demo (high-res unsplash, consistent square)
+    const sampleImages = [
+      'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1550850839-8dc894ed7c1d?w=600&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=600&fit=crop'
+    ];
+
+    // DOM elements
+    const promptInput = document.getElementById('promptInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const placeholder = document.getElementById('placeholder');
+    const generatedImage = document.getElementById('generatedImage');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const statsGrid = document.getElementById('statsGrid');
+    const genTime = document.getElementById('genTime');
+    const genCredits = document.getElementById('genCredits');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const recentGrid = document.getElementById('recentGrid');
+
+    // sliders & value displays (now exist)
+    const guidanceScale = document.getElementById('guidanceScale');
+    const guidanceValue = document.getElementById('guidanceValue');
+    const stepsRange = document.getElementById('stepsRange');
+    const stepsValue = document.getElementById('stepsValue');
+
+    // Initialize slider displays
+    if (guidanceScale && guidanceValue) {
+      guidanceScale.addEventListener('input', () => {
+        guidanceValue.textContent = parseFloat(guidanceScale.value).toFixed(1);
+      });
+    }
+    if (stepsRange && stepsValue) {
+      stepsRange.addEventListener('input', () => {
+        stepsValue.textContent = stepsRange.value;
+      });
+    }
+
+    // Suggestion chips (must be selected after they exist)
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (chip.dataset.prompt) {
+          promptInput.value = chip.dataset.prompt;
+        }
+      });
+    });
+
+    // Generate function
+    generateBtn.addEventListener('click', function() {
+      // Hide placeholder, hide image, show loader
+      placeholder.style.display = 'flex';
+      generatedImage.style.display = 'none';
+      loadingOverlay.style.display = 'flex';
+      // hide stats while generating
+      statsGrid.style.display = 'none';
+
+      generateBtn.disabled = true;
+      generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+      downloadBtn.disabled = true;
+      shareBtn.disabled = true;
+
+      // Simulate network delay
+      setTimeout(() => {
+        // pick random image
+        const randomImage = sampleImages[Math.floor(Math.random() * sampleImages.length)];
+
+        // set image source and display it
+        generatedImage.src = randomImage;
+        generatedImage.style.display = 'block';
+        placeholder.style.display = 'none';    // hide placeholder behind image
+        loadingOverlay.style.display = 'none';
+
+        // update stats
+        statsGrid.style.display = 'grid';
+        genTime.textContent = (1.8 + Math.random() * 2.2).toFixed(1) + 's';
+        genCredits.textContent = (0.5 + Math.random() * 1.2).toFixed(1);
+
+        // enable action buttons
+        downloadBtn.disabled = false;
+        shareBtn.disabled = false;
+
+        // reset generate button
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Image';
+
+        // Add to recent grid (limit 5 items)
+        const newRecent = document.createElement('div');
+        newRecent.className = 'recent-item';
+        newRecent.style.backgroundImage = `url(${randomImage})`;
+        newRecent.setAttribute('data-recent-url', randomImage);
+
+        // click on recent to load that image again (demo)
+        newRecent.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const url = this.style.backgroundImage.slice(5, -2); // extract url
+          if (url) {
+            // simulate quick load without loading overlay? we want smooth: just set image
+            placeholder.style.display = 'none';
+            generatedImage.src = url;
+            generatedImage.style.display = 'block';
+            statsGrid.style.display = 'grid';
+            genTime.textContent = (0.9).toFixed(1) + 's';
+            genCredits.textContent = (0.3).toFixed(1);
+            downloadBtn.disabled = false;
+            shareBtn.disabled = false;
+          }
+        });
+
+        recentGrid.insertBefore(newRecent, recentGrid.firstChild);
+        if (recentGrid.children.length > 5) {
+          recentGrid.removeChild(recentGrid.lastChild);
+        }
+      }, 2800); // 2.8 sec simulated generation
+    });
+
+    // Download button
+    downloadBtn.addEventListener('click', () => {
+      if (generatedImage.src && generatedImage.src !== '') {
+        // create anchor and trigger download
+        const link = document.createElement('a');
+        link.href = generatedImage.src;
+        link.download = `ai-image-${Date.now()}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // visual feedback
+        downloadBtn.innerHTML = '<i class="fas fa-check"></i> Downloaded';
+        setTimeout(() => {
+          downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+        }, 2000);
+      }
+    });
+
+    // Share button (simulation)
+    shareBtn.addEventListener('click', () => {
+      alert('🔗 Share link copied to clipboard (demo simulation).');
+      shareBtn.innerHTML = '<i class="fas fa-check"></i> Shared';
+      setTimeout(() => {
+        shareBtn.innerHTML = '<i class="fas fa-share-alt"></i> Share';
+      }, 2000);
+    });
+
+    // optional: if there is no recent, prepopulate with two sample items for better UI
+    // (add a couple default recent items)
+    const initRecent = () => {
+      // add two default recent images from sample (first two)
+      for (let i = 0; i < 2; i++) {
+        const imgUrl = sampleImages[i % sampleImages.length];
+        const recentDiv = document.createElement('div');
+        recentDiv.className = 'recent-item';
+        recentDiv.style.backgroundImage = `url(${imgUrl})`;
+        recentDiv.addEventListener('click', function() {
+          const url = imgUrl;
+          placeholder.style.display = 'none';
+          generatedImage.src = url;
+          generatedImage.style.display = 'block';
+          statsGrid.style.display = 'grid';
+          genTime.textContent = (0.8).toFixed(1) + 's';
+          genCredits.textContent = (0.4).toFixed(1);
+          downloadBtn.disabled = false;
+          shareBtn.disabled = false;
+        });
+        recentGrid.appendChild(recentDiv);
+      }
+    };
+    if (recentGrid.children.length === 0) {
+      initRecent();
+    }
+  })();
+</script>
+
+</body>
+</html>

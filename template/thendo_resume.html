@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thendo Nephalama - Tech Resume</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+<style>
+  /* ========== THEME COLORS ========== */
+  :root {
+    --gold: #FFD700;
+    --gold-dark: #C5A300;
+    --gold-light: #FFE766;
+
+    --black: #000000;
+    --black-light: #1a1a1a;
+
+    --text-light: #eeeeee;
+    --text-dark: #111111;
+
+    --shadow-gold: 0 0 10px rgba(255, 215, 0, 0.7);
+  }
+
+  /* Light mode overrides */
+  body.light-mode {
+    --black-light: #ffffff;
+    --text-light: #111111;
+    --shadow-gold: none;
+  }
+
+  body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #000, #1a1a1a);
+    color: var(--text-light);
+    transition: 0.4s ease;
+  }
+
+  /* Resume Container */
+  .resume {
+    max-width: 900px;
+    margin: 40px auto;
+    background: var(--black-light);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--gold-dark);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+    transition: 0.4s ease;
+  }
+
+  h1, h2 {
+    color: var(--gold);
+    border-bottom: 2px solid var(--gold-dark);
+    padding-bottom: 4px;
+    text-shadow: var(--shadow-gold);
+  }
+
+  a {
+    color: var(--gold);
+  }
+
+  a:hover {
+    color: var(--gold-light);
+  }
+
+  button {
+    background: var(--gold);
+    color: var(--black);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: var(--shadow-gold);
+  }
+
+  button:hover {
+    background: var(--gold-light);
+    transform: translateY(-3px);
+  }
+
+  section {
+    background: rgba(255, 215, 0, 0.05);
+    padding: 20px;
+    border-left: 5px solid var(--gold);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .contact-info {
+    background: rgba(255, 215, 0, 0.08);
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="resume">
+    <header>
+      <h1>Thendo Johannah Nephalama</h1>
+      <p>Web Developer | Python Enthusiast | IT Graduate</p>
+
+      <section>
+     <!-- Button Row -->
+<div class="flex justify-between items-center my-4 bg-transparent p-0 border-0">
+    <button onclick="toggleTheme()"
+        class="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-400 transition">
+        Toggle Dark/Light Mode
+    </button>
+
+<!--    <button onclick="downloadResume()"-->
+<!--        class="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-400 transition">-->
+<!--        Download PDF-->
+<!--    </button>-->
+  <button class="download-button bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-400 transition" onclick="downloadResumeHTML()" >
+    Download PDF
+  </button>
+
+</div>
+</section>
+
+    </header>
+
+    <section>
+      <h2>Professional Summary</h2>
+      <p>A passionate and versatile developer with experience in building full-stack web applications, network automation tools, and document tracking systems.</p>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      <ul>
+        <li>HTML, CSS, JavaScript, Python, Flask</li>
+        <li>WordPress, Web Design</li>
+        <li>Automation, Selenium, APIs</li>
+        <li>Network Topology, PDF Generation</li>
+        <li>Git/GitHub, Communication, Teamwork</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Projects</h2>
+      <ul>
+        <li><strong>Medical Records Admin System</strong> – Secure patient data system.</li>
+        <li><strong>Portfolio Website</strong> – Custom responsive site.</li>
+        <li><strong>Network Automation Tool</strong> – Python + Flask config system.</li>
+        <li><strong>Notification System</strong> – PostgreSQL-triggered alerts.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <ul>
+        <li><strong>Higher Certificate in IT</strong> – Richfield (2021)</li>
+        <li><strong>Bachelor's Degree in IT</strong> – Richfield (2022–2024)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+      <p><strong>In2IT Technologies — IT Intern</strong></p>
+      <ul>
+        <li>Automated internal systems using Selenium.</li>
+        <li>Integrated web pages with enterprise applications.</li>
+        <li>Worked with engineers to improve workflow.</li>
+      </ul>
+    </section>
+
+    <section class="contact-info">
+      <h2>Contact</h2>
+      <p>📧 <a href="mailto:nephalamathendo14@gmail.com">nephalamathendo14@gmail.com</a></p>
+      <p>📞 079 539 6610</p>
+      <p>📍 Johannesburg, South Africa</p>
+    </section>
+
+
+    <footer style="text-align:center;">
+      <p>&copy; 2025 Thendo Johannah Nephalama</p>
+    </footer>
+  </div>
+
+<script>
+  function toggleTheme() {
+    document.body.classList.toggle("light-mode");
+  }
+
+  function downloadResumeHTML() {
+    const resumeContent = document.querySelector('.resume');
+
+    // Hide buttons temporarily
+    const buttons = resumeContent.querySelectorAll('button');
+    buttons.forEach(btn => btn.style.display = 'none');
+
+    const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thendo Johannah Nephalama - Resume</title>
+<style>
+${document.querySelector('style').innerHTML} /* includes your current CSS */
+</style>
+</head>
+<body>
+${resumeContent.outerHTML}
+</body>
+</html>
+`;
+
+    const blob = new Blob([html], { type: "text/html" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Thendo_Nephalama_Resume.html";
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    // Restore buttons after download
+    buttons.forEach(btn => btn.style.display = '');
+}
+
+
+</script>
+
+</body>
+</html>

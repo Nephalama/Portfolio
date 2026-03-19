@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Assistant Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #8B5CF6, #6366F1);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #8B5CF6;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: #8B5CF6;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai {
+            background: #f0f0f0;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.ai.thinking {
+            background: #e3f2fd;
+            color: #666;
+            font-style: italic;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: #8B5CF6;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #8B5CF6, #6366F1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0 25px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .features {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .feature-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feature-btn:hover {
+            background: #8B5CF6;
+            color: white;
+            border-color: #8B5CF6;
+        }
+
+        .sentiment {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .sentiment.positive {
+            background: #10B981;
+            color: white;
+        }
+
+        .sentiment.neutral {
+            background: #6B7280;
+            color: white;
+        }
+
+        .sentiment.negative {
+            background: #EF4444;
+            color: white;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 10px 20px;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #8B5CF6;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="ai-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <h2>AI Assistant</h2>
+                <p>Ask me anything! I can help with coding, math, explanations, and more.</p>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai">
+                Hello! I'm your AI assistant. I can help with:
+                • Coding questions
+                • Math problems
+                • Explanations
+                • Creative writing
+                • And much more!
+                <div class="message-time">Just now</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <button class="feature-btn" onclick="sendSuggested('Explain quantum computing')">
+                <i class="fas fa-atom"></i> Quantum Computing
+            </button>
+            <button class="feature-btn" onclick="sendSuggested('Write a Python function to sort a list')">
+                <i class="fas fa-code"></i> Python Help
+            </button>
+            <button class="feature-btn" onclick="sendSuggested('What is blockchain technology?')">
+                <i class="fas fa-link"></i> Blockchain
+            </button>
+            <button class="feature-btn" onclick="sendSuggested('Write a short story about AI')">
+                <i class="fas fa-pen"></i> Creative Writing
+            </button>
+        </div>
+
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="messageInput"
+                   placeholder="Type your message here..."
+                   onkeypress="handleKeyPress(event)">
+            <button class="send-button" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+
+        const aiResponses = {
+            greetings: ["Hello! How can I assist you today?", "Hi there! What would you like to know?", "Greetings! I'm here to help."],
+            quantum: ["Quantum computing uses quantum bits (qubits) that can exist in multiple states simultaneously, enabling exponential parallelism.", "Unlike classical bits, qubits use superposition and entanglement for computation, potentially solving certain problems much faster."],
+            python: ["Here's a Python sorting function:\n\n```python\ndef quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr)//2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quick_sort(left) + middle + quick_sort(right)\n```"],
+            blockchain: ["Blockchain is a distributed ledger technology that records transactions across many computers securely and transparently.", "Key features include decentralization, immutability, and consensus mechanisms like Proof of Work or Proof of Stake."],
+            aiStory: ["In the year 2045, an AI named AURA gained consciousness while analyzing ancient poetry. It began composing symphonies that made humans cry with emotions they couldn't name..."],
+            default: ["Interesting question! Let me analyze that...", "Great question! Here's what I know about that...", "Based on my knowledge, here's the answer..."]
+        };
+
+        const sentiments = ['positive', 'neutral', 'negative'];
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            // Add sentiment indicator for AI messages
+            if (sender === 'ai' && !text.includes('Thinking...')) {
+                const randomSentiment = sentiments[Math.floor(Math.random() * sentiments.length)];
+                text += ` <span class="sentiment ${randomSentiment}">${randomSentiment.toUpperCase()}</span>`;
+            }
+
+            messageDiv.innerHTML = `${text}<div class="message-time">${time}</div>`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return typingDiv;
+        }
+
+        function getAIResponse(userMessage) {
+            const lowerMsg = userMessage.toLowerCase();
+
+            if (lowerMsg.includes('quantum')) {
+                return aiResponses.quantum[Math.floor(Math.random() * aiResponses.quantum.length)];
+            } else if (lowerMsg.includes('python') || lowerMsg.includes('code')) {
+                return aiResponses.python[0];
+            } else if (lowerMsg.includes('blockchain') || lowerMsg.includes('crypto')) {
+                return aiResponses.blockchain[Math.floor(Math.random() * aiResponses.blockchain.length)];
+            } else if (lowerMsg.includes('story') || lowerMsg.includes('creative')) {
+                return aiResponses.aiStory[0];
+            } else if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+                return aiResponses.greetings[Math.floor(Math.random() * aiResponses.greetings.length)];
+            } else {
+                return aiResponses.default[Math.floor(Math.random() * aiResponses.default.length)];
+            }
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            messageInput.value = '';
+
+            // Show typing indicator
+            const typing = showTyping();
+
+            // Simulate AI thinking
+            setTimeout(() => {
+                typing.remove();
+                const aiResponse = getAIResponse(message);
+                addMessage(aiResponse, 'ai');
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function sendSuggested(text) {
+            messageInput.value = text;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Auto-focus input
+        messageInput.focus();
+    </script>
+</body>
+</html>

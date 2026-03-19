@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tshilidzi Na Zwangane (PTY) LTD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <img src="images/ts.png" class="logo" alt="Tshilidzi Na Zwangane Logo">
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<section class="hero" id="home">
+    <div class="hero-text">
+        <h1>Tshilidzi Na Zwangane (PTY) LTD</h1>
+        <p>Reliable tender, procurement, and supply services across South Africa. We deliver quality products and professional solutions tailored to your business needs.</p>
+        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+            <button class="cta" onclick="document.getElementById('contact').scrollIntoView()">Request a Quote</button>
+        </div>
+    </div>
+    <div class="hero-card">
+        <img src="images/tsh.png" alt="Tshilidzi Na Zwangane Team">
+    </div>
+</section>
+
+<section class="about" id="about">
+    <img src="images/tender.jpg" alt="Tender and Procurement">
+    <div>
+        <h2>About Our Company</h2>
+        <p>Tshilidzi Na Zwangane (Pty) Ltd is a South African company specializing in procurement, supply, and tender support services. We provide reliable solutions to businesses, government, and private clients across various industries.</p>
+        <p>Our focus is on quality, efficiency, and delivering value to every client we serve.</p>
+        <button class="cta" onclick="window.location.href='about.html'">Read Full Company Profile →</button>
+    </div>
+</section>
+
+<section class="services" id="services">
+    <h2>Our Services</h2>
+    <div class="service-grid">
+        <div class="card">
+            <h3>Procurement & Supply</h3>
+            <ul>
+                <li>Cleaning chemicals and hygiene products</li>
+                <li>Office equipment and stationery</li>
+                <li>Office furniture supply</li>
+                <li>IT accessories and consumables</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Facilities & Hygiene</h3>
+            <ul>
+                <li>Sanitary bins and hygiene services</li>
+                <li>Cleaning tools and equipment</li>
+                <li>Pest control products and services</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Safety & Industrial</h3>
+            <ul>
+                <li>Personal Protective Equipment (PPE)</li>
+                <li>Workplace safety supplies</li>
+                <li>Industrial consumables</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Tender Support</h3>
+            <ul>
+                <li>Tender application assistance</li>
+                <li>Document preparation</li>
+                <li>Compliance support (CSD, CIDB)</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="why">
+    <h2>Why Choose Us</h2>
+    <div class="why-grid">
+        <div class="why-box"><h3>Reliable</h3><p>We deliver on time and meet client expectations consistently.</p></div>
+        <div class="why-box"><h3>Professional</h3><p>Our team maintains high standards in every project we handle.</p></div>
+        <div class="why-box"><h3>Compliant</h3><p>We adhere to CSD, CIDB, and industry regulations.</p></div>
+        <div class="why-box"><h3>Cost-Effective</h3><p>Competitive pricing without compromising quality.</p></div>
+        <div class="why-box"><h3>Trusted</h3><p>We build long-term relationships based on trust and performance.</p></div>
+    </div>
+</section>
+
+<section class="contact" id="contact">
+    <h2>Contact Us</h2>
+
+    <!-- FORMSPREE FORM - REPLACE WITH YOUR FORMSPREE ENDPOINT -->
+    <form id="contact-form" action="https://formspree.io/f/xbdzwlwo" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Email Address" required>
+
+        <!-- Optional: Add subject line -->
+        <input type="hidden" name="_subject" value="New enquiry from Tshilidzi Na Zwangane website">
+
+        <!-- Optional: Redirect after submission -->
+        <input type="hidden" name="_redirect" value="https://Nephalama.github.io/tshilidzi-website/thank-you.html">
+
+        <textarea name="message" rows="5" placeholder="Tell us what you need..." required></textarea>
+        <button type="submit" class="submit">Send Message</button>
+    </form>
+
+    <!-- Success message (shown after AJAX submission) -->
+    <div id="form-success" style="display:none; text-align:center; padding:20px; background:rgba(72,187,120,0.1); border-radius:10px; margin-top:20px;">
+        <p style="color:#48bb78;">✓ Thank you! Your message has been sent. We'll get back to you soon.</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Tshilidzi Na Zwangane (PTY) LTD • Johannesburg, South Africa</p>
+</footer>
+
+<a href="https://wa.me/27795396610" class="whatsapp" target="_blank">💬</a>
+
+<script src="js/main.js"></script>
+</body>
+</html>

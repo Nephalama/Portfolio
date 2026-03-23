@@ -3,762 +3,855 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collaboration Whiteboard | Professional Demo</title>
+    <title>Collaboration Whiteboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
+        :root {
+            --bg: #080c14;
+            --surface: #0e1420;
+            --panel: #121928;
+            --border: rgba(255,255,255,0.08);
+            --accent: #7c5af0;
+            --accent2: #0fc98a;
+            --amber: #f5a623;
+            --red: #f04f5a;
+            --text: #e8edf5;
+            --muted: #4a5568;
+            --tool-hover: rgba(124,90,240,0.25);
+        }
+ 
         body {
-            background: linear-gradient(135deg, #020617, #0F172A);
-            color: #F8FAFC;
-            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1.5rem;
         }
-
+ 
         .demo-container {
             max-width: 1200px;
             width: 100%;
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
         }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #8B5CF6, #10B981);
+ 
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+ 
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, var(--accent), var(--accent2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
         }
-
+ 
         .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: rgba(16,185,129,0.2);
-            color: #10B981;
+            padding: 0.2rem 0.6rem;
+            background: rgba(15,201,138,0.15);
+            color: var(--accent2);
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             font-weight: 600;
-            -webkit-text-fill-color: #10B981;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(15,201,138,0.25);
         }
-
+ 
         .toolbar {
             display: flex;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px;
-            margin-bottom: 1rem;
+            gap: 0.35rem;
+            padding: 0.65rem;
+            background: var(--panel);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
             flex-wrap: wrap;
             align-items: center;
+            border: 1px solid var(--border);
         }
-
+ 
         .tool-btn {
-            width: 45px; height: 45px;
+            width: 38px; height: 38px;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            color: #F8FAFC;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--muted);
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 1.1rem;
+            transition: all 0.15s ease;
+            font-size: 0.95rem;
+            position: relative;
         }
-
-        .tool-btn:hover { background: rgba(139,92,246,0.4); border-color: #8B5CF6; transform: translateY(-2px); }
-        .tool-btn.active { background: #8B5CF6; border-color: #8B5CF6; }
-
-        .divider { width: 1px; height: 35px; background: rgba(255,255,255,0.1); margin: 0 0.5rem; }
-
+ 
+        .tool-btn:hover { background: var(--tool-hover); color: var(--text); border-color: rgba(124,90,240,0.3); }
+        .tool-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+ 
+        .tool-btn .tooltip {
+            position: absolute;
+            bottom: -32px;
+            left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: var(--text);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.68rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 100;
+        }
+ 
+        .tool-btn:hover .tooltip { opacity: 1; }
+ 
+        .divider {
+            width: 1px; height: 28px;
+            background: var(--border);
+            margin: 0 0.2rem;
+        }
+ 
         .color-picker {
-            width: 45px; height: 45px;
-            border-radius: 10px;
-            border: 2px solid rgba(255,255,255,0.1);
+            width: 38px; height: 38px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
             cursor: pointer;
             padding: 2px;
-            background: transparent;
+            background: var(--panel);
         }
-
-        .brush-size {
-            display: flex; align-items: center; gap: 0.5rem;
-            color: #94A3B8; font-size: 0.8rem;
+ 
+        input[type="range"] {
+            width: 80px;
+            accent-color: var(--accent);
+            cursor: pointer;
         }
-
-        .brush-size input[type=range] {
-            width: 80px; accent-color: #8B5CF6;
+ 
+        .size-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            min-width: 24px;
         }
-
+ 
         .canvas-wrapper {
-            background: rgba(255,255,255,0.02);
-            border-radius: 16px;
-            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            border: 1px solid var(--border);
             overflow: hidden;
             position: relative;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
+            background: #0a0f1a;
+            height: 420px;
         }
-
+ 
         #whiteboardCanvas {
             display: block;
-            background: #0F172A;
-        }
-
-        /* Overlay canvas for live shape preview */
-        #overlayCanvas {
             position: absolute;
             top: 0; left: 0;
-            pointer-events: none;
+            cursor: crosshair;
         }
-
-        .cursor-layer {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-        }
-
-        .cursor {
-            position: absolute;
-            width: 20px; height: 20px;
-            border: 2px solid;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
-        }
-
-        .cursor-label {
-            position: absolute;
-            top: -24px; left: 10px;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            white-space: nowrap;
-        }
-
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
-        .zoom-controls {
-            position: absolute;
-            bottom: 1rem; right: 1rem;
-            display: flex; gap: 0.5rem;
-            background: rgba(0,0,0,0.6);
-            padding: 0.5rem;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-            align-items: center;
-        }
-
-        .zoom-btn {
-            width: 35px; height: 35px;
-            background: rgba(255,255,255,0.1);
-            border: none; border-radius: 8px;
-            color: white; cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-
-        .zoom-btn:hover { background: #8B5CF6; }
-        #zoomLabel { color: #94A3B8; font-size: 0.75rem; min-width: 38px; text-align: center; }
-
-        .users-panel {
-            display: flex; gap: 1rem; padding: 1rem;
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px; margin-bottom: 1rem;
-            align-items: center; flex-wrap: wrap;
-        }
-
-        .user-info {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50px;
-        }
-
-        .user-avatar {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 0.8rem;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .user-status {
-            width: 8px; height: 8px;
-            border-radius: 50%; background: #10B981;
-        }
-
-        .activity-panel {
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px; padding: 1rem;
-        }
-
-        .activity-feed {
-            max-height: 160px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(139,92,246,0.3) transparent;
-        }
-
-        .activity-item {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.6rem 0.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: #94A3B8; font-size: 0.85rem;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
-        .activity-item:last-child { border-bottom: none; }
-        .activity-user { font-weight: 600; }
-
-        .chat-input { display: flex; gap: 0.5rem; margin-top: 1rem; }
-
-        .chat-input input {
-            flex: 1; padding: 0.75rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px; color: #F8FAFC;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .chat-input input:focus { outline: none; border-color: #8B5CF6; }
-
-        .chat-input button {
-            padding: 0.75rem 1.5rem;
-            background: #8B5CF6; border: none;
-            border-radius: 10px; color: white;
-            cursor: pointer; transition: all 0.3s ease;
-        }
-
-        .chat-input button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(139,92,246,0.5); }
-
-        #textInputBox {
-            display: none;
+ 
+        .canvas-wrapper.tool-select #whiteboardCanvas { cursor: default; }
+        .canvas-wrapper.tool-text #whiteboardCanvas { cursor: text; }
+        .canvas-wrapper.tool-eraser #whiteboardCanvas { cursor: cell; }
+ 
+        #textInput {
             position: absolute;
             background: transparent;
-            border: 1.5px dashed #8B5CF6;
-            color: #F8FAFC;
+            border: 1px dashed var(--accent);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 16px;
-            font-family: 'Inter', sans-serif;
+            padding: 2px 6px;
             outline: none;
-            padding: 4px 6px;
-            z-index: 20;
-            min-width: 120px;
             resize: none;
+            min-width: 120px;
+            min-height: 30px;
+            display: none;
+            z-index: 20;
+            border-radius: 4px;
             overflow: hidden;
-            line-height: 1.4;
-            caret-color: #8B5CF6;
+        }
+ 
+        .cursor {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+ 
+        .cursor-dot {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            border: 2.5px solid;
+            animation: cpulse 2s ease-in-out infinite;
+        }
+ 
+        .cursor-label {
+            position: absolute;
+            top: -22px; left: 8px;
+            color: #fff;
+            padding: 2px 7px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+ 
+        @keyframes cpulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+ 
+        .zoom-controls {
+            position: absolute;
+            bottom: 0.75rem; right: 0.75rem;
+            display: flex;
+            gap: 0.3rem;
+            background: rgba(0,0,0,0.65);
+            padding: 0.4rem;
+            border-radius: 8px;
+            backdrop-filter: blur(6px);
+            border: 1px solid var(--border);
+            z-index: 15;
+        }
+ 
+        .zoom-btn {
+            width: 30px; height: 30px;
+            background: rgba(255,255,255,0.06);
+            border: none;
+            border-radius: 6px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center;
+        }
+ 
+        .zoom-btn:hover { background: var(--accent); color: #fff; }
+ 
+        .zoom-level {
+            font-size: 0.68rem;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            display: flex; align-items: center;
+            padding: 0 4px;
+            min-width: 36px;
+            justify-content: center;
+        }
+ 
+        .users-panel {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--panel);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+        }
+ 
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.75rem 0.4rem 0.4rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+        }
+ 
+        .avatar {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+ 
+        .user-name { font-size: 0.82rem; font-weight: 600; }
+        .user-action { font-size: 0.7rem; color: var(--muted); }
+ 
+        .online-dot {
+            width: 7px; height: 7px;
+            background: var(--accent2);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--accent2);
+            animation: blink 2s ease-in-out infinite;
+        }
+ 
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+ 
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+ 
+        .activity-panel, .chat-panel {
+            background: var(--panel);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1rem;
+        }
+ 
+        .panel-title {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.78rem; font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+ 
+        .panel-title i { color: var(--accent); font-size: 0.72rem; }
+ 
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+ 
+        .activity-item:last-of-type { border-bottom: none; }
+        .activity-user { font-weight: 600; }
+        .activity-time { margin-left: auto; font-size: 0.68rem; font-family: 'DM Mono', monospace; }
+ 
+        .chat-messages {
+            height: 110px;
+            overflow-y: auto;
+            margin-bottom: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+ 
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+ 
+        .chat-msg {
+            font-size: 0.8rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            animation: fadeIn 0.2s ease;
+        }
+ 
+        @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+ 
+        .chat-msg .msg-user { font-weight: 600; font-size: 0.72rem; margin-right: 0.4rem; }
+        .chat-msg .msg-time { font-size: 0.65rem; color: var(--muted); font-family: 'DM Mono', monospace; float: right; }
+ 
+        .chat-input-row { display: flex; gap: 0.5rem; }
+ 
+        .chat-input-row input {
+            flex: 1;
+            padding: 0.55rem 0.75rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.82rem;
+            transition: border-color 0.15s;
+        }
+ 
+        .chat-input-row input:focus { outline: none; border-color: var(--accent); }
+ 
+        .send-btn {
+            padding: 0.55rem 1rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.82rem;
+            transition: all 0.15s;
+        }
+ 
+        .send-btn:hover { background: #9370ff; transform: translateY(-1px); }
+ 
+        @media (max-width: 600px) {
+            .bottom-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 <div class="demo-container">
-    <h1>
-        <i class="fas fa-chalkboard"></i>
-        Collaboration Whiteboard
-        <span class="badge">Real-time</span>
-    </h1>
-
-    <!-- Toolbar -->
+    <div class="header">
+        <i class="fas fa-chalkboard" style="color:var(--accent);font-size:1.2rem;"></i>
+        <h1>Collaboration Whiteboard</h1>
+        <span class="badge">● LIVE</span>
+    </div>
+ 
     <div class="toolbar">
-        <button class="tool-btn" data-tool="select" title="Select"><i class="fas fa-mouse-pointer"></i></button>
-        <button class="tool-btn active" data-tool="pencil" title="Pencil"><i class="fas fa-pencil-alt"></i></button>
-        <button class="tool-btn" data-tool="eraser" title="Eraser"><i class="fas fa-eraser"></i></button>
-        <button class="tool-btn" data-tool="line" title="Line"><i class="fas fa-grip-lines"></i></button>
-        <button class="tool-btn" data-tool="rectangle" title="Rectangle"><i class="fas fa-square"></i></button>
-        <button class="tool-btn" data-tool="circle" title="Circle"><i class="far fa-circle"></i></button>
-        <button class="tool-btn" data-tool="text" title="Text"><i class="fas fa-font"></i></button>
-
+        <button class="tool-btn active" data-tool="select"><i class="fas fa-mouse-pointer"></i><span class="tooltip">Select (V)</span></button>
+        <button class="tool-btn" data-tool="pencil"><i class="fas fa-pencil-alt"></i><span class="tooltip">Pencil (P)</span></button>
+        <button class="tool-btn" data-tool="eraser"><i class="fas fa-eraser"></i><span class="tooltip">Eraser (E)</span></button>
         <div class="divider"></div>
-
-        <input type="color" id="colorPicker" value="#8B5CF6" class="color-picker" title="Color">
-
-        <div class="brush-size">
-            <i class="fas fa-circle" style="font-size:0.4rem"></i>
-            <input type="range" id="brushSize" min="1" max="30" value="2">
-            <i class="fas fa-circle" style="font-size:0.9rem; color:#64748B"></i>
-        </div>
-
+        <button class="tool-btn" data-tool="line"><i class="fas fa-minus"></i><span class="tooltip">Line (L)</span></button>
+        <button class="tool-btn" data-tool="rectangle"><i class="far fa-square"></i><span class="tooltip">Rectangle (R)</span></button>
+        <button class="tool-btn" data-tool="circle"><i class="far fa-circle"></i><span class="tooltip">Circle (C)</span></button>
+        <button class="tool-btn" data-tool="arrow"><i class="fas fa-long-arrow-alt-right"></i><span class="tooltip">Arrow (A)</span></button>
+        <button class="tool-btn" data-tool="text"><i class="fas fa-font"></i><span class="tooltip">Text (T)</span></button>
         <div class="divider"></div>
-
-        <button class="tool-btn" data-action="undo" title="Undo"><i class="fas fa-undo"></i></button>
-        <button class="tool-btn" data-action="redo" title="Redo"><i class="fas fa-redo"></i></button>
-        <button class="tool-btn" data-action="clear" title="Clear All"><i class="fas fa-trash"></i></button>
-
-        <div style="flex:1"></div>
-        <span style="color:#64748B; font-size:0.9rem;"><i class="fas fa-users"></i> 4 online</span>
+        <input type="color" id="colorPicker" value="#7c5af0" class="color-picker" title="Color">
+        <input type="range" id="lineWidth" min="1" max="20" value="2">
+        <span class="size-label" id="sizeLabel">2px</span>
+        <div class="divider"></div>
+        <button class="tool-btn" id="undoBtn"><i class="fas fa-undo"></i><span class="tooltip">Undo (Ctrl+Z)</span></button>
+        <button class="tool-btn" id="redoBtn"><i class="fas fa-redo"></i><span class="tooltip">Redo (Ctrl+Y)</span></button>
+        <button class="tool-btn" id="clearBtn"><i class="fas fa-trash-alt"></i><span class="tooltip">Clear All</span></button>
+        <div style="flex:1;"></div>
+        <span style="color:var(--muted);font-size:0.8rem;display:flex;align-items:center;gap:0.4rem;">
+            <i class="fas fa-users" style="color:var(--accent2);"></i> 4 online
+        </span>
     </div>
-
-    <!-- Canvas Area -->
-    <div class="canvas-wrapper" id="canvasWrapper">
+ 
+    <div class="canvas-wrapper tool-select" id="canvasWrapper">
         <canvas id="whiteboardCanvas"></canvas>
-        <canvas id="overlayCanvas"></canvas>
-
-        <div class="cursor-layer">
-            <div class="cursor" id="cursorJohn" style="left:150px;top:100px;border-color:#10B981;">
-                <span class="cursor-label" style="background:#10B981;">John</span>
-            </div>
-            <div class="cursor" id="cursorMike" style="left:300px;top:200px;border-color:#F59E0B;">
-                <span class="cursor-label" style="background:#F59E0B;">Mike</span>
-            </div>
-            <div class="cursor" id="cursorAlice" style="left:450px;top:150px;border-color:#EF4444;">
-                <span class="cursor-label" style="background:#EF4444;">Alice</span>
-            </div>
+        <textarea id="textInput" rows="1"></textarea>
+ 
+        <div class="cursor" id="cursor-john" style="left:160px;top:90px;">
+            <div class="cursor-dot" style="border-color:#0fc98a;background:rgba(15,201,138,0.15);"></div>
+            <div class="cursor-label" style="background:#0fc98a;">John</div>
         </div>
-
-        <textarea id="textInputBox" rows="1" placeholder="Type here..."></textarea>
-
+        <div class="cursor" id="cursor-mike" style="left:320px;top:210px;">
+            <div class="cursor-dot" style="border-color:#f5a623;background:rgba(245,166,35,0.15);"></div>
+            <div class="cursor-label" style="background:#f5a623;">Mike</div>
+        </div>
+        <div class="cursor" id="cursor-alice" style="left:480px;top:155px;">
+            <div class="cursor-dot" style="border-color:#f04f5a;background:rgba(240,79,90,0.15);"></div>
+            <div class="cursor-label" style="background:#f04f5a;">Alice</div>
+        </div>
+ 
         <div class="zoom-controls">
-            <button class="zoom-btn" id="zoomIn" title="Zoom In"><i class="fas fa-search-plus"></i></button>
-            <span id="zoomLabel">100%</span>
-            <button class="zoom-btn" id="zoomOut" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
-            <button class="zoom-btn" id="zoomReset" title="Reset Zoom"><i class="fas fa-expand"></i></button>
+            <button class="zoom-btn" id="zoomIn"><i class="fas fa-plus"></i></button>
+            <span class="zoom-level" id="zoomLabel">100%</span>
+            <button class="zoom-btn" id="zoomOut"><i class="fas fa-minus"></i></button>
+            <button class="zoom-btn" id="zoomReset"><i class="fas fa-expand"></i></button>
         </div>
     </div>
-
-    <!-- Users Panel -->
+ 
     <div class="users-panel">
-        <div class="user-info">
-            <div class="user-avatar" style="background:#8B5CF6;">YD</div>
-            <div><div style="font-weight:600;">You</div><div style="color:#64748B;font-size:0.78rem;" id="yourStatus">Drawing</div></div>
-            <div class="user-status"></div>
+        <div class="user-chip">
+            <div class="avatar" style="background:var(--accent);">YD</div>
+            <div><div class="user-name">You</div><div class="user-action" id="yourAction">Select</div></div>
+            <div class="online-dot"></div>
         </div>
-        <div class="user-info">
-            <div class="user-avatar" style="background:#10B981;">JD</div>
-            <div><div style="font-weight:600;">John Doe</div><div style="color:#64748B;font-size:0.78rem;">Selecting</div></div>
-            <div class="user-status"></div>
+        <div class="user-chip">
+            <div class="avatar" style="background:#0fc98a;">JD</div>
+            <div><div class="user-name">John Doe</div><div class="user-action">Drawing</div></div>
+            <div class="online-dot"></div>
         </div>
-        <div class="user-info">
-            <div class="user-avatar" style="background:#F59E0B;">MK</div>
-            <div><div style="font-weight:600;">Mike Chen</div><div style="color:#64748B;font-size:0.78rem;">Drawing</div></div>
-            <div class="user-status"></div>
+        <div class="user-chip">
+            <div class="avatar" style="background:#f5a623;">MK</div>
+            <div><div class="user-name">Mike Chen</div><div class="user-action">Drawing</div></div>
+            <div class="online-dot"></div>
         </div>
-        <div class="user-info">
-            <div class="user-avatar" style="background:#EF4444;">AL</div>
-            <div><div style="font-weight:600;">Alice Lee</div><div style="color:#64748B;font-size:0.78rem;">Idle</div></div>
-            <div class="user-status"></div>
+        <div class="user-chip">
+            <div class="avatar" style="background:#f04f5a;">AL</div>
+            <div><div class="user-name">Alice Lee</div><div class="user-action">Idle</div></div>
+            <div class="online-dot" style="background:#4a5568;box-shadow:none;animation:none;"></div>
         </div>
     </div>
-
-    <!-- Activity Panel -->
-    <div class="activity-panel">
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
-            <i class="fas fa-comment-alt" style="color:#8B5CF6;"></i>
-            <span style="font-weight:600;">Live Activity</span>
-        </div>
-        <div class="activity-feed" id="activityFeed">
-            <div class="activity-item">
-                <span class="activity-user" style="color:#10B981;">John</span>
-                <span>added a rectangle</span>
-                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">just now</span>
-            </div>
-            <div class="activity-item">
-                <span class="activity-user" style="color:#F59E0B;">Mike</span>
-                <span>drew a line</span>
-                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">1m ago</span>
-            </div>
-            <div class="activity-item">
-                <span class="activity-user" style="color:#EF4444;">Alice</span>
-                <span>changed color to red</span>
-                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">2m ago</span>
-            </div>
-            <div class="activity-item">
-                <span class="activity-user" style="color:#8B5CF6;">You</span>
-                <span>joined the session</span>
-                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">5m ago</span>
+ 
+    <div class="bottom-row">
+        <div class="activity-panel">
+            <div class="panel-title"><i class="fas fa-bolt"></i> Live Activity</div>
+            <div id="activityList">
+                <div class="activity-item"><span class="activity-user" style="color:#0fc98a;">John</span><span>added a rectangle</span><span class="activity-time">just now</span></div>
+                <div class="activity-item"><span class="activity-user" style="color:#f5a623;">Mike</span><span>drew a line</span><span class="activity-time">1m ago</span></div>
+                <div class="activity-item"><span class="activity-user" style="color:#f04f5a;">Alice</span><span>changed color to red</span><span class="activity-time">2m ago</span></div>
+                <div class="activity-item"><span class="activity-user" style="color:var(--accent);">You</span><span>joined the session</span><span class="activity-time">5m ago</span></div>
             </div>
         </div>
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Type a message...">
-            <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+ 
+        <div class="chat-panel">
+            <div class="panel-title"><i class="fas fa-comment-dots"></i> Team Chat</div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg"><span class="msg-user" style="color:#0fc98a;">John</span><span class="msg-time">2m ago</span>Can everyone see the flowchart I added?</div>
+                <div class="chat-msg"><span class="msg-user" style="color:#f5a623;">Mike</span><span class="msg-time">1m ago</span>Yes! Looks great. I'll add the arrows.</div>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" id="chatInput" placeholder="Send a message… (Enter)">
+                <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
 </div>
-
+ 
 <script>
-(function() {
-    const wrapper = document.getElementById('canvasWrapper');
-    const canvas  = document.getElementById('whiteboardCanvas');
-    const overlay = document.getElementById('overlayCanvas');
-    const ctx     = canvas.getContext('2d');
-    const octx    = overlay.getContext('2d');
-    const textBox = document.getElementById('textInputBox');
-
-    // ── Canvas sizing ──────────────────────────────────────────────────────────
-    function resizeCanvases() {
-        const w = wrapper.clientWidth;
-        const h = 420;
-        // Preserve drawn content during resize
-        const snap = canvas.toDataURL();
-        canvas.width  = overlay.width  = w;
-        canvas.height = overlay.height = h;
-        canvas.style.height = overlay.style.height = h + 'px';
+// ── SETUP ──────────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('whiteboardCanvas');
+const ctx = canvas.getContext('2d');
+const wrapper = document.getElementById('canvasWrapper');
+const textInput = document.getElementById('textInput');
+let initialDrawn = false;
+ 
+function resizeCanvas() {
+    const w = wrapper.clientWidth;
+    const h = 420;
+    const imgData = initialDrawn ? canvas.toDataURL() : null;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    if (imgData) {
         const img = new Image();
         img.onload = () => ctx.drawImage(img, 0, 0);
-        img.src = snap;
+        img.src = imgData;
+    } else {
+        drawInitialContent();
+        initialDrawn = true;
     }
-    resizeCanvases();
-    window.addEventListener('resize', resizeCanvases);
-
-    // ── State ──────────────────────────────────────────────────────────────────
-    let currentTool = 'pencil';
-    let drawColor   = '#8B5CF6';
-    let brushSize   = 2;
-    let isDrawing   = false;
-    let startX = 0, startY = 0;
-    let undoStack = [], redoStack = [];
-
-    // ── Undo / Redo helpers ────────────────────────────────────────────────────
-    function saveState() {
-        undoStack.push(canvas.toDataURL());
-        if (undoStack.length > 60) undoStack.shift();
-        redoStack = [];
-    }
-
-    function restoreState(dataURL) {
-        const img = new Image();
-        img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0); };
-        img.src = dataURL;
-    }
-
-    // ── Tool buttons ───────────────────────────────────────────────────────────
-    const drawingTools = ['pencil','eraser','line','rectangle','circle','text','select'];
-
-    document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            commitTextInput(); // commit any in-progress text
-            currentTool = btn.dataset.tool;
-            document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updateCursor();
-            document.getElementById('yourStatus').textContent =
-                currentTool === 'select' ? 'Selecting' :
-                currentTool === 'eraser' ? 'Erasing'   :
-                currentTool === 'text'   ? 'Typing'    : 'Drawing';
-        });
+}
+ 
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let tool = 'select', color = '#7c5af0', lineW = 2;
+let isDrawing = false, startX = 0, startY = 0;
+let snapshot = null;
+const undoStack = [], redoStack = [];
+ 
+// ── UNDO / REDO ────────────────────────────────────────────────────────────────
+function saveState() {
+    undoStack.push(canvas.toDataURL());
+    if (undoStack.length > 60) undoStack.shift();
+    redoStack.length = 0;
+}
+ 
+function applyState(dataURL) {
+    const img = new Image();
+    img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0); };
+    img.src = dataURL;
+}
+ 
+document.getElementById('undoBtn').addEventListener('click', () => {
+    if (!undoStack.length) return;
+    redoStack.push(canvas.toDataURL());
+    applyState(undoStack.pop());
+    logActivity('You', 'undid last action');
+});
+ 
+document.getElementById('redoBtn').addEventListener('click', () => {
+    if (!redoStack.length) return;
+    undoStack.push(canvas.toDataURL());
+    applyState(redoStack.pop());
+    logActivity('You', 'redid action');
+});
+ 
+document.getElementById('clearBtn').addEventListener('click', () => {
+    if (!confirm('Clear the entire board?')) return;
+    saveState();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    logActivity('You', 'cleared the board');
+});
+ 
+// ── TOOLBAR ────────────────────────────────────────────────────────────────────
+document.querySelectorAll('[data-tool]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        tool = btn.dataset.tool;
+        wrapper.className = 'canvas-wrapper tool-' + tool;
+        document.getElementById('yourAction').textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
+        if (tool !== 'text') hideTextInput();
     });
-
-    document.querySelectorAll('.tool-btn[data-action]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const action = btn.dataset.action;
-            if (action === 'undo') {
-                if (undoStack.length) { redoStack.push(canvas.toDataURL()); restoreState(undoStack.pop()); logActivity('You', 'undid an action', '#8B5CF6'); }
-            } else if (action === 'redo') {
-                if (redoStack.length) { undoStack.push(canvas.toDataURL()); restoreState(redoStack.pop()); logActivity('You', 'redid an action', '#8B5CF6'); }
-            } else if (action === 'clear') {
-                if (confirm('Clear the entire whiteboard?')) {
-                    saveState();
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    logActivity('You', 'cleared the board', '#8B5CF6');
-                }
-            }
-        });
-    });
-
-    // ── Color & brush ─────────────────────────────────────────────────────────
-    document.getElementById('colorPicker').addEventListener('input', e => {
-        drawColor = e.target.value;
-    });
-
-    document.getElementById('brushSize').addEventListener('input', e => {
-        brushSize = parseInt(e.target.value);
-    });
-
-    // ── Cursor style ──────────────────────────────────────────────────────────
-    function updateCursor() {
-        canvas.style.cursor =
-            currentTool === 'eraser' ? 'cell' :
-            currentTool === 'select' ? 'default' :
-            currentTool === 'text'   ? 'text' : 'crosshair';
+});
+ 
+document.getElementById('colorPicker').addEventListener('input', e => color = e.target.value);
+document.getElementById('lineWidth').addEventListener('input', e => {
+    lineW = +e.target.value;
+    document.getElementById('sizeLabel').textContent = lineW + 'px';
+});
+ 
+// ── KEYBOARD SHORTCUTS ─────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+    const active = document.activeElement;
+    if (active === document.getElementById('chatInput') || active === textInput) return;
+    const map = { v:'select', p:'pencil', e:'eraser', l:'line', r:'rectangle', c:'circle', a:'arrow', t:'text' };
+    if (map[e.key]) {
+        const btn = document.querySelector(`[data-tool="${map[e.key]}"]`);
+        if (btn) btn.click();
     }
-    updateCursor();
-
-    // ── Get canvas coords (handles zoom) ──────────────────────────────────────
-    function getXY(e) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width  / rect.width;
-        const scaleY = canvas.height / rect.height;
-        return {
-            x: (e.clientX - rect.left) * scaleX,
-            y: (e.clientY - rect.top)  * scaleY
-        };
-    }
-
-    // ── Drawing helpers ────────────────────────────────────────────────────────
-    function applyStrokeStyle(context) {
-        context.strokeStyle = drawColor;
-        context.fillStyle   = drawColor;
-        context.lineWidth   = brushSize;
-        context.lineCap     = 'round';
-        context.lineJoin    = 'round';
-    }
-
-    // ── Mouse events ──────────────────────────────────────────────────────────
-    canvas.addEventListener('mousedown', e => {
-        if (currentTool === 'text') return; // handled by click
-        const {x, y} = getXY(e);
-        startX = x; startY = y;
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); document.getElementById('undoBtn').click(); }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); document.getElementById('redoBtn').click(); }
+});
+ 
+// ── CANVAS DRAWING ─────────────────────────────────────────────────────────────
+function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / r.width;
+    const scaleY = canvas.height / r.height;
+    if (e.touches) return { x: (e.touches[0].clientX - r.left) * scaleX, y: (e.touches[0].clientY - r.top) * scaleY };
+    return { x: (e.clientX - r.left) * scaleX, y: (e.clientY - r.top) * scaleY };
+}
+ 
+function setupCtx() {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = lineW;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+}
+ 
+canvas.addEventListener('mousedown', onStart);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); onStart(e); }, { passive: false });
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('touchmove', e => { e.preventDefault(); onMove(e); }, { passive: false });
+canvas.addEventListener('mouseup', onEnd);
+canvas.addEventListener('touchend', e => { e.preventDefault(); onEnd(e); });
+canvas.addEventListener('mouseleave', () => { if (isDrawing && (tool === 'pencil' || tool === 'eraser')) isDrawing = false; });
+ 
+function onStart(e) {
+    const { x, y } = getPos(e);
+    startX = x; startY = y;
+ 
+    if (tool === 'text') { showTextInput(x, y); return; }
+ 
+    if (tool === 'pencil' || tool === 'eraser') {
         isDrawing = true;
-        if (currentTool === 'pencil' || currentTool === 'eraser') {
-            saveState();
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-        }
-    });
-
-    canvas.addEventListener('mousemove', e => {
-        if (!isDrawing) return;
-        const {x, y} = getXY(e);
-
-        if (currentTool === 'pencil') {
-            applyStrokeStyle(ctx);
-            ctx.lineTo(x, y);
-            ctx.stroke();
-        } else if (currentTool === 'eraser') {
-            const sz = brushSize * 5;
-            ctx.clearRect(x - sz/2, y - sz/2, sz, sz);
-        } else {
-            // Live shape preview on overlay
-            octx.clearRect(0, 0, overlay.width, overlay.height);
-            applyStrokeStyle(octx);
-            octx.beginPath();
-
-            if (currentTool === 'line') {
-                octx.moveTo(startX, startY);
-                octx.lineTo(x, y);
-                octx.stroke();
-            } else if (currentTool === 'rectangle') {
-                octx.strokeRect(startX, startY, x - startX, y - startY);
-            } else if (currentTool === 'circle') {
-                const rx = (x - startX) / 2;
-                const ry = (y - startY) / 2;
-                octx.ellipse(startX + rx, startY + ry, Math.abs(rx), Math.abs(ry), 0, 0, Math.PI * 2);
-                octx.stroke();
-            }
-        }
-    });
-
-    canvas.addEventListener('mouseup', e => {
-        if (!isDrawing) return;
-        isDrawing = false;
-        const {x, y} = getXY(e);
-        octx.clearRect(0, 0, overlay.width, overlay.height);
-
-        if (['line','rectangle','circle'].includes(currentTool)) {
-            saveState();
-            applyStrokeStyle(ctx);
-            ctx.beginPath();
-
-            if (currentTool === 'line') {
-                ctx.moveTo(startX, startY);
-                ctx.lineTo(x, y);
-                ctx.stroke();
-            } else if (currentTool === 'rectangle') {
-                ctx.strokeRect(startX, startY, x - startX, y - startY);
-            } else if (currentTool === 'circle') {
-                const rx = (x - startX) / 2;
-                const ry = (y - startY) / 2;
-                ctx.ellipse(startX + rx, startY + ry, Math.abs(rx), Math.abs(ry), 0, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            logActivity('You', `drew a ${currentTool}`, '#8B5CF6');
-        } else if (currentTool === 'pencil') {
-            logActivity('You', 'drew with pencil', '#8B5CF6');
-        }
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-        if (isDrawing && (currentTool === 'pencil' || currentTool === 'eraser')) {
-            // finalize stroke
-        }
-        isDrawing = false;
-        octx.clearRect(0, 0, overlay.width, overlay.height);
-    });
-
-    // ── Text tool ──────────────────────────────────────────────────────────────
-    canvas.addEventListener('click', e => {
-        if (currentTool !== 'text') return;
-        const {x, y} = getXY(e);
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = rect.width  / canvas.width;
-        const scaleY = rect.height / canvas.height;
-
-        // Position textbox visually aligned with click
-        const dispX = (x * scaleX) + rect.left - wrapper.getBoundingClientRect().left;
-        const dispY = (y * scaleY) + rect.top  - wrapper.getBoundingClientRect().top;
-
-        textBox.style.display = 'block';
-        textBox.style.left    = dispX + 'px';
-        textBox.style.top     = dispY + 'px';
-        textBox.style.color   = drawColor;
-        textBox.style.fontSize = Math.max(12, brushSize * 4) + 'px';
-        textBox.dataset.canvasX = x;
-        textBox.dataset.canvasY = y;
-        textBox.value = '';
-        textBox.focus();
-    });
-
-    textBox.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitTextInput(); }
-        if (e.key === 'Escape') { textBox.style.display = 'none'; }
-    });
-
-    textBox.addEventListener('input', () => {
-        // Auto-grow height
-        textBox.style.height = 'auto';
-        textBox.style.height = textBox.scrollHeight + 'px';
-    });
-
-    function commitTextInput() {
-        if (textBox.style.display === 'none') return;
-        const text = textBox.value.trim();
-        if (text) {
-            saveState();
-            const cx = parseFloat(textBox.dataset.canvasX);
-            const cy = parseFloat(textBox.dataset.canvasY);
-            const fontSize = parseInt(textBox.style.fontSize) || 16;
-            ctx.font = `${fontSize}px Inter, sans-serif`;
-            ctx.fillStyle = drawColor;
-            // Multi-line support
-            text.split('\n').forEach((line, i) => {
-                ctx.fillText(line, cx, cy + fontSize + i * (fontSize * 1.4));
-            });
-            logActivity('You', 'added text', '#8B5CF6');
-        }
-        textBox.style.display = 'none';
+        saveState();
+        setupCtx();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        return;
     }
-
-    // Click outside textbox commits it
-    document.addEventListener('mousedown', e => {
-        if (e.target !== textBox && textBox.style.display !== 'none') {
-            commitTextInput();
-        }
-    });
-
-    // ── Zoom ──────────────────────────────────────────────────────────────────
-    let zoom = 1;
-    const ZOOM_STEP = 0.15;
-
-    function applyZoom() {
-        zoom = Math.round(zoom * 100) / 100;
-        canvas.style.transform  = `scale(${zoom})`;
-        canvas.style.transformOrigin = 'top left';
-        overlay.style.transform = `scale(${zoom})`;
-        overlay.style.transformOrigin = 'top left';
-        wrapper.style.height = (420 * zoom) + 'px';
-        document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%';
+ 
+    if (['line', 'rectangle', 'circle', 'arrow'].includes(tool)) {
+        isDrawing = true;
+        snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
     }
-
-    document.getElementById('zoomIn').addEventListener('click', () => { zoom = Math.min(3, zoom + ZOOM_STEP); applyZoom(); });
-    document.getElementById('zoomOut').addEventListener('click', () => { zoom = Math.max(0.3, zoom - ZOOM_STEP); applyZoom(); });
-    document.getElementById('zoomReset').addEventListener('click', () => { zoom = 1; applyZoom(); });
-
-    // Mouse wheel zoom
-    wrapper.addEventListener('wheel', e => {
-        if (e.ctrlKey || e.metaKey) {
-            e.preventDefault();
-            zoom = e.deltaY < 0 ? Math.min(3, zoom + 0.05) : Math.max(0.3, zoom - 0.05);
-            applyZoom();
-        }
-    }, { passive: false });
-
-    // ── Activity Feed ─────────────────────────────────────────────────────────
-    function logActivity(user, action, color, time = 'just now') {
-        const feed = document.getElementById('activityFeed');
-        const item = document.createElement('div');
-        item.className = 'activity-item';
-        item.innerHTML = `
-            <span class="activity-user" style="color:${color};">${user}</span>
-            <span>${action}</span>
-            <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">${time}</span>
-        `;
-        feed.insertBefore(item, feed.firstChild);
-        // Age existing timestamps
-        feed.querySelectorAll('.activity-item').forEach((el, i) => {
-            if (i > 0) {
-                const ts = el.querySelector('span:last-child');
-                if (ts && ts.textContent === 'just now') ts.textContent = '1s ago';
-            }
-        });
-        // Keep only 20 items
-        while (feed.children.length > 20) feed.removeChild(feed.lastChild);
+}
+ 
+function onMove(e) {
+    if (!isDrawing) return;
+    const { x, y } = getPos(e);
+ 
+    if (tool === 'pencil') {
+        setupCtx();
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        return;
     }
-
-    // ── Chat ──────────────────────────────────────────────────────────────────
-    function sendChat() {
-        const input = document.getElementById('chatInput');
-        const msg = input.value.trim();
-        if (msg) {
-            logActivity('You', `💬 "${msg}"`, '#8B5CF6');
-            input.value = '';
-        }
+ 
+    if (tool === 'eraser') {
+        const sz = Math.max(lineW * 4, 10);
+        ctx.clearRect(x - sz / 2, y - sz / 2, sz, sz);
+        return;
     }
-
-    document.getElementById('chatSend').addEventListener('click', sendChat);
-    document.getElementById('chatInput').addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendChat();
-    });
-
-    // ── Simulated remote cursor drift ─────────────────────────────────────────
-    const remoteCursors = [
-        { el: document.getElementById('cursorJohn'), x: 150, y: 100, dx: 0.4, dy: 0.3 },
-        { el: document.getElementById('cursorMike'),  x: 300, y: 200, dx: -0.3, dy: 0.5 },
-        { el: document.getElementById('cursorAlice'), x: 450, y: 150, dx: 0.5, dy: -0.4 },
-    ];
-
-    function animateCursors() {
-        remoteCursors.forEach(c => {
-            c.x += c.dx;
-            c.y += c.dy;
-            const maxX = wrapper.clientWidth - 20;
-            const maxY = 420 - 20;
-            if (c.x <= 10 || c.x >= maxX) c.dx *= -1;
-            if (c.y <= 10 || c.y >= maxY) c.dy *= -1;
-            c.el.style.left = c.x + 'px';
-            c.el.style.top  = c.y + 'px';
-        });
-        requestAnimationFrame(animateCursors);
+ 
+    if (['line', 'rectangle', 'circle', 'arrow'].includes(tool) && snapshot) {
+        ctx.putImageData(snapshot, 0, 0);
+        setupCtx();
+        drawShape(tool, startX, startY, x, y);
     }
-    animateCursors();
-
-    // ── Draw initial demo content ─────────────────────────────────────────────
-    function drawInitialContent() {
-        ctx.strokeStyle = '#8B5CF6'; ctx.lineWidth = 3;
-        ctx.strokeRect(50, 50, 110, 80);
-
-        ctx.fillStyle = '#10B981';
-        ctx.beginPath(); ctx.arc(230, 90, 38, 0, Math.PI*2); ctx.fill();
-
-        ctx.strokeStyle = '#F59E0B'; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.moveTo(320, 55); ctx.lineTo(440, 145); ctx.stroke();
-
-        ctx.strokeStyle = '#EF4444'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.ellipse(540, 95, 60, 38, 0.3, 0, Math.PI*2); ctx.stroke();
-
-        ctx.font = 'bold 18px Inter, sans-serif';
-        ctx.fillStyle = '#8B5CF6';
-        ctx.fillText('Collaborative Whiteboard', 80, 260);
-
-        ctx.font = '13px Inter, sans-serif';
-        ctx.fillStyle = '#94A3B8';
-        ctx.fillText('Draw, annotate, and collaborate in real-time', 80, 285);
+}
+ 
+function onEnd(e) {
+    if (!isDrawing) return;
+    isDrawing = false;
+ 
+    if (['line', 'rectangle', 'circle', 'arrow'].includes(tool) && snapshot) {
+        const pos = e.changedTouches ? getPos({ clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY }) : getPos(e);
+        ctx.putImageData(snapshot, 0, 0);
+        saveState();
+        setupCtx();
+        drawShape(tool, startX, startY, pos.x, pos.y);
+        logActivity('You', 'drew a ' + tool);
+        snapshot = null;
     }
-    drawInitialContent();
-
-})();
+}
+ 
+function drawShape(t, x1, y1, x2, y2) {
+    ctx.beginPath();
+    if (t === 'line') {
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    } else if (t === 'rectangle') {
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+    } else if (t === 'circle') {
+        const rx = Math.abs(x2 - x1) / 2, ry = Math.abs(y2 - y1) / 2;
+        ctx.ellipse(x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2, Math.max(rx, 1), Math.max(ry, 1), 0, 0, Math.PI * 2);
+        ctx.stroke();
+    } else if (t === 'arrow') {
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const hw = 14;
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - hw * Math.cos(angle - 0.4), y2 - hw * Math.sin(angle - 0.4));
+        ctx.lineTo(x2 - hw * Math.cos(angle + 0.4), y2 - hw * Math.sin(angle + 0.4));
+        ctx.closePath(); ctx.fill();
+    }
+}
+ 
+// ── TEXT TOOL ──────────────────────────────────────────────────────────────────
+let textX = 0, textY = 0;
+ 
+function showTextInput(x, y) {
+    const r = canvas.getBoundingClientRect();
+    const sx = r.width / canvas.width;
+    const sy = r.height / canvas.height;
+    textX = x; textY = y;
+    textInput.style.display = 'block';
+    textInput.style.left = (x * sx) + 'px';
+    textInput.style.top = (y * sy) + 'px';
+    textInput.style.color = color;
+    textInput.style.fontSize = Math.max(14, lineW * 3) + 'px';
+    textInput.value = '';
+    setTimeout(() => textInput.focus(), 10);
+}
+ 
+function hideTextInput() {
+    if (textInput.style.display === 'none') return;
+    const txt = textInput.value.trim();
+    if (txt) {
+        saveState();
+        const fs = Math.max(14, lineW * 3);
+        ctx.font = `${fs}px 'Space Grotesk', sans-serif`;
+        ctx.fillStyle = color;
+        ctx.fillText(txt, textX, textY + fs);
+        logActivity('You', 'added text');
+    }
+    textInput.style.display = 'none';
+    textInput.value = '';
+}
+ 
+textInput.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { textInput.style.display = 'none'; textInput.value = ''; }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); hideTextInput(); }
+});
+textInput.addEventListener('blur', () => setTimeout(hideTextInput, 100));
+ 
+// ── ZOOM ───────────────────────────────────────────────────────────────────────
+let zoom = 1;
+ 
+function applyZoom() {
+    canvas.style.transformOrigin = 'top left';
+    canvas.style.transform = `scale(${zoom})`;
+    wrapper.style.height = (420 * zoom) + 'px';
+    document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%';
+}
+ 
+document.getElementById('zoomIn').addEventListener('click', () => { zoom = Math.min(3, +(zoom + 0.15).toFixed(2)); applyZoom(); });
+document.getElementById('zoomOut').addEventListener('click', () => { zoom = Math.max(0.3, +(zoom - 0.15).toFixed(2)); applyZoom(); });
+document.getElementById('zoomReset').addEventListener('click', () => { zoom = 1; applyZoom(); });
+ 
+// ── ACTIVITY ───────────────────────────────────────────────────────────────────
+const userColors = { You: 'var(--accent)', John: '#0fc98a', Mike: '#f5a623', Alice: '#f04f5a' };
+ 
+function logActivity(user, action) {
+    const list = document.getElementById('activityList');
+    const div = document.createElement('div');
+    div.className = 'activity-item';
+    div.style.animation = 'fadeIn 0.25s ease';
+    div.innerHTML = `<span class="activity-user" style="color:${userColors[user] || '#fff'}">${user}</span><span>${action}</span><span class="activity-time">just now</span>`;
+    list.insertBefore(div, list.firstChild);
+    while (list.children.length > 6) list.removeChild(list.lastChild);
+}
+ 
+// ── CHAT ───────────────────────────────────────────────────────────────────────
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    const now = new Date();
+    const t = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.innerHTML = `<span class="msg-user" style="color:var(--accent);">You</span><span class="msg-time">${t}</span>${msg}`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    input.value = '';
+    logActivity('You', 'sent a message');
+}
+ 
+document.getElementById('sendBtn').addEventListener('click', sendMessage);
+document.getElementById('chatInput').addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+ 
+// ── ANIMATED REMOTE CURSORS ────────────────────────────────────────────────────
+const cursorPaths = {
+    'cursor-john':  [[160,90],[230,130],[280,80],[220,60],[160,90]],
+    'cursor-mike':  [[320,210],[390,250],[420,195],[360,175],[320,210]],
+    'cursor-alice': [[480,155],[530,185],[570,150],[535,125],[480,155]],
+};
+ 
+Object.entries(cursorPaths).forEach(([id, path]) => {
+    let i = 0;
+    setInterval(() => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const [x, y] = path[i % path.length];
+        el.style.cssText += `left:${x}px;top:${y}px;transition:left 1.3s ease,top 1.3s ease;`;
+        i++;
+    }, 1500);
+});
+ 
+// ── INITIAL CONTENT ────────────────────────────────────────────────────────────
+function drawInitialContent() {
+    const c = ctx, w = canvas.width, h = canvas.height;
+ 
+    // Grid
+    c.save();
+    c.strokeStyle = 'rgba(255,255,255,0.03)';
+    c.lineWidth = 1;
+    for (let x = 0; x < w; x += 40) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); }
+    for (let y = 0; y < h; y += 40) { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); }
+    c.restore();
+ 
+    // Purple rect
+    c.strokeStyle = '#7c5af0'; c.lineWidth = 2.5;
+    c.strokeRect(50, 50, 110, 80);
+ 
+    // Green filled circle
+    c.fillStyle = 'rgba(15,201,138,0.85)';
+    c.beginPath(); c.arc(255, 95, 38, 0, Math.PI * 2); c.fill();
+ 
+    // Arrow
+    c.strokeStyle = '#f5a623'; c.fillStyle = '#f5a623'; c.lineWidth = 2.5;
+    const ax1=360, ay1=60, ax2=470, ay2=150;
+    const ang = Math.atan2(ay2-ay1, ax2-ax1);
+    c.beginPath(); c.moveTo(ax1, ay1); c.lineTo(ax2, ay2); c.stroke();
+    c.beginPath();
+    c.moveTo(ax2, ay2);
+    c.lineTo(ax2 - 14*Math.cos(ang-0.4), ay2 - 14*Math.sin(ang-0.4));
+    c.lineTo(ax2 - 14*Math.cos(ang+0.4), ay2 - 14*Math.sin(ang+0.4));
+    c.closePath(); c.fill();
+ 
+    // Title
+    c.font = "bold 17px 'Space Grotesk', sans-serif";
+    c.fillStyle = 'rgba(232,237,245,0.65)';
+    c.fillText('Collaborative Whiteboard', 80, 240);
+ 
+    // Red circle outline
+    c.strokeStyle = '#f04f5a'; c.lineWidth = 2;
+    c.beginPath(); c.arc(500, 100, 32, 0, Math.PI * 2); c.stroke();
+ 
+    // Dashed connector
+    c.setLineDash([5, 5]);
+    c.strokeStyle = 'rgba(255,255,255,0.15)'; c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(160, 90); c.lineTo(260, 90); c.stroke();
+    c.setLineDash([]);
+}
+ 
+// ── INIT ───────────────────────────────────────────────────────────────────────
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 </script>
 </body>
 </html>

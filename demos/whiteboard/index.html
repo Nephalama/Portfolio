@@ -7,11 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: linear-gradient(135deg, #020617, #0F172A);
@@ -30,9 +26,9 @@
             background: rgba(30, 41, 59, 0.5);
             backdrop-filter: blur(10px);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
             padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
 
         h1 {
@@ -50,18 +46,19 @@
         .badge {
             display: inline-block;
             padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.2);
+            background: rgba(16,185,129,0.2);
             color: #10B981;
             border-radius: 50px;
             font-size: 0.8rem;
             font-weight: 600;
+            -webkit-text-fill-color: #10B981;
         }
 
         .toolbar {
             display: flex;
             gap: 0.5rem;
             padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255,255,255,0.03);
             border-radius: 16px;
             margin-bottom: 1rem;
             flex-wrap: wrap;
@@ -69,13 +66,10 @@
         }
 
         .tool-btn {
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 10px;
             color: #F8FAFC;
             cursor: pointer;
@@ -83,60 +77,69 @@
             font-size: 1.1rem;
         }
 
-        .tool-btn:hover, .tool-btn.active {
-            background: #8B5CF6;
-            border-color: #8B5CF6;
-            transform: translateY(-2px);
-        }
+        .tool-btn:hover { background: rgba(139,92,246,0.4); border-color: #8B5CF6; transform: translateY(-2px); }
+        .tool-btn.active { background: #8B5CF6; border-color: #8B5CF6; }
 
-        .divider {
-            width: 1px;
-            height: 35px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 0 0.5rem;
-        }
+        .divider { width: 1px; height: 35px; background: rgba(255,255,255,0.1); margin: 0 0.5rem; }
 
         .color-picker {
-            width: 45px;
-            height: 45px;
+            width: 45px; height: 45px;
             border-radius: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255,255,255,0.1);
             cursor: pointer;
+            padding: 2px;
+            background: transparent;
         }
 
-        .canvas-container {
-            background: rgba(255, 255, 255, 0.02);
+        .brush-size {
+            display: flex; align-items: center; gap: 0.5rem;
+            color: #94A3B8; font-size: 0.8rem;
+        }
+
+        .brush-size input[type=range] {
+            width: 80px; accent-color: #8B5CF6;
+        }
+
+        .canvas-wrapper {
+            background: rgba(255,255,255,0.02);
             border-radius: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255,255,255,0.1);
             overflow: hidden;
             position: relative;
             margin-bottom: 1rem;
         }
 
         #whiteboardCanvas {
-            width: 100%;
-            height: 400px;
-            background: #0F172A;
-            cursor: crosshair;
             display: block;
+            background: #0F172A;
+        }
+
+        /* Overlay canvas for live shape preview */
+        #overlayCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            pointer-events: none;
+        }
+
+        .cursor-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
         }
 
         .cursor {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 20px; height: 20px;
             border: 2px solid;
             border-radius: 50%;
-            pointer-events: none;
             transform: translate(-50%, -50%);
             animation: pulse 2s infinite;
         }
 
         .cursor-label {
             position: absolute;
-            top: -25px;
-            left: 10px;
-            background: inherit;
+            top: -24px; left: 10px;
             color: white;
             padding: 2px 8px;
             border-radius: 12px;
@@ -144,416 +147,618 @@
             white-space: nowrap;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .users-panel {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            margin-bottom: 1rem;
-            align-items: center;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50px;
-        }
-
-        .user-status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #10B981;
-        }
-
-        .activity-panel {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 1rem;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #64748B;
-            font-size: 0.9rem;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-user {
-            font-weight: 600;
-        }
-
-        .chat-input {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 0.75rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: #F8FAFC;
-        }
-
-        .chat-input input:focus {
-            outline: none;
-            border-color: #8B5CF6;
-        }
-
-        .chat-input button {
-            padding: 0.75rem 1.5rem;
-            background: #8B5CF6;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .chat-input button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5);
-        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
         .zoom-controls {
             position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            background: rgba(0, 0, 0, 0.5);
+            bottom: 1rem; right: 1rem;
+            display: flex; gap: 0.5rem;
+            background: rgba(0,0,0,0.6);
             padding: 0.5rem;
             border-radius: 10px;
             backdrop-filter: blur(5px);
+            align-items: center;
         }
 
         .zoom-btn {
-            width: 35px;
-            height: 35px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
+            width: 35px; height: 35px;
+            background: rgba(255,255,255,0.1);
+            border: none; border-radius: 8px;
+            color: white; cursor: pointer;
             transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
-        .zoom-btn:hover {
-            background: #8B5CF6;
+        .zoom-btn:hover { background: #8B5CF6; }
+        #zoomLabel { color: #94A3B8; font-size: 0.75rem; min-width: 38px; text-align: center; }
+
+        .users-panel {
+            display: flex; gap: 1rem; padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px; margin-bottom: 1rem;
+            align-items: center; flex-wrap: wrap;
+        }
+
+        .user-info {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50px;
+        }
+
+        .user-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.8rem;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .user-status {
+            width: 8px; height: 8px;
+            border-radius: 50%; background: #10B981;
+        }
+
+        .activity-panel {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px; padding: 1rem;
+        }
+
+        .activity-feed {
+            max-height: 160px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139,92,246,0.3) transparent;
+        }
+
+        .activity-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #94A3B8; font-size: 0.85rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-user { font-weight: 600; }
+
+        .chat-input { display: flex; gap: 0.5rem; margin-top: 1rem; }
+
+        .chat-input input {
+            flex: 1; padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: #F8FAFC;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chat-input input:focus { outline: none; border-color: #8B5CF6; }
+
+        .chat-input button {
+            padding: 0.75rem 1.5rem;
+            background: #8B5CF6; border: none;
+            border-radius: 10px; color: white;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(139,92,246,0.5); }
+
+        #textInputBox {
+            display: none;
+            position: absolute;
+            background: transparent;
+            border: 1.5px dashed #8B5CF6;
+            color: #F8FAFC;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            padding: 4px 6px;
+            z-index: 20;
+            min-width: 120px;
+            resize: none;
+            overflow: hidden;
+            line-height: 1.4;
+            caret-color: #8B5CF6;
         }
     </style>
 </head>
 <body>
-    <div class="demo-container">
-        <h1>
-            <i class="fas fa-chalkboard"></i>
-            Collaboration Whiteboard
-            <span class="badge">Real-time</span>
-        </h1>
+<div class="demo-container">
+    <h1>
+        <i class="fas fa-chalkboard"></i>
+        Collaboration Whiteboard
+        <span class="badge">Real-time</span>
+    </h1>
 
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <button class="tool-btn active" title="Select"><i class="fas fa-mouse-pointer"></i></button>
-            <button class="tool-btn" title="Pencil"><i class="fas fa-pencil-alt"></i></button>
-            <button class="tool-btn" title="Eraser"><i class="fas fa-eraser"></i></button>
-            <button class="tool-btn" title="Line"><i class="fas fa-grip-lines"></i></button>
-            <button class="tool-btn" title="Rectangle"><i class="fas fa-square"></i></button>
-            <button class="tool-btn" title="Circle"><i class="far fa-circle"></i></button>
-            <button class="tool-btn" title="Text"><i class="fas fa-font"></i></button>
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <button class="tool-btn" data-tool="select" title="Select"><i class="fas fa-mouse-pointer"></i></button>
+        <button class="tool-btn active" data-tool="pencil" title="Pencil"><i class="fas fa-pencil-alt"></i></button>
+        <button class="tool-btn" data-tool="eraser" title="Eraser"><i class="fas fa-eraser"></i></button>
+        <button class="tool-btn" data-tool="line" title="Line"><i class="fas fa-grip-lines"></i></button>
+        <button class="tool-btn" data-tool="rectangle" title="Rectangle"><i class="fas fa-square"></i></button>
+        <button class="tool-btn" data-tool="circle" title="Circle"><i class="far fa-circle"></i></button>
+        <button class="tool-btn" data-tool="text" title="Text"><i class="fas fa-font"></i></button>
 
-            <div class="divider"></div>
+        <div class="divider"></div>
 
-            <input type="color" id="colorPicker" value="#8B5CF6" class="color-picker">
+        <input type="color" id="colorPicker" value="#8B5CF6" class="color-picker" title="Color">
 
-            <div class="divider"></div>
-
-            <button class="tool-btn" title="Undo"><i class="fas fa-undo"></i></button>
-            <button class="tool-btn" title="Redo"><i class="fas fa-redo"></i></button>
-            <button class="tool-btn" title="Clear All"><i class="fas fa-trash"></i></button>
-
-            <div style="flex: 1;"></div>
-
-            <span style="color: #64748B;">
-                <i class="fas fa-users"></i> 3 online
-            </span>
+        <div class="brush-size">
+            <i class="fas fa-circle" style="font-size:0.4rem"></i>
+            <input type="range" id="brushSize" min="1" max="30" value="2">
+            <i class="fas fa-circle" style="font-size:0.9rem; color:#64748B"></i>
         </div>
 
-        <!-- Canvas Area -->
-        <div class="canvas-container" id="canvasContainer">
-            <canvas id="whiteboardCanvas" width="900" height="400"></canvas>
+        <div class="divider"></div>
 
-            <!-- Remote Cursors -->
-            <div class="cursor" style="left: 150px; top: 100px; border-color: #10B981;">
-                <span class="cursor-label" style="background: #10B981;">John</span>
-            </div>
-            <div class="cursor" style="left: 300px; top: 200px; border-color: #F59E0B;">
-                <span class="cursor-label" style="background: #F59E0B;">Mike</span>
-            </div>
-            <div class="cursor" style="left: 450px; top: 150px; border-color: #EF4444;">
-                <span class="cursor-label" style="background: #EF4444;">Alice</span>
-            </div>
+        <button class="tool-btn" data-action="undo" title="Undo"><i class="fas fa-undo"></i></button>
+        <button class="tool-btn" data-action="redo" title="Redo"><i class="fas fa-redo"></i></button>
+        <button class="tool-btn" data-action="clear" title="Clear All"><i class="fas fa-trash"></i></button>
 
-            <!-- Zoom Controls -->
-            <div class="zoom-controls">
-                <button class="zoom-btn"><i class="fas fa-search-plus"></i></button>
-                <button class="zoom-btn"><i class="fas fa-search-minus"></i></button>
-                <button class="zoom-btn"><i class="fas fa-expand"></i></button>
+        <div style="flex:1"></div>
+        <span style="color:#64748B; font-size:0.9rem;"><i class="fas fa-users"></i> 4 online</span>
+    </div>
+
+    <!-- Canvas Area -->
+    <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="whiteboardCanvas"></canvas>
+        <canvas id="overlayCanvas"></canvas>
+
+        <div class="cursor-layer">
+            <div class="cursor" id="cursorJohn" style="left:150px;top:100px;border-color:#10B981;">
+                <span class="cursor-label" style="background:#10B981;">John</span>
+            </div>
+            <div class="cursor" id="cursorMike" style="left:300px;top:200px;border-color:#F59E0B;">
+                <span class="cursor-label" style="background:#F59E0B;">Mike</span>
+            </div>
+            <div class="cursor" id="cursorAlice" style="left:450px;top:150px;border-color:#EF4444;">
+                <span class="cursor-label" style="background:#EF4444;">Alice</span>
             </div>
         </div>
 
-        <!-- Users Panel -->
-        <div class="users-panel">
-            <div class="user-info">
-                <div class="user-avatar" style="background: #8B5CF6;">YD</div>
-                <div>
-                    <div style="font-weight: 600;">You</div>
-                    <div style="color: #64748B; font-size: 0.8rem;">Drawing</div>
-                </div>
-                <div class="user-status"></div>
-            </div>
+        <textarea id="textInputBox" rows="1" placeholder="Type here..."></textarea>
 
-            <div class="user-info">
-                <div class="user-avatar" style="background: #10B981;">JD</div>
-                <div>
-                    <div style="font-weight: 600;">John Doe</div>
-                    <div style="color: #64748B; font-size: 0.8rem;">Selecting</div>
-                </div>
-                <div class="user-status"></div>
-            </div>
-
-            <div class="user-info">
-                <div class="user-avatar" style="background: #F59E0B;">MK</div>
-                <div>
-                    <div style="font-weight: 600;">Mike Chen</div>
-                    <div style="color: #64748B; font-size: 0.8rem;">Drawing</div>
-                </div>
-                <div class="user-status"></div>
-            </div>
-
-            <div class="user-info">
-                <div class="user-avatar" style="background: #EF4444;">AL</div>
-                <div>
-                    <div style="font-weight: 600;">Alice Lee</div>
-                    <div style="color: #64748B; font-size: 0.8rem;">Idle</div>
-                </div>
-                <div class="user-status"></div>
-            </div>
-        </div>
-
-        <!-- Activity Panel -->
-        <div class="activity-panel">
-            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-                <i class="fas fa-comment-alt" style="color: #8B5CF6;"></i>
-                <span style="font-weight: 600;">Live Activity</span>
-            </div>
-
-            <div class="activity-item">
-                <span class="activity-user" style="color: #10B981;">John</span>
-                <span>added a rectangle</span>
-                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">just now</span>
-            </div>
-
-            <div class="activity-item">
-                <span class="activity-user" style="color: #F59E0B;">Mike</span>
-                <span>drew a line</span>
-                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">1m ago</span>
-            </div>
-
-            <div class="activity-item">
-                <span class="activity-user" style="color: #EF4444;">Alice</span>
-                <span>changed color to red</span>
-                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">2m ago</span>
-            </div>
-
-            <div class="activity-item">
-                <span class="activity-user" style="color: #8B5CF6;">You</span>
-                <span>joined the session</span>
-                <span style="margin-left: auto; color: #64748B; font-size: 0.7rem;">5m ago</span>
-            </div>
-
-            <!-- Chat Input -->
-            <div class="chat-input">
-                <input type="text" placeholder="Type a message...">
-                <button><i class="fas fa-paper-plane"></i></button>
-            </div>
+        <div class="zoom-controls">
+            <button class="zoom-btn" id="zoomIn" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+            <span id="zoomLabel">100%</span>
+            <button class="zoom-btn" id="zoomOut" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+            <button class="zoom-btn" id="zoomReset" title="Reset Zoom"><i class="fas fa-expand"></i></button>
         </div>
     </div>
 
-    <script>
-const canvas = document.getElementById('whiteboardCanvas');
-const ctx = canvas.getContext('2d');
-const container = document.getElementById('canvasContainer');
+    <!-- Users Panel -->
+    <div class="users-panel">
+        <div class="user-info">
+            <div class="user-avatar" style="background:#8B5CF6;">YD</div>
+            <div><div style="font-weight:600;">You</div><div style="color:#64748B;font-size:0.78rem;" id="yourStatus">Drawing</div></div>
+            <div class="user-status"></div>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar" style="background:#10B981;">JD</div>
+            <div><div style="font-weight:600;">John Doe</div><div style="color:#64748B;font-size:0.78rem;">Selecting</div></div>
+            <div class="user-status"></div>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar" style="background:#F59E0B;">MK</div>
+            <div><div style="font-weight:600;">Mike Chen</div><div style="color:#64748B;font-size:0.78rem;">Drawing</div></div>
+            <div class="user-status"></div>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar" style="background:#EF4444;">AL</div>
+            <div><div style="font-weight:600;">Alice Lee</div><div style="color:#64748B;font-size:0.78rem;">Idle</div></div>
+            <div class="user-status"></div>
+        </div>
+    </div>
 
-// Undo/Redo stacks
-let undoStack = [];
-let redoStack = [];
+    <!-- Activity Panel -->
+    <div class="activity-panel">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+            <i class="fas fa-comment-alt" style="color:#8B5CF6;"></i>
+            <span style="font-weight:600;">Live Activity</span>
+        </div>
+        <div class="activity-feed" id="activityFeed">
+            <div class="activity-item">
+                <span class="activity-user" style="color:#10B981;">John</span>
+                <span>added a rectangle</span>
+                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">just now</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-user" style="color:#F59E0B;">Mike</span>
+                <span>drew a line</span>
+                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">1m ago</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-user" style="color:#EF4444;">Alice</span>
+                <span>changed color to red</span>
+                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">2m ago</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-user" style="color:#8B5CF6;">You</span>
+                <span>joined the session</span>
+                <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">5m ago</span>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
 
-// Tool & drawing state
-let currentTool = 'select';
-let drawingColor = '#8B5CF6';
-let isDrawing = false;
-let startX = 0;
-let startY = 0;
+<script>
+(function() {
+    const wrapper = document.getElementById('canvasWrapper');
+    const canvas  = document.getElementById('whiteboardCanvas');
+    const overlay = document.getElementById('overlayCanvas');
+    const ctx     = canvas.getContext('2d');
+    const octx    = overlay.getContext('2d');
+    const textBox = document.getElementById('textInputBox');
 
-// Save canvas state for undo
-function saveState() {
-    undoStack.push(canvas.toDataURL());
-    if (undoStack.length > 50) undoStack.shift();
-    redoStack = [];
-}
+    // ── Canvas sizing ──────────────────────────────────────────────────────────
+    function resizeCanvases() {
+        const w = wrapper.clientWidth;
+        const h = 420;
+        // Preserve drawn content during resize
+        const snap = canvas.toDataURL();
+        canvas.width  = overlay.width  = w;
+        canvas.height = overlay.height = h;
+        canvas.style.height = overlay.style.height = h + 'px';
+        const img = new Image();
+        img.onload = () => ctx.drawImage(img, 0, 0);
+        img.src = snap;
+    }
+    resizeCanvases();
+    window.addEventListener('resize', resizeCanvases);
 
-// Load canvas image
-function loadImage(dataURL) {
-    const img = new Image();
-    img.src = dataURL;
-    img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-    };
-}
+    // ── State ──────────────────────────────────────────────────────────────────
+    let currentTool = 'pencil';
+    let drawColor   = '#8B5CF6';
+    let brushSize   = 2;
+    let isDrawing   = false;
+    let startX = 0, startY = 0;
+    let undoStack = [], redoStack = [];
 
-// Tool buttons
-document.querySelectorAll('.tool-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const title = this.getAttribute('title').toLowerCase();
-        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
+    // ── Undo / Redo helpers ────────────────────────────────────────────────────
+    function saveState() {
+        undoStack.push(canvas.toDataURL());
+        if (undoStack.length > 60) undoStack.shift();
+        redoStack = [];
+    }
 
-        if (title === 'undo') {
-            if (undoStack.length) {
-                redoStack.push(canvas.toDataURL());
-                loadImage(undoStack.pop());
+    function restoreState(dataURL) {
+        const img = new Image();
+        img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0); };
+        img.src = dataURL;
+    }
+
+    // ── Tool buttons ───────────────────────────────────────────────────────────
+    const drawingTools = ['pencil','eraser','line','rectangle','circle','text','select'];
+
+    document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            commitTextInput(); // commit any in-progress text
+            currentTool = btn.dataset.tool;
+            document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateCursor();
+            document.getElementById('yourStatus').textContent =
+                currentTool === 'select' ? 'Selecting' :
+                currentTool === 'eraser' ? 'Erasing'   :
+                currentTool === 'text'   ? 'Typing'    : 'Drawing';
+        });
+    });
+
+    document.querySelectorAll('.tool-btn[data-action]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const action = btn.dataset.action;
+            if (action === 'undo') {
+                if (undoStack.length) { redoStack.push(canvas.toDataURL()); restoreState(undoStack.pop()); logActivity('You', 'undid an action', '#8B5CF6'); }
+            } else if (action === 'redo') {
+                if (redoStack.length) { undoStack.push(canvas.toDataURL()); restoreState(redoStack.pop()); logActivity('You', 'redid an action', '#8B5CF6'); }
+            } else if (action === 'clear') {
+                if (confirm('Clear the entire whiteboard?')) {
+                    saveState();
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    logActivity('You', 'cleared the board', '#8B5CF6');
+                }
             }
-        } else if (title === 'redo') {
-            if (redoStack.length) {
-                undoStack.push(canvas.toDataURL());
-                loadImage(redoStack.pop());
-            }
-        } else if (title === 'clear all') {
+        });
+    });
+
+    // ── Color & brush ─────────────────────────────────────────────────────────
+    document.getElementById('colorPicker').addEventListener('input', e => {
+        drawColor = e.target.value;
+    });
+
+    document.getElementById('brushSize').addEventListener('input', e => {
+        brushSize = parseInt(e.target.value);
+    });
+
+    // ── Cursor style ──────────────────────────────────────────────────────────
+    function updateCursor() {
+        canvas.style.cursor =
+            currentTool === 'eraser' ? 'cell' :
+            currentTool === 'select' ? 'default' :
+            currentTool === 'text'   ? 'text' : 'crosshair';
+    }
+    updateCursor();
+
+    // ── Get canvas coords (handles zoom) ──────────────────────────────────────
+    function getXY(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width  / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top)  * scaleY
+        };
+    }
+
+    // ── Drawing helpers ────────────────────────────────────────────────────────
+    function applyStrokeStyle(context) {
+        context.strokeStyle = drawColor;
+        context.fillStyle   = drawColor;
+        context.lineWidth   = brushSize;
+        context.lineCap     = 'round';
+        context.lineJoin    = 'round';
+    }
+
+    // ── Mouse events ──────────────────────────────────────────────────────────
+    canvas.addEventListener('mousedown', e => {
+        if (currentTool === 'text') return; // handled by click
+        const {x, y} = getXY(e);
+        startX = x; startY = y;
+        isDrawing = true;
+        if (currentTool === 'pencil' || currentTool === 'eraser') {
             saveState();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        } else if (title === 'zoom in') {
-            zoomLevel += 0.1;
-            container.style.transform = `scale(${zoomLevel})`;
-        } else if (title === 'zoom out') {
-            zoomLevel = Math.max(0.5, zoomLevel - 0.1);
-            container.style.transform = `scale(${zoomLevel})`;
-        } else if (title === 'fullscreen') {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            } else {
-                container.requestFullscreen();
-            }
-        } else {
-            currentTool = title; // Set drawing tool
+            ctx.beginPath();
+            ctx.moveTo(x, y);
         }
     });
-});
 
-// Color picker
-document.getElementById('colorPicker').addEventListener('input', e => {
-    drawingColor = e.target.value;
-});
+    canvas.addEventListener('mousemove', e => {
+        if (!isDrawing) return;
+        const {x, y} = getXY(e);
 
-// Mouse events
-canvas.addEventListener('mousedown', e => {
-    startX = e.offsetX;
-    startY = e.offsetY;
-    if (['pencil', 'eraser', 'line', 'rectangle', 'circle'].includes(currentTool)) {
-        saveState();
-        isDrawing = true;
-    } else if (currentTool === 'text') {
-        const text = prompt('Enter text:');
-        if (text) {
-            ctx.fillStyle = drawingColor;
-            ctx.font = 'bold 16px Inter';
-            ctx.fillText(text, startX, startY);
+        if (currentTool === 'pencil') {
+            applyStrokeStyle(ctx);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        } else if (currentTool === 'eraser') {
+            const sz = brushSize * 5;
+            ctx.clearRect(x - sz/2, y - sz/2, sz, sz);
+        } else {
+            // Live shape preview on overlay
+            octx.clearRect(0, 0, overlay.width, overlay.height);
+            applyStrokeStyle(octx);
+            octx.beginPath();
+
+            if (currentTool === 'line') {
+                octx.moveTo(startX, startY);
+                octx.lineTo(x, y);
+                octx.stroke();
+            } else if (currentTool === 'rectangle') {
+                octx.strokeRect(startX, startY, x - startX, y - startY);
+            } else if (currentTool === 'circle') {
+                const rx = (x - startX) / 2;
+                const ry = (y - startY) / 2;
+                octx.ellipse(startX + rx, startY + ry, Math.abs(rx), Math.abs(ry), 0, 0, Math.PI * 2);
+                octx.stroke();
+            }
+        }
+    });
+
+    canvas.addEventListener('mouseup', e => {
+        if (!isDrawing) return;
+        isDrawing = false;
+        const {x, y} = getXY(e);
+        octx.clearRect(0, 0, overlay.width, overlay.height);
+
+        if (['line','rectangle','circle'].includes(currentTool)) {
             saveState();
+            applyStrokeStyle(ctx);
+            ctx.beginPath();
+
+            if (currentTool === 'line') {
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            } else if (currentTool === 'rectangle') {
+                ctx.strokeRect(startX, startY, x - startX, y - startY);
+            } else if (currentTool === 'circle') {
+                const rx = (x - startX) / 2;
+                const ry = (y - startY) / 2;
+                ctx.ellipse(startX + rx, startY + ry, Math.abs(rx), Math.abs(ry), 0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            logActivity('You', `drew a ${currentTool}`, '#8B5CF6');
+        } else if (currentTool === 'pencil') {
+            logActivity('You', 'drew with pencil', '#8B5CF6');
+        }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        if (isDrawing && (currentTool === 'pencil' || currentTool === 'eraser')) {
+            // finalize stroke
+        }
+        isDrawing = false;
+        octx.clearRect(0, 0, overlay.width, overlay.height);
+    });
+
+    // ── Text tool ──────────────────────────────────────────────────────────────
+    canvas.addEventListener('click', e => {
+        if (currentTool !== 'text') return;
+        const {x, y} = getXY(e);
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = rect.width  / canvas.width;
+        const scaleY = rect.height / canvas.height;
+
+        // Position textbox visually aligned with click
+        const dispX = (x * scaleX) + rect.left - wrapper.getBoundingClientRect().left;
+        const dispY = (y * scaleY) + rect.top  - wrapper.getBoundingClientRect().top;
+
+        textBox.style.display = 'block';
+        textBox.style.left    = dispX + 'px';
+        textBox.style.top     = dispY + 'px';
+        textBox.style.color   = drawColor;
+        textBox.style.fontSize = Math.max(12, brushSize * 4) + 'px';
+        textBox.dataset.canvasX = x;
+        textBox.dataset.canvasY = y;
+        textBox.value = '';
+        textBox.focus();
+    });
+
+    textBox.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitTextInput(); }
+        if (e.key === 'Escape') { textBox.style.display = 'none'; }
+    });
+
+    textBox.addEventListener('input', () => {
+        // Auto-grow height
+        textBox.style.height = 'auto';
+        textBox.style.height = textBox.scrollHeight + 'px';
+    });
+
+    function commitTextInput() {
+        if (textBox.style.display === 'none') return;
+        const text = textBox.value.trim();
+        if (text) {
+            saveState();
+            const cx = parseFloat(textBox.dataset.canvasX);
+            const cy = parseFloat(textBox.dataset.canvasY);
+            const fontSize = parseInt(textBox.style.fontSize) || 16;
+            ctx.font = `${fontSize}px Inter, sans-serif`;
+            ctx.fillStyle = drawColor;
+            // Multi-line support
+            text.split('\n').forEach((line, i) => {
+                ctx.fillText(line, cx, cy + fontSize + i * (fontSize * 1.4));
+            });
+            logActivity('You', 'added text', '#8B5CF6');
+        }
+        textBox.style.display = 'none';
+    }
+
+    // Click outside textbox commits it
+    document.addEventListener('mousedown', e => {
+        if (e.target !== textBox && textBox.style.display !== 'none') {
+            commitTextInput();
+        }
+    });
+
+    // ── Zoom ──────────────────────────────────────────────────────────────────
+    let zoom = 1;
+    const ZOOM_STEP = 0.15;
+
+    function applyZoom() {
+        zoom = Math.round(zoom * 100) / 100;
+        canvas.style.transform  = `scale(${zoom})`;
+        canvas.style.transformOrigin = 'top left';
+        overlay.style.transform = `scale(${zoom})`;
+        overlay.style.transformOrigin = 'top left';
+        wrapper.style.height = (420 * zoom) + 'px';
+        document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%';
+    }
+
+    document.getElementById('zoomIn').addEventListener('click', () => { zoom = Math.min(3, zoom + ZOOM_STEP); applyZoom(); });
+    document.getElementById('zoomOut').addEventListener('click', () => { zoom = Math.max(0.3, zoom - ZOOM_STEP); applyZoom(); });
+    document.getElementById('zoomReset').addEventListener('click', () => { zoom = 1; applyZoom(); });
+
+    // Mouse wheel zoom
+    wrapper.addEventListener('wheel', e => {
+        if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            zoom = e.deltaY < 0 ? Math.min(3, zoom + 0.05) : Math.max(0.3, zoom - 0.05);
+            applyZoom();
+        }
+    }, { passive: false });
+
+    // ── Activity Feed ─────────────────────────────────────────────────────────
+    function logActivity(user, action, color, time = 'just now') {
+        const feed = document.getElementById('activityFeed');
+        const item = document.createElement('div');
+        item.className = 'activity-item';
+        item.innerHTML = `
+            <span class="activity-user" style="color:${color};">${user}</span>
+            <span>${action}</span>
+            <span style="margin-left:auto;color:#64748B;font-size:0.7rem;">${time}</span>
+        `;
+        feed.insertBefore(item, feed.firstChild);
+        // Age existing timestamps
+        feed.querySelectorAll('.activity-item').forEach((el, i) => {
+            if (i > 0) {
+                const ts = el.querySelector('span:last-child');
+                if (ts && ts.textContent === 'just now') ts.textContent = '1s ago';
+            }
+        });
+        // Keep only 20 items
+        while (feed.children.length > 20) feed.removeChild(feed.lastChild);
+    }
+
+    // ── Chat ──────────────────────────────────────────────────────────────────
+    function sendChat() {
+        const input = document.getElementById('chatInput');
+        const msg = input.value.trim();
+        if (msg) {
+            logActivity('You', `💬 "${msg}"`, '#8B5CF6');
+            input.value = '';
         }
     }
-});
 
-canvas.addEventListener('mousemove', e => {
-    if (!isDrawing) return;
-    const x = e.offsetX;
-    const y = e.offsetY;
+    document.getElementById('chatSend').addEventListener('click', sendChat);
+    document.getElementById('chatInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendChat();
+    });
 
-    if (currentTool === 'pencil') {
-        ctx.strokeStyle = drawingColor;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        startX = x;
-        startY = y;
-    } else if (currentTool === 'eraser') {
-        ctx.clearRect(x - 5, y - 5, 10, 10);
-        startX = x;
-        startY = y;
+    // ── Simulated remote cursor drift ─────────────────────────────────────────
+    const remoteCursors = [
+        { el: document.getElementById('cursorJohn'), x: 150, y: 100, dx: 0.4, dy: 0.3 },
+        { el: document.getElementById('cursorMike'),  x: 300, y: 200, dx: -0.3, dy: 0.5 },
+        { el: document.getElementById('cursorAlice'), x: 450, y: 150, dx: 0.5, dy: -0.4 },
+    ];
+
+    function animateCursors() {
+        remoteCursors.forEach(c => {
+            c.x += c.dx;
+            c.y += c.dy;
+            const maxX = wrapper.clientWidth - 20;
+            const maxY = 420 - 20;
+            if (c.x <= 10 || c.x >= maxX) c.dx *= -1;
+            if (c.y <= 10 || c.y >= maxY) c.dy *= -1;
+            c.el.style.left = c.x + 'px';
+            c.el.style.top  = c.y + 'px';
+        });
+        requestAnimationFrame(animateCursors);
     }
-});
+    animateCursors();
 
-canvas.addEventListener('mouseup', e => {
-    if (!isDrawing) return;
-    const x = e.offsetX;
-    const y = e.offsetY;
-    ctx.strokeStyle = drawingColor;
+    // ── Draw initial demo content ─────────────────────────────────────────────
+    function drawInitialContent() {
+        ctx.strokeStyle = '#8B5CF6'; ctx.lineWidth = 3;
+        ctx.strokeRect(50, 50, 110, 80);
 
-    if (currentTool === 'line') {
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-    } else if (currentTool === 'rectangle') {
-        ctx.strokeRect(startX, startY, x - startX, y - startY);
-    } else if (currentTool === 'circle') {
-        ctx.beginPath();
-        const radius = Math.sqrt((x - startX)**2 + (y - startY)**2);
-        ctx.arc(startX, startY, radius, 0, Math.PI*2);
-        ctx.stroke();
+        ctx.fillStyle = '#10B981';
+        ctx.beginPath(); ctx.arc(230, 90, 38, 0, Math.PI*2); ctx.fill();
+
+        ctx.strokeStyle = '#F59E0B'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(320, 55); ctx.lineTo(440, 145); ctx.stroke();
+
+        ctx.strokeStyle = '#EF4444'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(540, 95, 60, 38, 0.3, 0, Math.PI*2); ctx.stroke();
+
+        ctx.font = 'bold 18px Inter, sans-serif';
+        ctx.fillStyle = '#8B5CF6';
+        ctx.fillText('Collaborative Whiteboard', 80, 260);
+
+        ctx.font = '13px Inter, sans-serif';
+        ctx.fillStyle = '#94A3B8';
+        ctx.fillText('Draw, annotate, and collaborate in real-time', 80, 285);
     }
-    isDrawing = false;
-});
+    drawInitialContent();
 
-// Undo/Redo keyboard shortcuts (optional)
-document.addEventListener('keydown', e => {
-    if (e.ctrlKey && e.key === 'z') {
-        if (undoStack.length) loadImage(undoStack.pop());
-    } else if (e.ctrlKey && e.key === 'y') {
-        if (redoStack.length) loadImage(redoStack.pop());
-    }
-});
+})();
 </script>
 </body>
 </html>

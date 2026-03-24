@@ -3,874 +3,1705 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeFi Optimizer | Interactive Demo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>YIELD.OS — DeFi Optimizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* [Keep all your existing CSS exactly as is] */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #080A0C;
+            --surface: #0E1117;
+            --surface-2: #141820;
+            --border: rgba(255,255,255,0.06);
+            --border-active: rgba(255,255,255,0.15);
+            --text: #F0F2F5;
+            --text-muted: #4A5568;
+            --text-dim: #2D3748;
+            --accent: #C8F55A;
+            --accent-dim: rgba(200,245,90,0.12);
+            --accent-glow: rgba(200,245,90,0.3);
+            --red: #FF4D4D;
+            --red-dim: rgba(255,77,77,0.12);
+            --amber: #FFB547;
+            --amber-dim: rgba(255,181,71,0.12);
+            --blue: #5B8BFF;
+            --blue-dim: rgba(91,139,255,0.12);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: linear-gradient(135deg, #020617, #0F172A);
-            color: #F8FAFC;
-            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
+            overflow-x: hidden;
         }
 
-        .demo-container {
-            max-width: 1200px;
-            width: 100%;
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #8B5CF6, #10B981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.2);
-            color: #10B981;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .portfolio-summary {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(16, 185, 129, 0.2));
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            margin-bottom: 2rem;
-        }
-
-        .portfolio-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .portfolio-value {
-            font-size: 3rem;
-            font-weight: 800;
-            color: #F8FAFC;
-        }
-
-        .portfolio-change {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10B981;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1rem;
-            border-radius: 12px;
-        }
-
-        .stat-label {
-            color: #64748B;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .protocols-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .protocol-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .protocol-card:hover {
-            border-color: #8B5CF6;
-            transform: translateX(5px);
-        }
-
-        .protocol-card.selected {
-            border-color: #10B981;
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .protocol-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .protocol-name {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .apy-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .apy-high {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10B981;
-        }
-
-        .apy-medium {
-            background: rgba(245, 158, 11, 0.2);
-            color: #F59E0B;
-        }
-
-        .apy-low {
-            background: rgba(239, 68, 68, 0.2);
-            color: #EF4444;
-        }
-
-        .protocol-details {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-
-        .detail-item {
-            color: #64748B;
-            font-size: 0.9rem;
-        }
-
-        .detail-value {
-            color: #F8FAFC;
-            font-weight: 600;
-        }
-
-        .risk-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
-
-        .risk-low { background: #10B981; }
-        .risk-medium { background: #F59E0B; }
-        .risk-high { background: #EF4444; }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #8B5CF6, #10B981);
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-
-        .strategy-card {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid #10B981;
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .strategy-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #10B981;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .strategy-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            background: #10B981;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.5);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .market-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .market-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1rem;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .market-value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #8B5CF6;
-        }
-
-        .toast {
+        /* Scanline overlay */
+        body::before {
+            content: '';
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #10B981;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            animation: slideIn 0.3s ease;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.03) 4px
+            );
+            pointer-events: none;
             z-index: 1000;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        /* Noise texture */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Layout */
+        .app {
+            display: grid;
+            grid-template-columns: 260px 1fr 320px;
+            grid-template-rows: 56px 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        /* Top Bar */
+        .topbar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            gap: 2rem;
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .logo-dot {
+            width: 7px; height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-glow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .topbar-nav {
+            display: flex;
+            gap: 0;
+            margin-left: 1rem;
+        }
+
+        .nav-item {
+            padding: 0 1rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+            border-bottom: 2px solid transparent;
+            position: relative;
+            top: 1px;
+        }
+
+        .nav-item.active {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-item:hover { color: var(--text); }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .network-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.6rem;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-radius: 3px;
+            border: 1px solid rgba(200,245,90,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .network-badge::before {
+            content: '';
+            width: 5px; height: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .gas-display {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .wallet-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            padding: 0.35rem 0.9rem;
+            background: transparent;
+            border: 1px solid var(--border-active);
+            color: var(--text);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.05em;
+        }
+
+        .wallet-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            border-right: 1px solid var(--border);
+            background: var(--surface);
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            padding: 0 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Portfolio card in sidebar */
+        .portfolio-card {
+            margin: 0 1rem 2rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .portfolio-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .portfolio-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 0.6rem;
+        }
+
+        .portfolio-change {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .portfolio-change.down { color: var(--red); }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1rem 0;
+        }
+
+        .mini-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .mini-stat {}
+
+        .mini-stat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+
+        .mini-stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        /* Protocol list in sidebar */
+        .protocol-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 2px solid transparent;
+            position: relative;
+        }
+
+        .protocol-item:hover {
+            background: rgba(255,255,255,0.02);
+            border-left-color: var(--border-active);
+        }
+
+        .protocol-item.active {
+            background: var(--accent-dim);
+            border-left-color: var(--accent);
+        }
+
+        .protocol-icon {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .protocol-info { flex: 1; min-width: 0; }
+
+        .protocol-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.1rem;
+        }
+
+        .protocol-chain {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+        }
+
+        .protocol-apy {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        /* Main content */
+        .main {
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .main::-webkit-scrollbar { width: 0; }
+
+        /* Section headers */
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 0.72rem;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Metric row */
+        .metric-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .metric-cell {
+            background: var(--surface);
+            padding: 1rem 1.25rem;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .metric-cell:hover { background: var(--surface-2); }
+
+        .metric-cell-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .metric-cell-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .metric-cell-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            margin-top: 0.2rem;
+        }
+
+        /* Chart area */
+        .chart-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .chart-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .chart-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 3px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: all 0.15s;
+        }
+
+        .chart-btn.active, .chart-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        /* SVG chart */
+        .chart-svg {
+            width: 100%;
+            height: 120px;
+            overflow: visible;
+        }
+
+        /* Protocol detail panel */
+        .protocol-detail {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .detail-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface-2);
+        }
+
+        .detail-protocol-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .detail-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+
+        .detail-apy-large {
+            text-align: right;
+        }
+
+        .detail-apy-number {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .detail-apy-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .detail-body {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .detail-stat {
+            background: var(--surface);
+            padding: 1rem 1.25rem;
+        }
+
+        .detail-stat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        /* Utilization bar */
+        .util-bar-track {
+            width: 100%;
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-top: 0.6rem;
+            overflow: hidden;
+        }
+
+        .util-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--accent);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* AI Strategy block */
+        .strategy-block {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .strategy-block::before {
+            content: 'AI RECOMMENDED';
+            position: absolute;
+            top: 1rem; right: 1rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            border: 1px solid rgba(200,245,90,0.2);
+        }
+
+        .strategy-top {
+            background: var(--surface-2);
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .strategy-name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            padding-right: 9rem;
+        }
+
+        .strategy-desc {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .strategy-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .strategy-metric {
+            background: var(--surface);
+            padding: 0.85rem 1rem;
+        }
+
+        .strategy-metric-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .strategy-metric-value {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .strategy-footer {
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+        }
+
+        .risk-pills {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .risk-pill {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            padding: 0.55rem 1.5rem;
+            background: var(--accent);
+            color: #080A0C;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-primary:hover {
+            background: #d4fa6a;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-ghost {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.06em;
+            padding: 0.45rem 1rem;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text);
+            border-color: var(--border-active);
+        }
+
+        /* Right panel */
+        .right-panel {
+            border-left: 1px solid var(--border);
+            background: var(--surface);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel::-webkit-scrollbar { width: 0; }
+
+        .panel-section {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-section-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Activity feed */
+        .activity-item {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+
+        .activity-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            margin-top: 0.35rem;
+            flex-shrink: 0;
+        }
+
+        .activity-text {
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .activity-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        /* Allocation donut (CSS only) */
+        .allocation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .alloc-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alloc-bar-track {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .alloc-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .alloc-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+            width: 70px;
+            flex-shrink: 0;
+        }
+
+        .alloc-pct {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            width: 35px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        /* Market ticker */
+        .ticker-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            cursor: default;
+        }
+
+        .ticker-row:last-child { border-bottom: none; }
+
+        .ticker-symbol {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .ticker-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .ticker-change {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--surface-2);
+            border: 1px solid var(--border-active);
+            color: var(--text);
+            padding: 0.65rem 1.25rem;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            opacity: 0;
+            transition: all 0.25s;
+            z-index: 9999;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast .toast-accent { color: var(--accent); }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main > * {
+            animation: fadeIn 0.3s ease both;
+        }
+
+        .main > *:nth-child(1) { animation-delay: 0.05s; }
+        .main > *:nth-child(2) { animation-delay: 0.1s; }
+        .main > *:nth-child(3) { animation-delay: 0.15s; }
+        .main > *:nth-child(4) { animation-delay: 0.2s; }
+
+        /* Blink cursor */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .cursor {
+            display: inline-block;
+            width: 2px; height: 0.9em;
+            background: var(--accent);
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+
+        /* Responsive grid collapse */
+        @media (max-width: 1100px) {
+            .app { grid-template-columns: 220px 1fr; }
+            .right-panel { display: none; }
+        }
+
+        @media (max-width: 760px) {
+            .app { grid-template-columns: 1fr; grid-template-rows: 56px auto 1fr; }
+            .sidebar { display: none; }
+            .metric-row { grid-template-columns: repeat(2, 1fr); }
+            .strategy-metrics { grid-template-columns: repeat(2, 1fr); }
+            .detail-body { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-    <div class="demo-container">
-        <h1>
-            <i class="fas fa-seedling"></i>
-            DeFi Yield Optimizer
-            <span class="badge">Multi-Chain</span>
-        </h1>
 
-        <!-- Portfolio Summary -->
-        <div class="portfolio-summary">
-            <div class="portfolio-header">
-                <div>
-                    <div style="color: #64748B; margin-bottom: 0.5rem;">Total Value Locked</div>
-                    <div class="portfolio-value" id="totalValue">$127,845.32</div>
-                </div>
-                <div class="portfolio-change" id="portfolioChange">
-                    <i class="fas fa-arrow-up"></i> +12.4%
-                </div>
-            </div>
+<div class="app">
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Daily Yield</div>
-                    <div class="stat-number" style="color: #10B981;" id="dailyYield">$42.18</div>
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div class="logo">
+            <div class="logo-dot"></div>
+            YIELD.OS
+        </div>
+        <nav class="topbar-nav">
+            <div class="nav-item active" data-tab="optimizer">Optimizer</div>
+            <div class="nav-item" data-tab="portfolio">Portfolio</div>
+            <div class="nav-item" data-tab="analytics">Analytics</div>
+            <div class="nav-item" data-tab="history">History</div>
+        </nav>
+        <div class="topbar-right">
+            <div class="gas-display" id="gasDisplay">⛽ <span id="gasVal">42</span> gwei</div>
+            <div class="network-badge">ETH MAINNET</div>
+            <button class="wallet-btn">0x3f...8a2c</button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="portfolio-card">
+            <div class="portfolio-label">Total Value Locked</div>
+            <div class="portfolio-value" id="tvlDisplay">$127,845</div>
+            <div class="portfolio-change" id="changeDisplay">▲ +12.4% (30d)</div>
+            <hr class="divider">
+            <div class="mini-stats">
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Daily Yield</div>
+                    <div class="mini-stat-value" style="color: var(--accent)" id="dailyYield">$42.18</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Active Strategies</div>
-                    <div class="stat-number" id="activeStrategies">4</div>
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Avg APY</div>
+                    <div class="mini-stat-value" id="avgApy">14.8%</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Avg APY</div>
-                    <div class="stat-number" style="color: #8B5CF6;" id="avgApy">14.8%</div>
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Active</div>
+                    <div class="mini-stat-value" id="activeCount">4</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Profit</div>
-                    <div class="stat-number" style="color: #10B981;" id="totalProfit">$3,245.67</div>
+                <div class="mini-stat">
+                    <div class="mini-stat-label">Profit</div>
+                    <div class="mini-stat-value" style="color: var(--accent)" id="totalProfit">$3,245</div>
                 </div>
             </div>
         </div>
 
-        <!-- Protocols Grid -->
-        <h2 style="margin-bottom: 1rem; font-size: 1.3rem; color: #8B5CF6;">
-            <i class="fas fa-chart-line"></i> Available Protocols
-        </h2>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Protocols</div>
 
-        <div class="protocols-grid" id="protocolsGrid">
-            <!-- Uniswap V3 -->
-            <div class="protocol-card" data-protocol="uniswap">
-                <div class="protocol-header">
-                    <div class="protocol-name">
-                        <i class="fab fa-ethereum" style="color: #8B5CF6;"></i>
-                        Uniswap V3
-                    </div>
-                    <span class="apy-badge apy-high">18.5% APY</span>
+            <div class="protocol-item active" data-key="uniswap">
+                <div class="protocol-icon" style="background: rgba(255,0,122,0.15); color: #FF007A;">V3</div>
+                <div class="protocol-info">
+                    <div class="protocol-name">Uniswap V3</div>
+                    <div class="protocol-chain">Ethereum · AMM</div>
                 </div>
-
-                <div class="protocol-details">
-                    <div class="detail-item">Pool</div>
-                    <div class="detail-value">ETH/USDC</div>
-                    <div class="detail-item">TVL</div>
-                    <div class="detail-value">$1.2B</div>
-                    <div class="detail-item">Risk Level</div>
-                    <div class="detail-value">
-                        <span class="risk-indicator risk-medium"></span>
-                        Medium
-                    </div>
-                    <div class="detail-item">Volume (24h)</div>
-                    <div class="detail-value">$124M</div>
-                </div>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 75%;"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #64748B; font-size: 0.8rem;">
-                    <span>Utilization</span>
-                    <span>75%</span>
-                </div>
+                <div class="protocol-apy" style="color: var(--accent)">18.5%</div>
             </div>
 
-            <!-- Aave V3 -->
-            <div class="protocol-card" data-protocol="aave">
-                <div class="protocol-header">
-                    <div class="protocol-name">
-                        <i class="fas fa-water" style="color: #10B981;"></i>
-                        Aave V3
-                    </div>
-                    <span class="apy-badge apy-medium">12.3% APY</span>
+            <div class="protocol-item" data-key="aave">
+                <div class="protocol-icon" style="background: rgba(180,87,255,0.15); color: #B457FF;">AA</div>
+                <div class="protocol-info">
+                    <div class="protocol-name">Aave V3</div>
+                    <div class="protocol-chain">Ethereum · Lending</div>
                 </div>
-
-                <div class="protocol-details">
-                    <div class="detail-item">Asset</div>
-                    <div class="detail-value">USDC</div>
-                    <div class="detail-item">TVL</div>
-                    <div class="detail-value">$850M</div>
-                    <div class="detail-item">Risk Level</div>
-                    <div class="detail-value">
-                        <span class="risk-indicator risk-low"></span>
-                        Low
-                    </div>
-                    <div class="detail-item">Borrow APY</div>
-                    <div class="detail-value">4.2%</div>
-                </div>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 45%;"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #64748B; font-size: 0.8rem;">
-                    <span>Utilization</span>
-                    <span>45%</span>
-                </div>
+                <div class="protocol-apy" style="color: var(--amber)">12.3%</div>
             </div>
 
-            <!-- Compound -->
-            <div class="protocol-card" data-protocol="compound">
-                <div class="protocol-header">
-                    <div class="protocol-name">
-                        <i class="fas fa-chart-line" style="color: #F59E0B;"></i>
-                        Compound
-                    </div>
-                    <span class="apy-badge apy-low">9.8% APY</span>
+            <div class="protocol-item" data-key="compound">
+                <div class="protocol-icon" style="background: rgba(0,210,130,0.15); color: #00D282;">C</div>
+                <div class="protocol-info">
+                    <div class="protocol-name">Compound</div>
+                    <div class="protocol-chain">Ethereum · Lending</div>
                 </div>
-
-                <div class="protocol-details">
-                    <div class="detail-item">Asset</div>
-                    <div class="detail-value">DAI</div>
-                    <div class="detail-item">TVL</div>
-                    <div class="detail-value">$720M</div>
-                    <div class="detail-item">Risk Level</div>
-                    <div class="detail-value">
-                        <span class="risk-indicator risk-low"></span>
-                        Low
-                    </div>
-                    <div class="detail-item">Borrow APY</div>
-                    <div class="detail-value">3.8%</div>
-                </div>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 60%;"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #64748B; font-size: 0.8rem;">
-                    <span>Utilization</span>
-                    <span>60%</span>
-                </div>
+                <div class="protocol-apy" style="color: var(--text-muted)">9.8%</div>
             </div>
 
-            <!-- Curve -->
-            <div class="protocol-card" data-protocol="curve">
-                <div class="protocol-header">
-                    <div class="protocol-name">
-                        <i class="fas fa-bolt" style="color: #EF4444;"></i>
-                        Curve
-                    </div>
-                    <span class="apy-badge apy-medium">14.2% APY</span>
+            <div class="protocol-item" data-key="curve">
+                <div class="protocol-icon" style="background: rgba(255,81,0,0.15); color: #FF5100;">CRV</div>
+                <div class="protocol-info">
+                    <div class="protocol-name">Curve</div>
+                    <div class="protocol-chain">Ethereum · Stable</div>
                 </div>
+                <div class="protocol-apy" style="color: var(--amber)">14.2%</div>
+            </div>
 
-                <div class="protocol-details">
-                    <div class="detail-item">Pool</div>
-                    <div class="detail-value">3CRV</div>
-                    <div class="detail-item">TVL</div>
-                    <div class="detail-value">$980M</div>
-                    <div class="detail-item">Risk Level</div>
-                    <div class="detail-value">
-                        <span class="risk-indicator risk-medium"></span>
-                        Medium
-                    </div>
-                    <div class="detail-item">Volume (24h)</div>
-                    <div class="detail-value">$89M</div>
+            <div class="protocol-item" data-key="balancer">
+                <div class="protocol-icon" style="background: rgba(91,139,255,0.15); color: var(--blue);">BAL</div>
+                <div class="protocol-info">
+                    <div class="protocol-name">Balancer</div>
+                    <div class="protocol-chain">Ethereum · AMM</div>
                 </div>
+                <div class="protocol-apy" style="color: var(--amber)">11.7%</div>
+            </div>
+        </div>
 
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 82%;"></div>
+        <div class="sidebar-section" style="padding: 0 1.25rem;">
+            <div class="sidebar-label" style="padding: 0; margin-bottom: 0.75rem;">Quick Actions</div>
+            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <button class="btn-ghost" style="width: 100%; text-align: left;" id="refreshBtn">↻ Refresh Market Data</button>
+                <button class="btn-ghost" style="width: 100%; text-align: left;" id="alertBtn">⌖ Set Price Alert</button>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- Metric row -->
+        <div class="metric-row">
+            <div class="metric-cell">
+                <div class="metric-cell-label">Best APY Available</div>
+                <div class="metric-cell-value" style="color: var(--accent)">24.8%</div>
+                <div class="metric-cell-sub" style="color: var(--accent)">▲ Uniswap V3 ETH/USDC</div>
+            </div>
+            <div class="metric-cell">
+                <div class="metric-cell-label">Total TVL (DeFi)</div>
+                <div class="metric-cell-value">$3.75B</div>
+                <div class="metric-cell-sub" style="color: var(--text-muted)">across 15 protocols</div>
+            </div>
+            <div class="metric-cell">
+                <div class="metric-cell-label">Gas — Avg / Fast</div>
+                <div class="metric-cell-value" id="gasMetric">42 / 58</div>
+                <div class="metric-cell-sub" style="color: var(--text-muted)">gwei · updated live</div>
+            </div>
+            <div class="metric-cell">
+                <div class="metric-cell-label">Active Users (24h)</div>
+                <div class="metric-cell-value" id="usersMetric">2,847</div>
+                <div class="metric-cell-sub" style="color: var(--accent)">▲ +4.2% vs yesterday</div>
+            </div>
+        </div>
+
+        <!-- Yield chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">Portfolio Yield <span class="cursor"></span></div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="setRange(this,'7d')">7D</button>
+                    <button class="chart-btn" onclick="setRange(this,'30d')">30D</button>
+                    <button class="chart-btn" onclick="setRange(this,'90d')">90D</button>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #64748B; font-size: 0.8rem;">
-                    <span>Utilization</span>
-                    <span>82%</span>
+            </div>
+            <svg class="chart-svg" id="yieldChart" viewBox="0 0 700 120">
+                <defs>
+                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#C8F55A" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="#C8F55A" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                <!-- grid lines -->
+                <line x1="0" y1="30" x2="700" y2="30" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                <line x1="0" y1="60" x2="700" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                <line x1="0" y1="90" x2="700" y2="90" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                <!-- chart fill -->
+                <path id="chartFill" fill="url(#chartGrad)"/>
+                <!-- chart line -->
+                <path id="chartLine" fill="none" stroke="#C8F55A" stroke-width="2" stroke-linejoin="round"/>
+                <!-- current dot -->
+                <circle id="chartDot" r="4" fill="#C8F55A" filter="drop-shadow(0 0 6px #C8F55A)"/>
+            </svg>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                <span style="font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--text-dim)" id="chartStart"></span>
+                <span style="font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--text-dim)" id="chartEnd"></span>
+            </div>
+        </div>
+
+        <!-- Protocol detail -->
+        <div class="protocol-detail" id="protocolDetail">
+            <!-- filled by JS -->
+        </div>
+
+        <!-- AI Strategy -->
+        <div class="strategy-block" id="strategyBlock">
+            <!-- filled by JS -->
+        </div>
+
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+
+        <div class="panel-section">
+            <div class="panel-section-title">Allocation</div>
+            <div class="allocation-list">
+                <div class="alloc-item">
+                    <div class="alloc-name" style="font-size: 0.78rem">Uniswap</div>
+                    <div class="alloc-bar-track">
+                        <div class="alloc-bar-fill" style="width: 42%; background: #FF007A;"></div>
+                    </div>
+                    <div class="alloc-pct">42%</div>
+                </div>
+                <div class="alloc-item">
+                    <div class="alloc-name" style="font-size: 0.78rem">Aave</div>
+                    <div class="alloc-bar-track">
+                        <div class="alloc-bar-fill" style="width: 28%; background: #B457FF;"></div>
+                    </div>
+                    <div class="alloc-pct">28%</div>
+                </div>
+                <div class="alloc-item">
+                    <div class="alloc-name" style="font-size: 0.78rem">Curve</div>
+                    <div class="alloc-bar-track">
+                        <div class="alloc-bar-fill" style="width: 18%; background: #FF5100;"></div>
+                    </div>
+                    <div class="alloc-pct">18%</div>
+                </div>
+                <div class="alloc-item">
+                    <div class="alloc-name" style="font-size: 0.78rem">Compound</div>
+                    <div class="alloc-bar-track">
+                        <div class="alloc-bar-fill" style="width: 12%; background: #00D282;"></div>
+                    </div>
+                    <div class="alloc-pct">12%</div>
                 </div>
             </div>
         </div>
 
-        <!-- AI Recommended Strategy -->
-        <div class="strategy-card" id="strategyCard">
-            <div class="strategy-header">
-                <i class="fas fa-robot"></i>
-                AI Recommended Strategy
+        <div class="panel-section">
+            <div class="panel-section-title">Market Prices</div>
+            <div class="ticker-row">
+                <div class="ticker-symbol">ETH</div>
+                <div class="ticker-price" id="ethPrice">$2,156.78</div>
+                <div class="ticker-change" style="color: var(--accent)" id="ethChange">+2.1%</div>
             </div>
-            <div class="strategy-content">
-                <div>
-                    <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.25rem;" id="strategyName">
-                        Uniswap V3 - ETH/USDC Concentrated Liquidity
-                    </div>
-                    <div style="color: #64748B;" id="strategyDetails">
-                        Expected APY: 22.4% • Impermanent Loss: Low
-                    </div>
-                    <div style="display: flex; gap: 2rem; margin-top: 1rem;" id="strategyMetrics">
-                        <div>
-                            <div style="color: #64748B; font-size: 0.8rem;">Optimal Range</div>
-                            <div style="font-weight: 600;" id="optimalRange">$1,800 - $2,200</div>
-                        </div>
-                        <div>
-                            <div style="color: #64748B; font-size: 0.8rem;">Current Price</div>
-                            <div style="font-weight: 600;" id="currentPrice">$2,156.78</div>
-                        </div>
-                        <div>
-                            <div style="color: #64748B; font-size: 0.8rem;">Fees Earned (24h)</div>
-                            <div style="font-weight: 600; color: #10B981;" id="feesEarned">$12.45</div>
-                        </div>
+            <div class="ticker-row">
+                <div class="ticker-symbol">BTC</div>
+                <div class="ticker-price">$67,234.00</div>
+                <div class="ticker-change" style="color: var(--accent)">+0.8%</div>
+            </div>
+            <div class="ticker-row">
+                <div class="ticker-symbol">UNI</div>
+                <div class="ticker-price">$8.42</div>
+                <div class="ticker-change" style="color: var(--red)">−1.2%</div>
+            </div>
+            <div class="ticker-row">
+                <div class="ticker-symbol">CRV</div>
+                <div class="ticker-price">$0.54</div>
+                <div class="ticker-change" style="color: var(--red)">−3.4%</div>
+            </div>
+            <div class="ticker-row">
+                <div class="ticker-symbol">AAVE</div>
+                <div class="ticker-price">$94.12</div>
+                <div class="ticker-change" style="color: var(--accent)">+5.2%</div>
+            </div>
+        </div>
+
+        <div class="panel-section" style="flex: 1;">
+            <div class="panel-section-title">Activity</div>
+            <div id="activityFeed">
+                <div class="activity-item">
+                    <div class="activity-dot" style="background: var(--accent)"></div>
+                    <div>
+                        <div class="activity-text">Yield harvested from Uniswap V3 ETH/USDC</div>
+                        <div class="activity-time">2 min ago · +$12.45</div>
                     </div>
                 </div>
-                <button class="btn" id="applyStrategyBtn">Apply Strategy</button>
+                <div class="activity-item">
+                    <div class="activity-dot" style="background: var(--amber)"></div>
+                    <div>
+                        <div class="activity-text">Rebalanced Aave allocation +3%</div>
+                        <div class="activity-time">18 min ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-dot" style="background: var(--accent)"></div>
+                    <div>
+                        <div class="activity-text">Curve 3CRV fees compounded</div>
+                        <div class="activity-time">1h 4m ago · +$10.23</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-dot" style="background: var(--blue)"></div>
+                    <div>
+                        <div class="activity-text">Gas saved via batched tx execution</div>
+                        <div class="activity-time">2h 30m ago · −$4.20 gas</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-dot" style="background: var(--red)"></div>
+                    <div>
+                        <div class="activity-text">ETH price hit lower alert bound</div>
+                        <div class="activity-time">5h ago · $2,100</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Market Stats -->
-        <div class="market-stats">
-            <div class="market-card">
-                <div style="color: #64748B; font-size: 0.8rem;">Total Protocols</div>
-                <div class="market-value" id="totalProtocols">15</div>
+    </aside>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const PROTOCOLS = {
+    uniswap: {
+        label: 'Uniswap V3',
+        subtitle: 'Automated Market Maker · Ethereum',
+        color: '#FF007A',
+        apy: 18.5,
+        tagText: 'AMM',
+        tagColor: 'rgba(255,0,122,0.3)',
+        tagTextColor: '#FF007A',
+        tvl: '$1.2B',
+        pool: 'ETH / USDC',
+        risk: 'Medium',
+        riskColor: 'var(--amber)',
+        volume: '$124M',
+        util: 75,
+        strategy: {
+            name: 'ETH/USDC Concentrated Liquidity · Uniswap V3',
+            desc: 'Deploy capital into a ±10% price range around current ETH price for maximum fee capture. Auto-rebalances when price drifts beyond threshold.',
+            expectedApy: '22.4%',
+            range: '$1,800–$2,200',
+            il: 'Low',
+            fees24h: '$12.45',
+        }
+    },
+    aave: {
+        label: 'Aave V3',
+        subtitle: 'Lending Protocol · Ethereum',
+        color: '#B457FF',
+        apy: 12.3,
+        tagText: 'LENDING',
+        tagColor: 'rgba(180,87,255,0.3)',
+        tagTextColor: '#B457FF',
+        tvl: '$850M',
+        pool: 'USDC Supply',
+        risk: 'Low',
+        riskColor: 'var(--accent)',
+        volume: 'N/A',
+        util: 45,
+        strategy: {
+            name: 'USDC Lending + Recursive Borrow · Aave V3',
+            desc: 'Supply USDC at 12.3% APY while using borrowed DAI at 4.2% to boost effective yield through recursive leverage at 1.3x.',
+            expectedApy: '12.8%',
+            range: 'Stable',
+            il: 'None',
+            fees24h: '$8.32',
+        }
+    },
+    compound: {
+        label: 'Compound',
+        subtitle: 'Lending Protocol · Ethereum',
+        color: '#00D282',
+        apy: 9.8,
+        tagText: 'LENDING',
+        tagColor: 'rgba(0,210,130,0.3)',
+        tagTextColor: '#00D282',
+        tvl: '$720M',
+        pool: 'DAI Supply',
+        risk: 'Low',
+        riskColor: 'var(--accent)',
+        volume: 'N/A',
+        util: 60,
+        strategy: {
+            name: 'DAI Supply + COMP Rewards · Compound',
+            desc: 'Earn 9.8% base APY on DAI with additional COMP token rewards. Auto-compounds COMP rewards daily to maximize effective return.',
+            expectedApy: '10.2%',
+            range: 'Stable',
+            il: 'None',
+            fees24h: '$5.67',
+        }
+    },
+    curve: {
+        label: 'Curve Finance',
+        subtitle: 'Stable AMM · Ethereum',
+        color: '#FF5100',
+        apy: 14.2,
+        tagText: 'STABLE',
+        tagColor: 'rgba(255,81,0,0.3)',
+        tagTextColor: '#FF5100',
+        tvl: '$980M',
+        pool: '3CRV (DAI/USDC/USDT)',
+        risk: 'Low',
+        riskColor: 'var(--accent)',
+        volume: '$89M',
+        util: 82,
+        strategy: {
+            name: '3CRV Stableswap + CRV Rewards · Curve',
+            desc: 'Provide liquidity to the 3pool (DAI/USDC/USDT) for trading fees plus CRV emissions. Lowest IL exposure of any protocol.',
+            expectedApy: '16.8%',
+            range: '$0.99–$1.01',
+            il: 'Very Low',
+            fees24h: '$10.23',
+        }
+    },
+    balancer: {
+        label: 'Balancer',
+        subtitle: 'Weighted AMM · Ethereum',
+        color: '#5B8BFF',
+        apy: 11.7,
+        tagText: 'AMM',
+        tagColor: 'rgba(91,139,255,0.3)',
+        tagTextColor: '#5B8BFF',
+        tvl: '$340M',
+        pool: 'wstETH/WETH 80/20',
+        risk: 'Low',
+        riskColor: 'var(--accent)',
+        volume: '$45M',
+        util: 52,
+        strategy: {
+            name: 'wstETH/WETH Boosted Pool · Balancer',
+            desc: 'Capital-efficient stETH/ETH pool with BAL rewards. Benefits from Lido staking yield on top of AMM fees.',
+            expectedApy: '13.1%',
+            range: '±5% peg',
+            il: 'Very Low',
+            fees24h: '$7.84',
+        }
+    }
+};
+
+let selected = 'uniswap';
+
+function renderDetail(key) {
+    const p = PROTOCOLS[key];
+    document.getElementById('protocolDetail').innerHTML = `
+        <div class="detail-header">
+            <div>
+                <div class="detail-protocol-name">
+                    ${p.label}
+                    <span class="detail-tag" style="border-color: ${p.tagColor}; color: ${p.tagTextColor}; background: ${p.tagColor}">${p.tagText}</span>
+                </div>
+                <div style="font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-top: 0.3rem">${p.subtitle}</div>
             </div>
-            <div class="market-card">
-                <div style="color: #64748B; font-size: 0.8rem;">Avg Gas (Gwei)</div>
-                <div class="market-value" id="avgGas">42</div>
-            </div>
-            <div class="market-card">
-                <div style="color: #64748B; font-size: 0.8rem;">Best APY</div>
-                <div class="market-value" style="color: #10B981;" id="bestApy">24.8%</div>
-            </div>
-            <div class="market-card">
-                <div style="color: #64748B; font-size: 0.8rem;">Active Users</div>
-                <div class="market-value" id="activeUsers">2,847</div>
+            <div class="detail-apy-large">
+                <div class="detail-apy-number" style="color: ${p.color}">${p.apy}%</div>
+                <div class="detail-apy-label">Current APY</div>
             </div>
         </div>
-
-        <!-- Quick Actions -->
-        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-            <button class="btn btn-secondary" style="flex: 1;" id="refreshBtn">
-                <i class="fas fa-sync-alt"></i> Refresh Data
-            </button>
-            <button class="btn btn-secondary" style="flex: 1;" id="analyticsBtn">
-                <i class="fas fa-chart-pie"></i> Portfolio Analytics
-            </button>
-            <button class="btn btn-secondary" style="flex: 1;" id="alertsBtn">
-                <i class="fas fa-bell"></i> Set Alerts
-            </button>
+        <div class="detail-body">
+            <div class="detail-stat">
+                <div class="detail-stat-label">Pool / Asset</div>
+                <div class="detail-stat-value">${p.pool}</div>
+            </div>
+            <div class="detail-stat">
+                <div class="detail-stat-label">Total Value Locked</div>
+                <div class="detail-stat-value">${p.tvl}</div>
+            </div>
+            <div class="detail-stat">
+                <div class="detail-stat-label">24h Volume</div>
+                <div class="detail-stat-value">${p.volume}</div>
+            </div>
+            <div class="detail-stat">
+                <div class="detail-stat-label">Risk Level</div>
+                <div class="detail-stat-value" style="color: ${p.riskColor}">${p.risk}</div>
+            </div>
+            <div class="detail-stat" style="grid-column: span 2">
+                <div class="detail-stat-label">Pool Utilization — ${p.util}%</div>
+                <div class="util-bar-track">
+                    <div class="util-bar-fill" style="width: ${p.util}%; background: ${p.color}"></div>
+                </div>
+            </div>
         </div>
-    </div>
+    `;
+}
 
-    <script>
-        // Interactive JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            // State management
-            let selectedProtocol = 'uniswap';
-            let refreshInterval;
+function renderStrategy(key) {
+    const p = PROTOCOLS[key];
+    const s = p.strategy;
+    document.getElementById('strategyBlock').innerHTML = `
+        <div class="strategy-top">
+            <div class="strategy-name">${s.name}</div>
+            <div class="strategy-desc">${s.desc}</div>
+        </div>
+        <div class="strategy-metrics">
+            <div class="strategy-metric">
+                <div class="strategy-metric-label">Expected APY</div>
+                <div class="strategy-metric-value" style="color: var(--accent)">${s.expectedApy}</div>
+            </div>
+            <div class="strategy-metric">
+                <div class="strategy-metric-label">Price Range</div>
+                <div class="strategy-metric-value">${s.range}</div>
+            </div>
+            <div class="strategy-metric">
+                <div class="strategy-metric-label">Imperm. Loss</div>
+                <div class="strategy-metric-value">${s.il}</div>
+            </div>
+            <div class="strategy-metric">
+                <div class="strategy-metric-label">Fees Earned 24h</div>
+                <div class="strategy-metric-value" style="color: var(--accent)">${s.fees24h}</div>
+            </div>
+        </div>
+        <div class="strategy-footer">
+            <div class="risk-pills">
+                <span class="risk-pill" style="border-color: var(--accent-glow); color: var(--accent); background: var(--accent-dim)">AUTO-COMPOUND</span>
+                <span class="risk-pill" style="border-color: var(--border-active); color: var(--text-muted)">GAS OPTIMIZED</span>
+            </div>
+            <button class="btn-primary" id="applyBtn">DEPLOY STRATEGY →</button>
+        </div>
+    `;
+    document.getElementById('applyBtn').addEventListener('click', () => {
+        showToast(`Deploying: ${p.label} strategy...`);
+        const btn = document.getElementById('applyBtn');
+        btn.textContent = '✓ DEPLOYED';
+        btn.style.background = '#86efac';
+        setTimeout(() => {
+            btn.textContent = 'DEPLOY STRATEGY →';
+            btn.style.background = '';
+            const count = document.getElementById('activeCount');
+            count.textContent = parseInt(count.textContent) + 1;
+        }, 2500);
+    });
+}
 
-            // Protocol data
-            const protocols = {
-                uniswap: {
-                    name: 'Uniswap V3',
-                    apy: 18.5,
-                    pool: 'ETH/USDC',
-                    tvl: '1.2B',
-                    risk: 'Medium',
-                    volume: '$124M',
-                    utilization: 75,
-                    strategy: {
-                        name: 'Uniswap V3 - ETH/USDC Concentrated Liquidity',
-                        expectedApy: 22.4,
-                        il: 'Low',
-                        range: '$1,800 - $2,200',
-                        price: '$2,156.78',
-                        fees: '$12.45'
-                    }
-                },
-                aave: {
-                    name: 'Aave V3',
-                    apy: 12.3,
-                    asset: 'USDC',
-                    tvl: '$850M',
-                    risk: 'Low',
-                    borrowApy: '4.2%',
-                    utilization: 45,
-                    strategy: {
-                        name: 'Aave V3 - USDC Lending',
-                        expectedApy: 12.8,
-                        il: 'None',
-                        depositApy: '12.3%',
-                        borrowApy: '4.2%',
-                        fees: '$8.32'
-                    }
-                },
-                compound: {
-                    name: 'Compound',
-                    apy: 9.8,
-                    asset: 'DAI',
-                    tvl: '$720M',
-                    risk: 'Low',
-                    borrowApy: '3.8%',
-                    utilization: 60,
-                    strategy: {
-                        name: 'Compound - DAI Supply',
-                        expectedApy: 10.2,
-                        il: 'None',
-                        depositApy: '9.8%',
-                        borrowApy: '3.8%',
-                        fees: '$5.67'
-                    }
-                },
-                curve: {
-                    name: 'Curve',
-                    apy: 14.2,
-                    pool: '3CRV',
-                    tvl: '$980M',
-                    risk: 'Medium',
-                    volume: '$89M',
-                    utilization: 82,
-                    strategy: {
-                        name: 'Curve - 3CRV Stable Pool',
-                        expectedApy: 16.8,
-                        il: 'Very Low',
-                        range: 'Stable',
-                        price: '$1.00',
-                        fees: '$10.23'
-                    }
-                }
-            };
+function selectProtocol(key) {
+    selected = key;
+    document.querySelectorAll('.protocol-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.key === key);
+    });
+    renderDetail(key);
+    renderStrategy(key);
+    drawChart();
+}
 
-            // DOM Elements
-            const protocolCards = document.querySelectorAll('.protocol-card');
-            const refreshBtn = document.getElementById('refreshBtn');
-            const analyticsBtn = document.getElementById('analyticsBtn');
-            const alertsBtn = document.getElementById('alertsBtn');
-            const applyStrategyBtn = document.getElementById('applyStrategyBtn');
+// Chart rendering
+function drawChart() {
+    const svg = document.getElementById('yieldChart');
+    const W = 700, H = 120, PAD = 8;
+    const points = generateChartData();
+    const min = Math.min(...points) - 2;
+    const max = Math.max(...points) + 2;
 
-            // Strategy display elements
-            const strategyName = document.getElementById('strategyName');
-            const strategyDetails = document.getElementById('strategyDetails');
-            const optimalRange = document.getElementById('optimalRange');
-            const currentPrice = document.getElementById('currentPrice');
-            const feesEarned = document.getElementById('feesEarned');
+    const coords = points.map((v, i) => {
+        const x = (i / (points.length - 1)) * W;
+        const y = H - PAD - ((v - min) / (max - min)) * (H - PAD * 2);
+        return [x, y];
+    });
 
-            // Portfolio elements
-            const totalValue = document.getElementById('totalValue');
-            const dailyYield = document.getElementById('dailyYield');
-            const activeStrategies = document.getElementById('activeStrategies');
-            const avgApy = document.getElementById('avgApy');
-            const totalProfit = document.getElementById('totalProfit');
-            const portfolioChange = document.getElementById('portfolioChange');
+    const linePath = 'M ' + coords.map(([x,y]) => `${x},${y}`).join(' L ');
+    const fillPath = linePath + ` L ${W},${H} L 0,${H} Z`;
 
-            // Market stats elements
-            const totalProtocols = document.getElementById('totalProtocols');
-            const avgGas = document.getElementById('avgGas');
-            const bestApy = document.getElementById('bestApy');
-            const activeUsers = document.getElementById('activeUsers');
+    document.getElementById('chartLine').setAttribute('d', linePath);
+    document.getElementById('chartFill').setAttribute('d', fillPath);
+    const last = coords[coords.length - 1];
+    document.getElementById('chartDot').setAttribute('cx', last[0]);
+    document.getElementById('chartDot').setAttribute('cy', last[1]);
+}
 
-            // Toast notification function
-            function showToast(message, type = 'success') {
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.style.background = type === 'success' ? '#10B981' : '#8B5CF6';
-                toast.textContent = message;
-                document.body.appendChild(toast);
+let chartRange = '7d';
+function setRange(btn, range) {
+    chartRange = range;
+    document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    drawChart();
+    const days = range === '7d' ? 7 : range === '30d' ? 30 : 90;
+    const now = new Date();
+    const start = new Date(now - days * 86400000);
+    document.getElementById('chartStart').textContent = start.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+    document.getElementById('chartEnd').textContent = 'Today';
+}
 
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
-            }
+function generateChartData() {
+    const n = chartRange === '7d' ? 28 : chartRange === '30d' ? 60 : 90;
+    const base = PROTOCOLS[selected].apy;
+    let v = base - 3;
+    return Array.from({length: n}, () => {
+        v += (Math.random() - 0.45) * 1.2;
+        v = Math.max(base - 6, Math.min(base + 4, v));
+        return v;
+    });
+}
 
-            // Update strategy display based on selected protocol
-            function updateStrategyDisplay(protocol) {
-                const data = protocols[protocol];
-                if (!data) return;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
 
-                strategyName.textContent = data.strategy.name;
+// Live data simulation
+function refreshData() {
+    const delta = (Math.random() - 0.45) * 500;
+    const base = 127845.32 + delta;
+    document.getElementById('tvlDisplay').textContent = '$' + base.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    document.getElementById('dailyYield').textContent = '$' + (42.18 + Math.random() * 4 - 2).toFixed(2);
+    document.getElementById('totalProfit').textContent = '$' + (3245 + Math.random() * 100 - 50).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    const apy = (14.8 + Math.random() * 2 - 1).toFixed(1);
+    document.getElementById('avgApy').textContent = apy + '%';
 
-                if (protocol === 'uniswap') {
-                    strategyDetails.textContent = `Expected APY: ${data.strategy.expectedApy}% • Impermanent Loss: ${data.strategy.il}`;
-                    optimalRange.textContent = data.strategy.range;
-                    currentPrice.textContent = data.strategy.price;
-                    feesEarned.textContent = data.strategy.fees;
-                } else if (protocol === 'aave') {
-                    strategyDetails.textContent = `Expected APY: ${data.strategy.expectedApy}% • Deposit APY: ${data.strategy.depositApy}`;
-                    optimalRange.parentElement.querySelector('div:first-child div:first-child').textContent = 'Deposit APY';
-                    optimalRange.textContent = data.strategy.depositApy;
-                    currentPrice.parentElement.querySelector('div:first-child div:first-child').textContent = 'Borrow APY';
-                    currentPrice.textContent = data.strategy.borrowApy;
-                    feesEarned.textContent = data.strategy.fees;
-                } else if (protocol === 'compound') {
-                    strategyDetails.textContent = `Expected APY: ${data.strategy.expectedApy}% • Risk: ${data.risk}`;
-                    optimalRange.parentElement.querySelector('div:first-child div:first-child').textContent = 'Supply APY';
-                    optimalRange.textContent = data.strategy.depositApy;
-                    currentPrice.parentElement.querySelector('div:first-child div:first-child').textContent = 'Borrow APY';
-                    currentPrice.textContent = data.strategy.borrowApy;
-                    feesEarned.textContent = data.strategy.fees;
-                } else if (protocol === 'curve') {
-                    strategyDetails.textContent = `Expected APY: ${data.strategy.expectedApy}% • IL: ${data.strategy.il}`;
-                    optimalRange.parentElement.querySelector('div:first-child div:first-child').textContent = 'Pool Type';
-                    optimalRange.textContent = data.strategy.range;
-                    currentPrice.parentElement.querySelector('div:first-child div:first-child').textContent = 'Token Price';
-                    currentPrice.textContent = data.strategy.price;
-                    feesEarned.textContent = data.strategy.fees;
-                }
-            }
+    const gas = Math.floor(35 + Math.random() * 20);
+    document.getElementById('gasVal').textContent = gas;
+    document.getElementById('gasMetric').textContent = gas + ' / ' + (gas + Math.floor(Math.random() * 20));
+    document.getElementById('usersMetric').textContent = (2500 + Math.floor(Math.random() * 700)).toLocaleString();
 
-            // Simulate data refresh
-            function refreshData() {
-                // Animate refresh button
-                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
-                refreshBtn.disabled = true;
+    // Simulate ETH price tick
+    const ethBase = 2156.78;
+    const eth = (ethBase + Math.random() * 80 - 40).toFixed(2);
+    document.getElementById('ethPrice').textContent = '$' + parseFloat(eth).toLocaleString('en-US', {minimumFractionDigits:2});
+    const ethChg = ((parseFloat(eth) - ethBase) / ethBase * 100).toFixed(2);
+    const ethEl = document.getElementById('ethChange');
+    ethEl.textContent = (ethChg >= 0 ? '+' : '') + ethChg + '%';
+    ethEl.style.color = ethChg >= 0 ? 'var(--accent)' : 'var(--red)';
 
-                setTimeout(() => {
-                    // Generate random fluctuations
-                    const newTotal = 127845.32 + (Math.random() * 2000 - 1000);
-                    const newDaily = 42.18 + (Math.random() * 10 - 5);
-                    const newProfit = 3245.67 + (Math.random() * 100 - 50);
-                    const newApy = 14.8 + (Math.random() * 2 - 1);
-                    const newChange = 12.4 + (Math.random() * 4 - 2);
+    drawChart();
+}
 
-                    // Update portfolio
-                    totalValue.textContent = `$${newTotal.toFixed(2)}`;
-                    dailyYield.textContent = `$${newDaily.toFixed(2)}`;
-                    totalProfit.textContent = `$${newProfit.toFixed(2)}`;
-                    avgApy.textContent = `${newApy.toFixed(1)}%`;
+// Protocol item clicks
+document.querySelectorAll('.protocol-item').forEach(el => {
+    el.addEventListener('click', () => {
+        selectProtocol(el.dataset.key);
+        showToast(`Switched to ${PROTOCOLS[el.dataset.key].label}`);
+    });
+});
 
-                    const changeIcon = newChange >= 12.4 ? 'arrow-up' : 'arrow-down';
-                    const changeColor = newChange >= 12.4 ? '#10B981' : '#EF4444';
-                    portfolioChange.innerHTML = `<i class="fas fa-${changeIcon}"></i> ${newChange.toFixed(1)}%`;
-                    portfolioChange.style.color = changeColor;
-                    portfolioChange.style.background = newChange >= 12.4 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+// Refresh button
+document.getElementById('refreshBtn').addEventListener('click', () => {
+    refreshData();
+    showToast('Market data refreshed');
+});
 
-                    // Update market stats
-                    avgGas.textContent = Math.floor(35 + Math.random() * 20);
-                    activeUsers.textContent = Math.floor(2500 + Math.random() * 1000);
+// Alert button
+const alertBtnEl = document.getElementById('alertBtn');
+if (alertBtnEl) alertBtnEl.addEventListener('click', () => showToast('Alert set: ETH @ \u20242,200'));
 
-                    // Find best APY
-                    const apys = Object.values(protocols).map(p => p.apy);
-                    const maxApy = Math.max(...apys);
-                    bestApy.textContent = `${maxApy}%`;
+// ── Tab system ────────────────────────────────────────────────────────────────
+const OPTIMIZER_HTML = document.querySelector('.main').innerHTML;
 
-                    // Reset button
-                    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Data';
-                    refreshBtn.disabled = false;
+function initChartDateLabels() {
+    const d = new Date();
+    const s = document.getElementById('chartStart');
+    const e = document.getElementById('chartEnd');
+    if (s) s.textContent = new Date(d - 7*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    if (e) e.textContent = 'Today';
+}
 
-                    showToast('Portfolio data refreshed!', 'success');
-                }, 1500);
-            }
+const TAB_CONTENT = {
+    portfolio: () => `
+        <div class="metric-row">
+            <div class="metric-cell"><div class="metric-cell-label">Total Value Locked</div><div class="metric-cell-value" style="color:var(--accent)">$127,845</div><div class="metric-cell-sub" style="color:var(--accent)">▲ +12.4% (30d)</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Total Profit</div><div class="metric-cell-value">$3,245</div><div class="metric-cell-sub" style="color:var(--text-muted)">since inception</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Daily Yield</div><div class="metric-cell-value" style="color:var(--accent)">$42.18</div><div class="metric-cell-sub" style="color:var(--text-muted)">~$15,395 / year</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Active Strategies</div><div class="metric-cell-value">4</div><div class="metric-cell-sub" style="color:var(--text-muted)">across 4 protocols</div></div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">Portfolio Value Over Time</div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="setRange(this,'7d')">7D</button>
+                    <button class="chart-btn" onclick="setRange(this,'30d')">30D</button>
+                    <button class="chart-btn" onclick="setRange(this,'90d')">90D</button>
+                </div>
+            </div>
+            <svg class="chart-svg" id="yieldChart" viewBox="0 0 700 120">
+                <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C8F55A" stop-opacity="0.3"/><stop offset="100%" stop-color="#C8F55A" stop-opacity="0"/></linearGradient></defs>
+                <line x1="0" y1="30" x2="700" y2="30" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                <line x1="0" y1="60" x2="700" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                <line x1="0" y1="90" x2="700" y2="90" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                <path id="chartFill" fill="url(#chartGrad)"/>
+                <path id="chartLine" fill="none" stroke="#C8F55A" stroke-width="2" stroke-linejoin="round"/>
+                <circle id="chartDot" r="4" fill="#C8F55A" filter="drop-shadow(0 0 6px #C8F55A)"/>
+            </svg>
+            <div style="display:flex;justify-content:space-between;margin-top:0.5rem">
+                <span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text-dim)" id="chartStart"></span>
+                <span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text-dim)" id="chartEnd">Today</span>
+            </div>
+        </div>
+        <div class="protocol-detail">
+            <div class="detail-header" style="grid-template-columns:1fr"><div class="chart-title" style="font-size:0.9rem">Position Breakdown</div></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">
+                ${[
+                    {name:'Uniswap V3',pool:'ETH/USDC',value:'$53,714',apy:'18.5%',pnl:'+$1,420',color:'#FF007A'},
+                    {name:'Aave V3',pool:'USDC Supply',value:'$35,796',apy:'12.3%',pnl:'+$892',color:'#B457FF'},
+                    {name:'Curve',pool:'3CRV',value:'$23,012',apy:'14.2%',pnl:'+$614',color:'#FF5100'},
+                    {name:'Compound',pool:'DAI Supply',value:'$15,323',apy:'9.8%',pnl:'+$319',color:'#00D282'},
+                ].map(p => `<div class="detail-stat" style="padding:1.25rem">
+                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem"><div style="width:8px;height:8px;border-radius:50%;background:${p.color}"></div><div style="font-size:0.82rem;font-weight:700">${p.name}</div></div>
+                    <div class="detail-stat-label">Pool</div><div class="detail-stat-value" style="font-size:0.85rem;margin-bottom:0.5rem">${p.pool}</div>
+                    <div class="detail-stat-label">Value</div><div class="detail-stat-value" style="font-size:1.1rem;margin-bottom:0.5rem">${p.value}</div>
+                    <div style="display:flex;justify-content:space-between">
+                        <div><div class="detail-stat-label">APY</div><div style="font-size:0.85rem;font-weight:700;color:${p.color}">${p.apy}</div></div>
+                        <div style="text-align:right"><div class="detail-stat-label">PnL</div><div style="font-size:0.85rem;font-weight:700;color:var(--accent)">${p.pnl}</div></div>
+                    </div>
+                </div>`).join('')}
+            </div>
+        </div>
+    `,
 
-            // Protocol selection
-            protocolCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Remove selection from all cards
-                    protocolCards.forEach(c => c.classList.remove('selected'));
+    analytics: () => `
+        <div class="metric-row">
+            <div class="metric-cell"><div class="metric-cell-label">Sharpe Ratio</div><div class="metric-cell-value" style="color:var(--accent)">2.41</div><div class="metric-cell-sub" style="color:var(--accent)">▲ Excellent</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Max Drawdown</div><div class="metric-cell-value" style="color:var(--red)">−4.2%</div><div class="metric-cell-sub" style="color:var(--text-muted)">last 90 days</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Win Rate</div><div class="metric-cell-value">84.3%</div><div class="metric-cell-sub" style="color:var(--accent)">▲ +2.1% vs last month</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Gas Spent (30d)</div><div class="metric-cell-value">$124.50</div><div class="metric-cell-sub" style="color:var(--text-muted)">34 transactions</div></div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-header"><div class="chart-title">APY Comparison — All Protocols</div></div>
+            <div style="padding:0.75rem 0;display:flex;flex-direction:column;gap:1.1rem">
+                ${[
+                    {name:'Uniswap V3',apy:18.5,color:'#FF007A'},
+                    {name:'Curve',apy:14.2,color:'#FF5100'},
+                    {name:'Aave V3',apy:12.3,color:'#B457FF'},
+                    {name:'Balancer',apy:11.7,color:'#5B8BFF'},
+                    {name:'Compound',apy:9.8,color:'#00D282'},
+                ].map(p => `<div style="display:flex;align-items:center;gap:1rem">
+                    <div style="width:90px;font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-muted);flex-shrink:0">${p.name}</div>
+                    <div style="flex:1;height:22px;background:var(--border);border-radius:3px;overflow:hidden">
+                        <div style="height:100%;width:${(p.apy/25)*100}%;background:${p.color};border-radius:3px;opacity:0.85"></div>
+                    </div>
+                    <div style="font-family:'Space Mono',monospace;font-size:0.78rem;font-weight:700;color:${p.color};width:45px;text-align:right;flex-shrink:0">${p.apy}%</div>
+                </div>`).join('')}
+            </div>
+        </div>
+        <div class="protocol-detail">
+            <div class="detail-header" style="grid-template-columns:1fr"><div class="chart-title" style="font-size:0.9rem">Risk Analysis</div></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)">
+                ${[
+                    {label:'Smart Contract Risk',value:'Low',note:'All audited protocols',color:'var(--accent)'},
+                    {label:'Impermanent Loss',value:'Medium',note:'~$340 unrealized',color:'var(--amber)'},
+                    {label:'Liquidation Risk',value:'None',note:'No leveraged positions',color:'var(--accent)'},
+                    {label:'Slippage (avg)',value:'0.08%',note:'Last 30 transactions',color:'var(--text)'},
+                    {label:'Oracle Risk',value:'Low',note:'Chainlink feeds',color:'var(--accent)'},
+                    {label:'Concentration Risk',value:'Medium',note:'42% in Uniswap',color:'var(--amber)'},
+                ].map(s => `<div class="detail-stat">
+                    <div class="detail-stat-label">${s.label}</div>
+                    <div class="detail-stat-value" style="color:${s.color}">${s.value}</div>
+                    <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--text-muted);margin-top:0.2rem">${s.note}</div>
+                </div>`).join('')}
+            </div>
+        </div>
+    `,
 
-                    // Add selection to clicked card
-                    this.classList.add('selected');
+    history: () => `
+        <div class="metric-row">
+            <div class="metric-cell"><div class="metric-cell-label">Total Transactions</div><div class="metric-cell-value">147</div><div class="metric-cell-sub" style="color:var(--text-muted)">all time</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Total Fees Paid</div><div class="metric-cell-value" style="color:var(--red)">$412.30</div><div class="metric-cell-sub" style="color:var(--text-muted)">gas costs</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Total Harvested</div><div class="metric-cell-value" style="color:var(--accent)">$3,245.67</div><div class="metric-cell-sub" style="color:var(--accent)">net yield</div></div>
+            <div class="metric-cell"><div class="metric-cell-label">Last Transaction</div><div class="metric-cell-value">2m ago</div><div class="metric-cell-sub" style="color:var(--text-muted)">harvest</div></div>
+        </div>
+        <div class="protocol-detail">
+            <div class="detail-header" style="grid-template-columns:1fr auto">
+                <div class="chart-title" style="font-size:0.9rem">Transaction History</div>
+                <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text-muted)">SHOWING 10 OF 147</div>
+            </div>
+            <div style="display:grid;grid-template-columns:85px 1fr 1fr 80px 100px 110px;padding:0.5rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface-2)">
+                ${['TYPE','PROTOCOL','AMOUNT','GAS','TIME','TX HASH'].map(h => `<div style="font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;color:var(--text-dim)">${h}</div>`).join('')}
+            </div>
+            <div>
+                ${[
+                    {type:'HARVEST',protocol:'Uniswap V3',amount:'+$12.45',gas:'$3.20',time:'2 min ago',hash:'0x3f2a...8c1d',color:'var(--accent)'},
+                    {type:'REBALANCE',protocol:'Aave V3',amount:'\u0394 $35,796',gas:'$8.40',time:'18 min ago',hash:'0x9b1e...4a2f',color:'var(--amber)'},
+                    {type:'HARVEST',protocol:'Curve',amount:'+$10.23',gas:'$2.90',time:'1h 4m ago',hash:'0x7c4d...2e9b',color:'var(--accent)'},
+                    {type:'COMPOUND',protocol:'Compound',amount:'+$5.67',gas:'$1.80',time:'3h ago',hash:'0x2a8f...6d3c',color:'var(--accent)'},
+                    {type:'DEPOSIT',protocol:'Balancer',amount:'+$5,000',gas:'$12.40',time:'6h ago',hash:'0x5e1b...9f4a',color:'var(--blue)'},
+                    {type:'HARVEST',protocol:'Uniswap V3',amount:'+$11.92',gas:'$3.10',time:'8h ago',hash:'0x4c7a...1b2e',color:'var(--accent)'},
+                    {type:'WITHDRAW',protocol:'Curve',amount:'\u2212$2,000',gas:'$6.70',time:'1d ago',hash:'0x8d3f...5c7b',color:'var(--red)'},
+                    {type:'HARVEST',protocol:'Aave V3',amount:'+$8.32',gas:'$2.60',time:'1d ago',hash:'0x1a9c...3e6d',color:'var(--accent)'},
+                    {type:'DEPOSIT',protocol:'Curve',amount:'+$10,000',gas:'$14.20',time:'2d ago',hash:'0x6b2e...7f4c',color:'var(--blue)'},
+                    {type:'HARVEST',protocol:'Compound',amount:'+$5.41',gas:'$1.70',time:'2d ago',hash:'0x3e8d...2a5b',color:'var(--accent)'},
+                ].map(tx => `<div style="display:grid;grid-template-columns:85px 1fr 1fr 80px 100px 110px;align-items:center;padding:0.7rem 1.25rem;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:0.68rem;cursor:default;transition:background 0.15s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                    <div style="color:${tx.color};font-weight:700;font-size:0.62rem;letter-spacing:0.05em">${tx.type}</div>
+                    <div style="color:var(--text)">${tx.protocol}</div>
+                    <div style="color:${tx.color};font-weight:700">${tx.amount}</div>
+                    <div style="color:var(--red)">${tx.gas}</div>
+                    <div style="color:var(--text-muted)">${tx.time}</div>
+                    <div style="color:var(--text-dim)">${tx.hash}</div>
+                </div>`).join('')}
+            </div>
+            <div style="padding:0.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;background:var(--surface-2)">
+                <button class="btn-ghost">← Previous</button>
+                <span style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text-muted)">Page 1 of 15</span>
+                <button class="btn-ghost">Next →</button>
+            </div>
+        </div>
+    `,
+};
 
-                    // Get protocol from data attribute
-                    const protocol = this.dataset.protocol;
-                    selectedProtocol = protocol;
-
-                    // Update strategy display
-                    updateStrategyDisplay(protocol);
-
-                    showToast(`${protocols[protocol].name} selected`, 'info');
-                });
-            });
-
-            // Apply strategy button
-            applyStrategyBtn.addEventListener('click', function() {
-                const protocol = protocols[selectedProtocol];
-                showToast(`Strategy applied: ${protocol.strategy.name}`, 'success');
-
-                // Update active strategies count
-                const currentStrategies = parseInt(activeStrategies.textContent);
-                activeStrategies.textContent = currentStrategies + 1;
-
-                // Animate button
-                this.innerHTML = '<i class="fas fa-check"></i> Applied!';
-                this.style.background = '#059669';
-
-                setTimeout(() => {
-                    this.innerHTML = 'Apply Strategy';
-                    this.style.background = '#10B981';
-                }, 2000);
-            });
-
-            // Refresh button
-            refreshBtn.addEventListener('click', refreshData);
-
-            // Analytics button
-            analyticsBtn.addEventListener('click', function() {
-                showToast('Opening portfolio analytics dashboard...', 'info');
-
-                // Simulate analytics loading
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-chart-pie"></i> Portfolio Analytics';
-                    showToast('Analytics dashboard ready!', 'success');
-                }, 1000);
-            });
-
-            // Alerts button
-            alertsBtn.addEventListener('click', function() {
-                showToast('Alert settings opened', 'info');
-
-                // Create a simple alert modal simulation
-                const alertConfig = confirm('Set price alert for ETH? \nClick OK to set alert at $2,200');
-
-                if (alertConfig) {
-                    showToast('Alert set: ETH @ $2,200', 'success');
-                }
-            });
-
-            // Auto-refresh every 30 seconds
-            refreshInterval = setInterval(() => {
-                refreshData();
-            }, 30000);
-
-            // Clean up interval on page unload
-            window.addEventListener('beforeunload', function() {
-                if (refreshInterval) {
-                    clearInterval(refreshInterval);
-                }
-            });
-
-            // Initialize first protocol as selected
-            document.querySelector('[data-protocol="uniswap"]').classList.add('selected');
-
-            // Add hover effects for protocol cards
-            protocolCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    if (!this.classList.contains('selected')) {
-                        this.style.transform = 'translateX(5px)';
-                    }
-                });
-
-                card.addEventListener('mouseleave', function() {
-                    if (!this.classList.contains('selected')) {
-                        this.style.transform = 'translateX(0)';
-                    }
-                });
-            });
-
-            // Add keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                // Press 'r' to refresh
-                if (e.key === 'r' || e.key === 'R') {
-                    if (!refreshBtn.disabled) {
-                        refreshData();
-                    }
-                }
-
-                // Press '1-4' to select protocols
-                if (e.key >= '1' && e.key <= '4') {
-                    const index = parseInt(e.key) - 1;
-                    if (protocolCards[index]) {
-                        protocolCards[index].click();
-                    }
-                }
-            });
-
-            // Initial strategy display
-            updateStrategyDisplay('uniswap');
+function switchTab(tab) {
+    const main = document.querySelector('.main');
+    if (tab === 'optimizer') {
+        main.innerHTML = OPTIMIZER_HTML;
+        selectProtocol(selected);
+        initChartDateLabels();
+        document.querySelectorAll('.protocol-item').forEach(el => {
+            el.addEventListener('click', () => { selectProtocol(el.dataset.key); showToast('Switched to ' + PROTOCOLS[el.dataset.key].label); });
         });
-    </script>
+        const rb = document.getElementById('refreshBtn');
+        if (rb) rb.addEventListener('click', () => { refreshData(); showToast('Market data refreshed'); });
+        const ab = document.getElementById('alertBtn');
+        if (ab) ab.addEventListener('click', () => showToast('Alert set: ETH @ $2,200'));
+    } else if (TAB_CONTENT[tab]) {
+        main.innerHTML = TAB_CONTENT[tab]();
+        if (document.getElementById('yieldChart')) { drawChart(); initChartDateLabels(); }
+    }
+}
+
+// Wire nav tabs
+document.querySelectorAll('.nav-item').forEach(el => {
+    el.addEventListener('click', function() {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+        switchTab(this.dataset.tab);
+    });
+});
+
+// Init
+selectProtocol('uniswap');
+initChartDateLabels();
+setInterval(refreshData, 6000);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+    const keys = {'1':'uniswap','2':'aave','3':'compound','4':'curve','5':'balancer'};
+    if (keys[e.key]) selectProtocol(keys[e.key]);
+    if (e.key === 'r' || e.key === 'R') { refreshData(); showToast('Refreshed'); }
+});
+</script>
 </body>
 </html>

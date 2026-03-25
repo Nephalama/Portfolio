@@ -1,3 +1,138 @@
+
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Thendo Johannah Nephalama</title> <!--boxicons--> <link href='https://u
+
+pasted
+
+i even tried adding css on the html but still not loading
+
+11:52 AM
+Let me look at your HTML file to understand what's happening. It seems like the CSS styles for the main layout (variables, nav, sections, etc.) are missing — your file only has the responsive/media query CSS but not the base styles.
+
+While you answer that — I can already see the core issue from your code:
+
+Your <style> block only contains media queries (responsive overrides). The base CSS — variables, nav styling, .section, .box, .home, .img-box, buttons, etc. — is completely absent from the <head>.
+
+Your HTML references an external stylesheet via this line at the bottom:
+
+html
+<script src="static/js/script.js"></script>
+But there's no <link rel="stylesheet" href="..."> for your main CSS file (something like static/css/style.css).
+
+What to check:
+
+Do you have a style.css file somewhere in your project? It should be linked like:
+html
+   <link rel="stylesheet" href="static/css/style.css">
+```
+   Add that inside your `<head>` tag, right after the Google Fonts link.
+
+2. Also confirm your `script.js` path is correct — if the JS isn't loading, the tab switching and cube rotation won't work either.
+
+**Your folder structure should look like:**
+```
+project/
+├── index.html
+├── static/
+│   ├── css/
+│   │   └── style.css   ← needs to be linked in <head>
+│   └── js/
+│       └── script.js
+├── images/
+└── template/
+Can you confirm whether you have a style.css file, and where it's located? If you've lost it or never had one, I can rebuild the full base CSS for your portfolio.
+
+Q: What exactly is not loading or displaying correctly? (Select all that apply)
+A: The whole page is blank/unstyled, The navigation bar is missing, The 3D cube/section transitions don't work
+
+11:53 AM
+That confirms it — your style.css and script.js are either missing or not linked correctly. Let me build you the complete base CSS and JS from scratch based on your HTML structure.
+
+
+Check skills available
+Check skills available
+Now let me build your complete style.css and script.js files.
+
+
+Created 2 files
+Created 2 files
+
+Creating the complete base CSS for Thendo's portfolio
+style.css
+
+Creating the complete JS for navigation, cube rotation, tabs, and modals
+script.js
+Done
+Now copy both files to outputs:
+
+
+Ran a command, read a file
+Ran a command, read a file
+Here are your two missing files. Now do the following:
+
+1. Place the files in your project:
+
+project/
+├── index.html
+├── static/
+│   ├── css/
+│   │   └── style.css   ← new file
+│   └── js/
+│       └── script.js   ← new file
+2. Add this <link> tag to your <head> in index.html, right after the Google Fonts line:
+
+html
+<link rel="stylesheet" href="static/css/style.css">
+3. Also remove the duplicate media queries from the <style> block in your HTML — they're now included at the bottom of style.css, so you don't need them twice.
+
+What's included in script.js:
+
+3D cube rotation between all 5 sections
+Resume & Portfolio tab switching
+Skill modal popups
+WhatsApp QR modal
+Keyboard arrow key navigation
+Touch/swipe support for mobile
+Style
+Code · CSS 
+Script
+JS 
+1774432843077_image.png
+whgy is it so zoomed in
+
+12:00 PM
+The text is huge and cut off because the translateZ(50vw) on the cube faces is pushing the sections too close to the camera, making everything appear zoomed in. I need to fix the cube face positioning.
+
+
+Fix cube face transforms - the translateZ value was too large causing zoom
+Fix cube face transforms - the translateZ value was too large causing zoom
+But actually the real issue is that a 3D cube requires translateZ equal to half the container width so faces sit at the right depth — but that also requires the perspective to be set much further back. Let me fix it properly:
+
+
+Edited 2 files
+Edited 2 files
+
+Fix perspective and cube geometry so content isn't zoomed
+
+Fix perspective and cube geometry
+
+style.css
++46
+-52
+Done
+Now also update the JS so it doesn't try to add/remove cube rotation classes (since we switched to fade transitions):
+
+
+Simplify JS navigation - remove cube rotation class logic
+Simplify JS navigation - remove cube rotation class logic
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+Style · CSS
+Copy
+
 /* ===========================
    ROOT & RESET
 =========================== */
@@ -6,7 +141,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+ 
 :root {
     --bg: #0a0a0f;
     --bg2: #111118;
@@ -28,12 +163,12 @@
     --shadow: 0 8px 40px rgba(0,0,0,0.5);
     --shadow-accent: 0 0 30px var(--accent-glow);
 }
-
+ 
 html {
     font-size: 62.5%;
     scroll-behavior: smooth;
 }
-
+ 
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--bg);
@@ -42,18 +177,18 @@ body {
     line-height: 1.6;
     overflow: hidden;
 }
-
+ 
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 img { max-width: 100%; display: block; }
-
+ 
 /* ===========================
    SCROLLBAR
 =========================== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg2); }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-
+ 
 /* ===========================
    BACKGROUND NOISE TEXTURE
 =========================== */
@@ -66,60 +201,54 @@ body::before {
     z-index: 0;
     opacity: 0.4;
 }
-
+ 
 /* ===========================
-   CONTAINER & 3D CUBE
+   CONTAINER & SECTION SWITCHING
 =========================== */
 .container {
     width: 100%;
     height: 100vh;
-    perspective: 1200px;
-    perspective-origin: center center;
+    position: relative;
+    overflow: hidden;
 }
-
+ 
 .box {
     width: 100%;
     height: 100%;
     position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* Cube faces */
+ 
 .section {
     position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 9%;
-    backface-visibility: hidden;
     visibility: hidden;
     opacity: 0;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
+    transform: translateY(20px);
+    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
     overflow-y: auto;
     overflow-x: hidden;
+    pointer-events: none;
 }
-
+ 
 .section.active {
     visibility: visible;
     opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
 }
-
-/* Cube face transforms */
-.home    { transform: rotateY(0deg)   translateZ(50vw); }
-.about   { transform: rotateY(90deg)  translateZ(50vw); }
-.resume  { transform: rotateY(180deg) translateZ(50vw); }
-.portfolio{ transform: rotateY(270deg) translateZ(50vw); }
-.contact { transform: rotateX(-90deg) translateZ(50vh); }
-
-/* Box rotation states */
-.box.about-active    { transform: rotateY(-90deg); }
-.box.resume-active   { transform: rotateY(-180deg); }
-.box.portfolio-active{ transform: rotateY(-270deg); }
-.box.contact-active  { transform: rotateX(90deg); }
-
+ 
+/* No-ops kept for JS compatibility */
+.box.about-active,
+.box.resume-active,
+.box.portfolio-active,
+.box.contact-active { transform: none; }
+ 
 /* ===========================
    NAVIGATION
 =========================== */
@@ -138,13 +267,13 @@ body::before {
     box-shadow: var(--shadow), 0 0 0 1px rgba(124,106,247,0.1);
     width: 34rem;
 }
-
+ 
 .nav-list {
     display: flex;
     align-items: center;
     justify-content: space-around;
 }
-
+ 
 .nav-list li {
     position: relative;
     cursor: pointer;
@@ -158,19 +287,19 @@ body::before {
     border-radius: 50%;
     transition: color var(--transition), background var(--transition);
 }
-
+ 
 .nav-list li:hover,
 .nav-list li.active {
     color: var(--accent2);
     background: rgba(124,106,247,0.12);
 }
-
+ 
 .nav-list li.active {
     color: var(--white);
     background: var(--accent);
     box-shadow: 0 0 20px var(--accent-glow);
 }
-
+ 
 /* Tooltip */
 .tooltip {
     position: absolute;
@@ -189,9 +318,9 @@ body::before {
     transition: opacity 0.2s ease;
     border: 1px solid var(--border);
 }
-
+ 
 .nav-list li:hover .tooltip { opacity: 1; }
-
+ 
 /* ===========================
    SHARED / UTILITY
 =========================== */
@@ -203,7 +332,7 @@ body::before {
     position: relative;
     display: inline-block;
 }
-
+ 
 .title::after {
     content: '';
     position: absolute;
@@ -214,7 +343,7 @@ body::before {
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     border-radius: 2px;
 }
-
+ 
 .btn {
     display: inline-block;
     padding: 1.2rem 3rem;
@@ -229,20 +358,20 @@ body::before {
     font-family: 'Poppins', sans-serif;
     letter-spacing: 0.03em;
 }
-
+ 
 .btn:hover {
     background: var(--accent2);
     box-shadow: 0 0 24px var(--accent-glow);
     transform: translateY(-2px);
 }
-
+ 
 .desc {
     font-size: 1.5rem;
     color: var(--text-muted);
     line-height: 1.8;
     margin: 1.6rem 0 2.8rem;
 }
-
+ 
 /* ===========================
    HOME SECTION
 =========================== */
@@ -250,7 +379,7 @@ body::before {
     gap: 6rem;
     background: radial-gradient(ellipse at 70% 50%, rgba(124,106,247,0.07) 0%, transparent 65%);
 }
-
+ 
 .home-info h3 {
     font-size: 2rem;
     font-weight: 400;
@@ -259,7 +388,7 @@ body::before {
     text-transform: uppercase;
     margin-bottom: 0.8rem;
 }
-
+ 
 .home-info h1 {
     font-size: 5.5rem;
     font-weight: 800;
@@ -271,7 +400,7 @@ body::before {
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
-
+ 
 .home-info h3:nth-of-type(2) {
     font-size: 2rem;
     font-weight: 500;
@@ -281,21 +410,21 @@ body::before {
     margin-top: 0.4rem;
     -webkit-text-fill-color: var(--text-muted);
 }
-
+ 
 .btn-sci {
     display: flex;
     align-items: center;
     gap: 2rem;
     flex-wrap: wrap;
 }
-
+ 
 .sci {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-left: 1rem;
 }
-
+ 
 .sci a {
     position: relative;
     width: 4rem;
@@ -310,7 +439,7 @@ body::before {
     color: var(--text-muted);
     transition: all var(--transition);
 }
-
+ 
 .sci a:hover {
     color: var(--white);
     background: var(--accent);
@@ -318,20 +447,20 @@ body::before {
     box-shadow: 0 0 16px var(--accent-glow);
     transform: translateY(-3px);
 }
-
+ 
 .sci a .tooltip {
     top: -3.8rem;
 }
-
+ 
 .sci a:hover .tooltip { opacity: 1; }
-
+ 
 /* ===========================
    IMAGE BOX (home & about)
 =========================== */
 .img-wrapper {
     flex-shrink: 0;
 }
-
+ 
 .img-box {
     width: 36vw;
     max-width: 38rem;
@@ -344,14 +473,14 @@ body::before {
     position: relative;
     background: var(--surface);
 }
-
+ 
 .img-box img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: top center;
 }
-
+ 
 .img-box::after {
     content: '';
     position: absolute;
@@ -359,7 +488,7 @@ body::before {
     border-radius: 50%;
     background: linear-gradient(135deg, rgba(124,106,247,0.08), transparent 60%);
 }
-
+ 
 /* ===========================
    ABOUT SECTION
 =========================== */
@@ -367,16 +496,16 @@ body::before {
     gap: 6rem;
     background: radial-gradient(ellipse at 30% 50%, rgba(124,106,247,0.06) 0%, transparent 65%);
 }
-
+ 
 .about-info .title { display: block; }
-
+ 
 .about-info h3 {
     font-size: 2rem;
     font-weight: 500;
     color: var(--accent2);
     margin-bottom: 1.4rem;
 }
-
+ 
 /* ===========================
    RESUME SECTION
 =========================== */
@@ -386,7 +515,7 @@ body::before {
     padding-top: 8rem;
     padding-bottom: 10rem;
 }
-
+ 
 /* Tabs */
 .tab-box {
     display: flex;
@@ -397,14 +526,14 @@ body::before {
     border-radius: 5rem;
     border: 1px solid var(--border);
 }
-
+ 
 .tab-list {
     cursor: pointer;
     padding: 0.8rem 2.4rem;
     border-radius: 5rem;
     transition: all var(--transition);
 }
-
+ 
 .tab-list h3 {
     font-size: 1.5rem;
     font-weight: 500;
@@ -412,22 +541,22 @@ body::before {
     transition: color var(--transition);
     white-space: nowrap;
 }
-
+ 
 .tab-list.active {
     background: var(--accent);
     box-shadow: 0 0 16px var(--accent-glow);
 }
-
+ 
 .tab-list.active h3 { color: var(--white); }
-
+ 
 .tab-list:not(.active):hover h3 { color: var(--text); }
-
+ 
 /* Tab content */
 .tab-wrapper {
     position: relative;
     width: 100%;
 }
-
+ 
 .tab-grid {
     position: absolute;
     top: 0; left: 0;
@@ -441,14 +570,14 @@ body::before {
     transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
     pointer-events: none;
 }
-
+ 
 .tab-grid.active {
     visibility: visible;
     opacity: 1;
     transform: translateY(0);
     pointer-events: all;
 }
-
+ 
 /* Tab items */
 .tab-item.resume-item {
     background: var(--card-bg);
@@ -458,53 +587,53 @@ body::before {
     transition: border-color var(--transition), box-shadow var(--transition), transform 0.2s;
     backdrop-filter: blur(10px);
 }
-
+ 
 .tab-item.resume-item:hover {
     border-color: rgba(124,106,247,0.3);
     box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     transform: translateY(-2px);
 }
-
+ 
 .resume-item h4 {
     font-size: 1.45rem;
     font-weight: 600;
     color: var(--text);
     line-height: 1.5;
 }
-
+ 
 .resume-item h4:first-child {
     color: var(--accent2);
     font-size: 1.3rem;
     font-weight: 500;
     margin-bottom: 0.3rem;
 }
-
+ 
 .resume-item h4:nth-child(2) {
     font-size: 1.6rem;
     color: var(--white);
     margin-bottom: 0.2rem;
 }
-
+ 
 .resume-item h4:nth-child(3) {
     color: var(--text-muted);
     font-size: 1.3rem;
     font-weight: 400;
     margin-bottom: 1rem;
 }
-
+ 
 .resume-item p {
     font-size: 1.35rem;
     color: var(--text-muted);
     line-height: 1.75;
     margin-top: 0.8rem;
 }
-
+ 
 /* Skills grid */
 .resume-box.skills {
     grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
     gap: 1.5rem;
 }
-
+ 
 .resume-box.skills .resume-item {
     display: flex;
     flex-direction: column;
@@ -514,18 +643,18 @@ body::before {
     padding: 2rem 1rem;
     text-align: center;
 }
-
+ 
 .resume-box.skills .resume-item i {
     font-size: 4rem;
     color: var(--accent2);
 }
-
+ 
 .resume-box.skills .resume-item p {
     font-size: 1.3rem;
     color: var(--text-muted);
     margin: 0;
 }
-
+ 
 /* ===========================
    PORTFOLIO SECTION
 =========================== */
@@ -535,12 +664,12 @@ body::before {
     padding-top: 8rem;
     padding-bottom: 10rem;
 }
-
+ 
 .portfolio-box.work {
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
 }
-
+ 
 .portfolio-item {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -551,27 +680,27 @@ body::before {
     transition: border-color var(--transition), transform 0.3s;
     cursor: pointer;
 }
-
+ 
 .portfolio-item:hover {
     border-color: rgba(124,106,247,0.35);
     transform: translateY(-4px);
 }
-
+ 
 .work-img {
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
-
+ 
 .work-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
-
+ 
 .portfolio-item:hover .work-img img { transform: scale(1.06); }
-
+ 
 .work-info {
     position: absolute;
     bottom: 0; left: 0;
@@ -581,31 +710,31 @@ body::before {
     transform: translateY(70%);
     transition: transform 0.4s ease;
 }
-
+ 
 .portfolio-item:hover .work-info { transform: translateY(0); }
-
+ 
 .work-info h4 {
     font-size: 1.6rem;
     font-weight: 600;
     color: var(--white);
     margin-bottom: 0.5rem;
 }
-
+ 
 .work-info p {
     font-size: 1.25rem;
     color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 0.8rem;
 }
-
+ 
 .tech-used p {
     font-size: 1.15rem;
     color: var(--accent2);
     margin-bottom: 0.8rem;
 }
-
+ 
 .portfolio-icon { display: flex; gap: 1rem; }
-
+ 
 .work-icon a, .service-icon a {
     width: 3.4rem;
     height: 3.4rem;
@@ -620,20 +749,20 @@ body::before {
     transition: all var(--transition);
     position: relative;
 }
-
+ 
 .work-icon a:hover, .service-icon a:hover {
     background: var(--accent);
     color: var(--white);
     box-shadow: 0 0 12px var(--accent-glow);
 }
-
+ 
 .work-icon a i { transform: rotate(225deg); }
-
+ 
 /* Service cards */
 .portfolio-box.service {
     grid-template-columns: repeat(3, 1fr);
 }
-
+ 
 .portfolio-box.service .portfolio-item {
     height: auto;
     padding: 2.8rem 2.4rem;
@@ -641,37 +770,37 @@ body::before {
     flex-direction: column;
     gap: 1rem;
 }
-
+ 
 .service-icon {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
 }
-
+ 
 .service-icon .icon {
     font-size: 3.5rem;
     color: var(--accent2);
 }
-
+ 
 .portfolio-box.service h4 {
     font-size: 1.6rem;
     font-weight: 600;
     color: var(--white);
 }
-
+ 
 .portfolio-box.service p {
     font-size: 1.35rem;
     color: var(--text-muted);
     line-height: 1.7;
 }
-
+ 
 .extra-info p {
     font-size: 1.25rem;
     color: var(--text-dim);
     margin-top: 0.4rem;
 }
-
+ 
 /* ===========================
    CONTACT SECTION
 =========================== */
@@ -681,19 +810,19 @@ body::before {
     padding-top: 8rem;
     padding-bottom: 10rem;
 }
-
+ 
 .contact-wrapper {
     width: 100%;
     max-width: 70rem;
 }
-
+ 
 .contact-form .field-box {
     display: flex;
     flex-wrap: wrap;
     gap: 1.8rem;
     margin-bottom: 2.4rem;
 }
-
+ 
 .contact-form .field-box input,
 .contact-form .field-box textarea {
     flex: 1 1 calc(50% - 0.9rem);
@@ -707,26 +836,26 @@ body::before {
     outline: none;
     transition: border-color var(--transition), box-shadow var(--transition);
 }
-
+ 
 .contact-form .field-box input::placeholder,
 .contact-form .field-box textarea::placeholder {
     color: var(--text-dim);
 }
-
+ 
 .contact-form .field-box input:focus,
 .contact-form .field-box textarea:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(124,106,247,0.12);
 }
-
+ 
 .contact-form .field-box textarea {
     flex: 1 1 100%;
     height: 16rem;
     resize: vertical;
 }
-
+ 
 .contact-btn { margin-top: 0.5rem; }
-
+ 
 /* ===========================
    MODAL
 =========================== */
@@ -738,9 +867,9 @@ body::before {
     background: rgba(0,0,0,0.7);
     backdrop-filter: blur(6px);
 }
-
+ 
 .modal.show { display: flex; align-items: center; justify-content: center; }
-
+ 
 .modal-content {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -751,7 +880,7 @@ body::before {
     position: relative;
     box-shadow: var(--shadow);
 }
-
+ 
 .close-button {
     position: absolute;
     top: 1.5rem; right: 2rem;
@@ -761,9 +890,9 @@ body::before {
     line-height: 1;
     transition: color 0.2s;
 }
-
+ 
 .close-button:hover { color: var(--white); }
-
+ 
 /* WhatsApp modal */
 .modal-overlay {
     display: none;
@@ -775,9 +904,9 @@ body::before {
     align-items: center;
     justify-content: center;
 }
-
+ 
 .modal-overlay.show { display: flex; }
-
+ 
 .modal-content-qr {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -788,13 +917,13 @@ body::before {
     text-align: center;
     position: relative;
 }
-
+ 
 .modal-content-qr h3 {
     font-size: 2rem;
     color: var(--white);
     margin-bottom: 2rem;
 }
-
+ 
 .modal-content-qr img {
     width: 22rem;
     height: 22rem;
@@ -803,15 +932,15 @@ body::before {
     margin: 0 auto 2rem;
     border: 2px solid var(--border);
 }
-
+ 
 .modal-content-qr p {
     font-size: 1.4rem;
     color: var(--text-muted);
 }
-
+ 
 .modal-content-qr a { color: var(--accent2); }
 .modal-content-qr a:hover { text-decoration: underline; }
-
+ 
 .close-btn {
     position: absolute;
     top: 1.5rem; right: 2rem;
@@ -821,9 +950,9 @@ body::before {
     line-height: 1;
     transition: color 0.2s;
 }
-
+ 
 .close-btn:hover { color: var(--white); }
-
+ 
 /* ===========================
    RESPONSIVE (matches your existing media queries in HTML)
 =========================== */
@@ -839,7 +968,7 @@ body::before {
     .portfolio-box.work,
     .portfolio-box.service { grid-template-columns: repeat(2, 1fr); }
 }
-
+ 
 @media (max-width: 768px) {
     html { font-size: 50%; }
     body { overflow-y: auto; }
@@ -884,7 +1013,7 @@ body::before {
     .modal-content-qr { width: 85%; padding: 20px; }
     .modal-content-qr img { width: 200px; height: 200px; }
 }
-
+ 
 @media (max-width: 480px) {
     html { font-size: 45%; }
     .section { padding: 7rem 4% 12rem; }
@@ -898,7 +1027,7 @@ body::before {
     .portfolio-item { height: 22rem; }
     .contact-form .field-box textarea { height: 14rem; }
 }
-
+ 
 @media (max-height: 500px) and (max-width: 900px) {
     .section { min-height: auto; padding: 6rem 5% 10rem; }
     .home, .about { flex-direction: row; text-align: left; gap: 2rem; }
@@ -911,3 +1040,6 @@ body::before {
     .about { flex-direction: row; }
     .about-info .title, .about-info h3, .about-info { text-align: left; }
 }
+ 
+
+

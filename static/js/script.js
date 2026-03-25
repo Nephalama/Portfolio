@@ -1,3 +1,4 @@
+
 // All variable declarations are here at the top, declared only once
 const navs = document.querySelectorAll('.nav-list li');
 const cube = document.querySelector('.box');
@@ -272,3 +273,4 @@ function setupWhatsAppModal() {
 
 // Call the function to set up the modal after the page loads
 document.addEventListener('DOMContentLoaded', setupWhatsAppModal);
+

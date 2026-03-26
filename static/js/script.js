@@ -274,3 +274,15 @@ function setupWhatsAppModal() {
 // Call the function to set up the modal after the page loads
 document.addEventListener('DOMContentLoaded', setupWhatsAppModal);
 
+// Smooth scroll nav on mobile
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
+navs.forEach((nav, idx) => {
+  nav.addEventListener('click', () => {
+    if (isMobile()) {
+      sections[idx].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});

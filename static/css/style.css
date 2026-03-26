@@ -799,3 +799,135 @@ transform: scale(.8);
     transform: translate(-50%, -40%); /* move DOWN */
 }
 
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+  html {
+    font-size: 55%;
+  }
+
+  body {
+    overflow: auto;
+  }
+
+  /* Disable the 3D cube — stack sections vertically */
+  .container {
+    perspective: none;
+    height: auto;
+  }
+
+  .box {
+    transform: none !important;
+    transform-style: flat;
+    transition: none;
+    height: auto;
+  }
+
+  /* Make all sections visible and stacked */
+  .section {
+    position: relative;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    height: auto;
+    min-height: 100vh;
+    transition: none;
+    padding: 8rem 6% 10rem;
+  }
+
+  /* Fix all the rotated face transforms */
+  .section.about,
+  .section.resume,
+  .section.portfolio {
+    transform: none !important;
+  }
+
+  /* Home section */
+  .home {
+    flex-direction: column-reverse;
+    text-align: center;
+    gap: 3rem;
+    padding-top: 10rem;
+  }
+
+  .home-info h1 { font-size: 4rem; }
+  .home-info h3 { font-size: 2.2rem; }
+
+  .home-info .btn-sci {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .home-info .btn-sci .sci {
+    margin-left: 0;
+  }
+
+  .img-box {
+    width: 60vw;
+    height: 60vw;
+  }
+
+  /* About section */
+  .about {
+    flex-direction: column;
+    text-align: center;
+    gap: 3rem;
+  }
+
+  .about-info .title { text-align: center; }
+  .about-info h3 { font-size: 2rem; }
+
+  /* Resume & Portfolio tabs */
+  .resume,
+  .portfolio {
+    padding-bottom: 10rem;
+  }
+
+  .tab-box {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .tab-list h3 { font-size: 2rem; }
+
+  .tab-grid {
+    position: relative;
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+
+  /* Nav — keep it at the bottom but shrink it */
+  .nav {
+    width: 90vw;
+    padding: 1.5rem 0;
+  }
+
+  .nav-list li {
+    font-size: 2.4rem;
+  }
+
+  /* Contact form */
+  .contact {
+    padding-bottom: 12rem;
+  }
+
+  .contact-form {
+    width: 100%;
+  }
+
+  .contact-form .field-box input,
+  .contact-form .field-box textarea {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  html { font-size: 50%; }
+
+  .home-info h1 { font-size: 3.5rem; }
+  .img-box { width: 70vw; height: 70vw; }
+
+  .nav { width: 95vw; }
+}

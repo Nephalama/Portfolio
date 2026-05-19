@@ -1,232 +1,662 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thendo Nephalama - Tech Resume</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Thendo Johannah Nephalama — Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  /* ========== THEME COLORS ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   :root {
-    --gold: #FFD700;
-    --gold-dark: #C5A300;
-    --gold-light: #FFE766;
-
-    --black: #000000;
-    --black-light: #1a1a1a;
-
-    --text-light: #eeeeee;
-    --text-dark: #111111;
-
-    --shadow-gold: 0 0 10px rgba(255, 215, 0, 0.7);
+    --ink: #0a0a0a;
+    --paper: #ffffff;
+    --accent: #0a0a0a;
+    --accent2: #0a0a0a;
+    --muted: #555555;
+    --rule: #cccccc;
+    --tag-bg: #0a0a0a;
+    --tag-text: #ffffff;
   }
 
-  /* Light mode overrides */
-  body.light-mode {
-    --black-light: #ffffff;
-    --text-light: #111111;
-    --shadow-gold: none;
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; }
   }
 
   body {
-    font-family: "Poppins", sans-serif;
-    margin: 0;
+    background: #e0e0e0;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 2rem 1rem;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--paper);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Copper accent strip */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(180deg, #c8924a 0%, #e0aa62 50%, #c8924a 100%);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 3rem 3rem 2rem 3.5rem;
+    border-bottom: 1.5px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: end;
+  }
+
+  .name-block {}
+  .name-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 5.5rem);
+    line-height: 0.95;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .title-pill {
+    display: inline-block;
+    margin-top: 1rem;
+    background: var(--accent2);
+    color: #e8f4ff;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+  }
+
+  .contact-block {
+    text-align: right;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .contact-block a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  /* ── BODY GRID ── */
+  .body-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    padding: 2.5rem 1.5rem 2.5rem 3.5rem;
+    border-right: 1.5px solid var(--ink);
+    background: #f2f2f2;
+  }
+
+  .sidebar-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .sidebar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .skill-item {
+    margin-bottom: 0.9rem;
+  }
+
+  .skill-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .skill-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .tag {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    margin: 2px 2px 2px 0;
+  }
+
+  .lang-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 0.5px solid var(--rule);
+    font-size: 12px;
+  }
+
+  .lang-name { font-weight: 500; color: var(--ink); }
+  .lang-level {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── MAIN COLUMN ── */
+  .main {
+    padding: 2.5rem 3rem 2.5rem 2.5rem;
+  }
+
+  .section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.25;
+    width: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    color: #ffffff;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1.5px;
+    background: var(--rule);
+  }
+
+  /* Profile */
+  .profile-text {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    padding-left: 3.5rem;
+    font-style: italic;
+    border-left: 3px solid var(--accent2);
+    margin-left: 0;
+  }
+
+  /* Experience */
+  .exp-item {
+    margin-bottom: 2rem;
+    padding-left: 3.5rem;
+  }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.2rem;
+  }
+
+  .exp-role {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  .exp-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .exp-company {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .exp-divider {
+    width: 2rem;
+    height: 1.5px;
+    background: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  ul.bullets {
+    list-style: none;
     padding: 0;
-    background: linear-gradient(135deg, #000, #1a1a1a);
-    color: var(--text-light);
-    transition: 0.4s ease;
   }
 
-  /* Resume Container */
-  .resume {
-    max-width: 900px;
-    margin: 40px auto;
-    background: var(--black-light);
-    padding: 30px;
-    border-radius: 12px;
-    border: 1px solid var(--gold-dark);
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
-    transition: 0.4s ease;
+  ul.bullets li {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.35rem;
   }
 
-  h1, h2 {
-    color: var(--gold);
-    border-bottom: 2px solid var(--gold-dark);
-    padding-bottom: 4px;
-    text-shadow: var(--shadow-gold);
+  ul.bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
   }
 
-  a {
-    color: var(--gold);
+  /* Project highlight box */
+  .project-box {
+    background: #f2f2f2;
+    color: var(--ink);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+    border: 1px solid #cccccc;
   }
 
-  a:hover {
-    color: var(--gold-light);
+  .project-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--ink);
   }
 
-  button {
-    background: var(--gold);
-    color: var(--black);
-    padding: 10px 15px;
+  .project-box-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .project-box-name {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .project-box-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .project-tags {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .ptag {
+    background: var(--ink);
+    color: #ffffff;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    letter-spacing: 0.04em;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-    box-shadow: var(--shadow-gold);
   }
 
-  button:hover {
-    background: var(--gold-light);
-    transform: translateY(-3px);
+  /* Education */
+  .edu-item {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 0 0;
+    margin-bottom: 1.2rem;
+    align-items: start;
   }
 
-  section {
-    background: rgba(255, 215, 0, 0.05);
-    padding: 20px;
-    border-left: 5px solid var(--gold);
-    border-radius: 8px;
-    margin-bottom: 20px;
+  .edu-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    padding-top: 2px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
   }
 
-  .contact-info {
-    background: rgba(255, 215, 0, 0.08);
+  .edu-body {}
+
+  .edu-degree {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink);
   }
 
+  .edu-institution {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Footer strip */
+  .footer-strip {
+    background: var(--ink);
+    color: #ffffff;
+    padding: 0.75rem 3rem 0.75rem 3.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .corner-mark {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 7rem;
+    line-height: 1;
+    color: var(--ink);
+    opacity: 0.04;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.02em;
+  }
 </style>
 </head>
 <body>
+<div class="page">
 
-  <div class="resume">
-    <header>
-      <h1>Thendo Johannah Nephalama</h1>
-      <p>Web Developer | Python Enthusiast | IT Graduate</p>
+  <!-- ── WATERMARK ── -->
+  <div class="corner-mark">TJN</div>
 
-      <section>
-     <!-- Button Row -->
-<div class="flex justify-between items-center my-4 bg-transparent p-0 border-0">
-    <button onclick="toggleTheme()"
-        class="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-400 transition">
-        Toggle Dark/Light Mode
-    </button>
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="name-block">
+      <div class="name-eyebrow">Curriculum Vitae · 2025</div>
+      <h1>THENDO<br><span>THENDO JOHANNAH NEPHALAMA</span><br>NEPHALAMA</h1>
+      <div class="title-pill">Junior Engineer · Systems</div>
+    </div>
+    <div class="contact-block">
+      <div>+27 795 396 610</div>
+      <div><a href="mailto:thendojohannah07@gmail.com">thendojohannah07@gmail.com</a></div>
+      <div>26 uMNQAWE str, Lufhereng</div>
+      <div>Johannesburg, 1827</div>
+    </div>
+  </header>
 
-<!--    <button onclick="downloadResume()"-->
-<!--        class="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-400 transition">-->
-<!--        Download PDF-->
-<!--    </button>-->
-  <button class="download-button bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-400 transition" onclick="downloadResumeHTML()" >
-    Download PDF
-  </button>
+  <!-- ── BODY ── -->
+  <div class="body-grid">
 
-</div>
-</section>
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
 
-    </header>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Languages & Frameworks</div>
 
-    <section>
-      <h2>Professional Summary</h2>
-      <p>A passionate and versatile developer with experience in building full-stack web applications, network automation tools, and document tracking systems.</p>
-    </section>
+        <div class="skill-item">
+          <div class="skill-name">Programming</div>
+          <div><span class="tag">Python</span><span class="tag">JavaScript</span></div>
+        </div>
 
-    <section>
-      <h2>Skills</h2>
-      <ul>
-        <li>HTML, CSS, JavaScript, Python, Flask</li>
-        <li>WordPress, Web Design</li>
-        <li>Automation, Selenium, APIs</li>
-        <li>Network Topology, PDF Generation</li>
-        <li>Git/GitHub, Communication, Teamwork</li>
-      </ul>
-    </section>
+        <div class="skill-item">
+          <div class="skill-name">Web</div>
+          <div><span class="tag">Flask</span><span class="tag">Jinja2</span><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">Tailwind</span></div>
+        </div>
 
-    <section>
-      <h2>Projects</h2>
-      <ul>
-        <li><strong>Medical Records Admin System</strong> – Secure patient data system.</li>
-        <li><strong>Portfolio Website</strong> – Custom responsive site.</li>
-        <li><strong>Network Automation Tool</strong> – Python + Flask config system.</li>
-        <li><strong>Notification System</strong> – PostgreSQL-triggered alerts.</li>
-      </ul>
-    </section>
+        <div class="skill-item">
+          <div class="skill-name">Data & Automation</div>
+          <div><span class="tag">pandas</span><span class="tag">openpyxl</span><span class="tag">pdfplumber</span><span class="tag">ReportLab</span></div>
+        </div>
 
-    <section>
-      <h2>Education</h2>
-      <ul>
-        <li><strong>Higher Certificate in IT</strong> – Richfield (2021)</li>
-        <li><strong>Bachelor's Degree in IT</strong> – Richfield (2022–2024)</li>
-      </ul>
-    </section>
+        <div class="skill-item">
+          <div class="skill-name">XML & File Processing</div>
+          <div><span class="tag">lxml</span><span class="tag">zipfile</span><span class="tag">regex</span><span class="tag">win32com</span></div>
+        </div>
 
-    <section>
-      <h2>Experience</h2>
-      <p><strong>In2IT Technologies — IT Intern</strong></p>
-      <ul>
-        <li>Automated internal systems using Selenium.</li>
-        <li>Integrated web pages with enterprise applications.</li>
-        <li>Worked with engineers to improve workflow.</li>
-      </ul>
-    </section>
+        <div class="skill-item">
+          <div class="skill-name">Databases</div>
+          <div><span class="tag">PostgreSQL</span></div>
+        </div>
+      </div>
 
-    <section class="contact-info">
-      <h2>Contact</h2>
-      <p>📧 <a href="mailto:nephalamathendo14@gmail.com">nephalamathendo14@gmail.com</a></p>
-      <p>📞 079 539 6610</p>
-      <p>📍 Johannesburg, South Africa</p>
-    </section>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Technical Skills</div>
 
+        <div class="skill-item">
+          <div class="skill-name">API & Architecture</div>
+          <div class="skill-sub">REST API design, Swagger/OpenAPI, role-based access control (RBAC), session management</div>
+        </div>
 
-    <footer style="text-align:center;">
-      <p>&copy; 2025 Thendo Johannah Nephalama</p>
-    </footer>
+        <div class="skill-item">
+          <div class="skill-name">Data Visualisation</div>
+          <div class="skill-sub">Live dashboards, Excel chart automation, dark-theme XML patching, trendlines</div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-name">Enterprise UI Dev</div>
+          <div class="skill-sub">Multi-sidebar navigation, component architecture, dynamic access control rendering</div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-name">Automation Pipelines</div>
+          <div class="skill-sub">PDF → Excel → PDF pipelines, fuzzy file matching, report scheduling</div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-name">Design Tools</div>
+          <div><span class="tag">Figma</span><span class="tag">UI/UX</span></div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-name">Networking</div>
+          <div class="skill-sub">Network topology diagrams, SD-Carrier platform, system architecture docs</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Languages</div>
+        <div class="lang-row"><span class="lang-name">English</span><span class="lang-level">Fluent</span></div>
+        <div class="lang-row"><span class="lang-name">Tshivenda</span><span class="lang-level">Good</span></div>
+        <div class="lang-row"><span class="lang-name">isiZulu</span><span class="lang-level">Good</span></div>
+        <div class="lang-row"><span class="lang-name">Tsonga</span><span class="lang-level">Good</span></div>
+        <div class="lang-row"><span class="lang-name">Sotho</span><span class="lang-level">Fair</span></div>
+      </div>
+
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main">
+
+      <!-- Profile -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-num">01</div>
+          <h2>Profile</h2>
+          <div class="section-rule"></div>
+        </div>
+        <p class="profile-text">
+          Detail-oriented IT graduate with hands-on experience building dynamic web applications and automating complex business processes. Passionate about clean code, intuitive design, and modern development. Proven ability to deliver creative, user-focused solutions under pressure — including large-scale government enterprise systems.
+        </p>
+      </section>
+
+      <!-- Experience -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-num">02</div>
+          <h2>Experience</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <!-- Current Role -->
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-role">Junior Engineer — Systems</div>
+            <div class="exp-date">2025 – Present</div>
+          </div>
+          <div class="exp-company">In2IT Technologies</div>
+          <div class="exp-divider"></div>
+          <ul class="bullets">
+            <li>Continuing development of internal automation tools and Flask applications integrated with PostgreSQL.</li>
+            <li>Assisting in UI/UX design and improvement of internal tooling.</li>
+            <li>Collaborating with senior engineers to optimise workflows and system processes.</li>
+          </ul>
+        </div>
+
+        <!-- Recent Projects -->
+        <div class="exp-item">
+          <div class="exp-header" style="margin-bottom:0.75rem;">
+            <div class="exp-role" style="color:var(--accent2);">Recent Project Work</div>
+          </div>
+
+          <div class="project-box">
+            <div class="project-box-title">Automation Project · SARB</div>
+            <div class="project-box-name">SARB Monthly Vulnerability Report Automation</div>
+            <div class="project-box-desc">
+              Built a full end-to-end Python automation system that ingests CSV vulnerability data, applies manual overrides for Windows Server environments, and produces consolidated Excel reports. Includes direct ZIP/XML surgery on .xlsx files to insert monthly rows, update charts, manage shared strings, and fix cell merge conflicts — without relying on Excel being installed. Exports all charts as a multi-page PDF using win32com and ReportLab.
+            </div>
+            <div class="project-tags">
+              <span class="ptag">Python</span><span class="ptag">openpyxl</span><span class="ptag">lxml</span><span class="ptag">pandas</span><span class="ptag">ReportLab</span><span class="ptag">win32com</span><span class="ptag">zipfile</span><span class="ptag">Excel XML</span>
+            </div>
+          </div>
+
+          <div class="project-box">
+            <div class="project-box-title">Automation Project · SAMINT</div>
+            <div class="project-box-name">SAMINT Monthly PDF-to-Excel Report Pipeline</div>
+            <div class="project-box-desc">
+              Automated extraction of vulnerability severity data from client PDF reports using pdfplumber, matching PDFs to Excel sheet tabs via fuzzy name detection. Inserts monthly data rows with style copying, builds dark-themed bar charts with trendlines and data labels, and patches chart XML directly via lxml for custom dark-theme styling not achievable through openpyxl alone.
+            </div>
+            <div class="project-tags">
+              <span class="ptag">Python</span><span class="ptag">pdfplumber</span><span class="ptag">openpyxl</span><span class="ptag">lxml</span><span class="ptag">zipfile</span><span class="ptag">Chart XML</span>
+            </div>
+          </div>
+
+          <div class="project-box">
+            <div class="project-box-title">Web Application · SITA / CATS SD-Carrier</div>
+            <div class="project-box-name">SD-Carrier Operations Dashboard (SITA)</div>
+            <div class="project-box-desc">
+              Contributed to a large-scale government enterprise network management platform. Worked on a Jinja2/Flask-rendered dual-sidebar navigation system with role-based access control, animated secondary slide-out menus, session keep-alive, and a full suite of tools including SSH terminal, drift management, vulnerability management, AI assistant, and network automation modules.
+            </div>
+            <div class="project-tags">
+              <span class="ptag">Flask</span><span class="ptag">Jinja2</span><span class="ptag">Tailwind CSS</span><span class="ptag">JavaScript</span><span class="ptag">RBAC</span><span class="ptag">HTML</span><span class="ptag">Enterprise UI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intern Role -->
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-role">IT Intern</div>
+            <div class="exp-date">2024 – 2025</div>
+          </div>
+          <div class="exp-company">In2IT Technologies</div>
+          <div class="exp-divider"></div>
+          <ul class="bullets">
+            <li>Designed and developed UI components using HTML, CSS, and JavaScript.</li>
+            <li>Built web applications with Python and Flask, connected to PostgreSQL databases.</li>
+            <li>Created live charts and graphs in Python for real-time data visualisation.</li>
+            <li>Automated repetitive daily tasks with Python scripts, improving team efficiency.</li>
+            <li>Drew network topologies and system diagrams using Python.</li>
+            <li>Assisted with Figma designs and created presentation videos for internal use.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-num">03</div>
+          <h2>Education</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="edu-item" style="padding-left:3.5rem; display:block; margin-bottom:1.2rem;">
+          <div class="exp-header">
+            <div class="exp-role">Bachelor's Degree in Information Technology</div>
+            <div class="exp-date">2022 – 2024</div>
+          </div>
+          <div class="exp-company">Richfield Graduate Institute of Technology</div>
+        </div>
+
+        <div class="edu-item" style="padding-left:3.5rem; display:block; margin-bottom:1.2rem;">
+          <div class="exp-header">
+            <div class="exp-role">Higher Certificate in Information Technology</div>
+            <div class="exp-date">2021</div>
+          </div>
+          <div class="exp-company">Richfield Graduate Institute of Technology</div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-<script>
-  function toggleTheme() {
-    document.body.classList.toggle("light-mode");
-  }
+  <!-- ── FOOTER ── -->
+  <div class="footer-strip">
+    <span>Thendo Johannah Nephalama · Junior Engineer – Systems</span>
+    <span>thendojohannah07@gmail.com · +27 795 396 610</span>
+  </div>
 
-  function downloadResumeHTML() {
-    const resumeContent = document.querySelector('.resume');
-
-    // Hide buttons temporarily
-    const buttons = resumeContent.querySelectorAll('button');
-    buttons.forEach(btn => btn.style.display = 'none');
-
-    const html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thendo Johannah Nephalama - Resume</title>
-<style>
-${document.querySelector('style').innerHTML} /* includes your current CSS */
-</style>
-</head>
-<body>
-${resumeContent.outerHTML}
-</body>
-</html>
-`;
-
-    const blob = new Blob([html], { type: "text/html" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "Thendo_Nephalama_Resume.html";
-    link.click();
-    URL.revokeObjectURL(link.href);
-
-    // Restore buttons after download
-    buttons.forEach(btn => btn.style.display = '');
-}
-
-
-</script>
-
+</div>
 </body>
 </html>

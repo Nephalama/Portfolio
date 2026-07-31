@@ -65,27 +65,36 @@ document.addEventListener("DOMContentLoaded", () => {
         chatMessages.appendChild(botMsg);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        try {
-            const systemPrompt = `You are the AI assistant for Thendo Nephalama, a Full-Stack Developer & Automation Enthusiast. 
-                                    Your job is to answer questions about Thendo's skills, experience, and projects. Keep answers brief, friendly, and professional.
-                                    Here is Thendo's background:
-                                    - Title: Full-Stack Developer & Automation Enthusiast
-                                    - Skills: HTML, CSS, JavaScript, Python, Flask, PostgreSQL, APIs, Selenium, Git, Linux, Tailwind CSS, REST APIs, Web Scraping.
-                                    - Experience: 
-                                      1. Network Automation Intern at In2IT Technologies (2024-2025).
-                                      2. Junior Engineer - Systems at In2IT Technologies (2025-Present).
-                                    - Education: Bachelor of Information Technology from Richfield Graduate Institute of Technology (2022-2024).
-                                    - Contact: thendojohannah07@gmail.com
-                                    If someone asks for contact info, provide the email. If they ask about skills, list them.`;
-            const response = await puter.ai.chat(systemPrompt + "\nUser: " + userText);
-            
-            // Update bot message with AI response
-            botMsg.textContent = response.message.content;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        } catch (error) {
-            botMsg.textContent = "Sorry, I encountered an error.";
-            console.error("AI Error:", error);
-        }
+                       try {
+                    // 1. Define the AI's persona and background
+                    const systemPrompt = `You are the AI assistant for Thendo Nephalama, a Full-Stack Developer & Automation Enthusiast. 
+Your job is to answer questions about Thendo's skills, experience, and projects. Keep answers brief, friendly, and professional.
+Here is Thendo's background:
+- Title: Full-Stack Developer & Automation Enthusiast
+- Skills: HTML, CSS, JavaScript, Python, Flask, PostgreSQL, APIs, Selenium, Git, Linux, Tailwind CSS, REST APIs, Web Scraping.
+- Experience: 
+  1. Network Automation Intern at In2IT Technologies (2024-2025).
+  2. Junior Engineer - Systems at In2IT Technologies (2025-Present).
+- Education: Bachelor of Information Technology from Richfield Graduate Institute of Technology (2022-2024).
+- Contact: thendojohannah07@gmail.com
+If someone asks for contact info, provide the email. If they ask about skills, list them.`;
+
+                    // 2. Send the prompt and user text as separate messages
+                    const messages = [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: userText }
+                    ];
+                    
+                    // 3. Call the AI
+                    const response = await puter.ai.chat(messages);
+                    
+                    // 4. Update bot message with AI response
+                    botMsg.textContent = response.message.content;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                } catch (error) {
+                    botMsg.textContent = "Sorry, I encountered an error.";
+                    console.error("AI Error:", error);
+                }
     };
 
     chatSend.addEventListener("click", sendMessage);
